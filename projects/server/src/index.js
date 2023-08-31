@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 
+
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
@@ -20,6 +21,9 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 
+// db.sequelize.sync({
+//   alter: true
+// });
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
 });
