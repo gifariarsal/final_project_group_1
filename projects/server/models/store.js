@@ -12,12 +12,15 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Admin, { foreignKey: "admin_id" });
       this.hasMany(models.ProductStore, { foreignKey: "store_id" });
     }
-  } 
+  }
   Store.init(
     {
       name: DataTypes.STRING,
       location: DataTypes.STRING,
+      longitude: DataTypes.STRING,
+      latitude: DataTypes.STRING,
       admin_id: DataTypes.INTEGER,
+      isactive: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
     {
       sequelize,
