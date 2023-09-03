@@ -16,9 +16,12 @@ app.use(express.json());
 //#region API ROUTES
 // const db = require("../models");
 // db.sequelize.sync({ alter: true });
+const { geocodeRouter  } = require("./routers");
 
 // ===========================
 // NOTE : Add your routes here
+
+app.use("/api", geocodeRouter);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

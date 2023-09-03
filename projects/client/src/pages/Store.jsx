@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from '../components/landing/Navbar';
 import { Box } from '@chakra-ui/react';
 
-const Contact = () => {
+const Store = () => {
   return (
     <Box>
       <Navbar />
@@ -10,4 +10,4 @@ const Contact = () => {
   );
 }
 
-export default Contact
+export default Store

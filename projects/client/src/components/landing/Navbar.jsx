@@ -34,14 +34,16 @@ const Navbar = () => {
           borderColor={"#D7F0AA"}
           align={"center"}
         >
-          <Box w={"50%"} m={"16px 60px"}>
+          <Box w={"50%"} m={"16px 100px"}>
             <Flex justifyContent={"flex-start"} align={"center"}>
               <Link to={"/"}>
-                <Image
-                  src={Logo}
-                  h={"28px"}
-                  _hover={{ filter: "brightness(70%)", transition: "300ms" }}
-                ></Image>
+                <div style={{ width: "184px" }}>
+                  <Image
+                    src={Logo}
+                    h={"28px"}
+                    _hover={{ filter: "brightness(70%)", transition: "300ms" }}
+                  />
+                </div>
               </Link>
               <Text ml={8} fontWeight={"medium"} _hover={{ color: "#1c1c1c" }}>
                 <Link
@@ -74,19 +76,19 @@ const Navbar = () => {
                 </Text>
               </Link>
               <Link
-                to={"/contact"}
+                to={"/store"}
                 style={{
                   color:
-                    location.pathname === "/contact" ? "#59981A" : "inherit",
+                    location.pathname === "/store" ? "#59981A" : "inherit",
                 }}
               >
                 <Text ml={4} fontWeight={"medium"}>
-                  Contact
+                  Store
                 </Text>
               </Link>
             </Flex>
           </Box>
-          <Box w={"50%"} m={"16px 60px"}>
+          <Box w={"50%"} m={"16px 100px"}>
             <Flex justifyContent={"flex-end"} align={"center"} gap={4}>
               <Link to={"/search"}>
                 <HiOutlineSearch
