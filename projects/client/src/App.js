@@ -2,10 +2,13 @@ import axios from "axios";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { useEffect, useState } from "react";
-import UserLanding from "./pages/UserLanding";
-import Shop from "./pages/Shop";
-import About from "./pages/About";
-import Store from "./pages/Store";
+import UserLanding from "./pages/user/UserLanding";
+import Shop from "./pages/user/Shop";
+import About from "./pages/user/About";
+import Store from "./pages/user/Store";
+import AdminSignIn from "./pages/admin/AdminSignIn";
+import SuperDashboard from "./pages/admin/SuperDashboard";
+import BranchDashboard from "./pages/admin/BranchDashboard";
 
 function App() {
   // const [message, setMessage] = useState("");
@@ -25,6 +28,9 @@ function App() {
       <Route path="/shop" element={<Shop />}/>
       <Route path="/about" element={<About />}/>
       <Route path="/store" element={<Store />}/>
+      <Route path="/admin" element={<AdminSignIn />}/>
+      <Route path="/admin/super" element={<SuperDashboard />}/>
+      <Route path="/admin/branch" element={<BranchDashboard />}/>
     </Routes>
     </>
   );
