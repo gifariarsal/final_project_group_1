@@ -21,12 +21,9 @@ app.use(express.json());
 const db = require("../models");
 const { authRouter } = require("./router");
 // db.sequelize.sync({ alter: true });
-const { geocodeRouter  } = require("./routers");
 
 // ===========================
 // NOTE : Add your routes here
-
-app.use("/api", geocodeRouter);
 
 app.use("/api/auth", authRouter)
 app.get("/api", (req, res) => {

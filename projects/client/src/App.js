@@ -12,7 +12,7 @@ import BranchDashboard from "./pages/admin/BranchDashboard";
 import Signin from "./pages/Signin";
 import Register from "./pages/Register";
 import UserAuth from "./userAuth";
-import Navbar from "./components/landing/Navbar";
+// import Navbar from "./components/landing/Navbar";
 import "./style/main.css";
 
 function App() {
@@ -29,7 +29,6 @@ function App() {
   return (
     <>
       <UserAuth>
-      <Navbar />
       <Routes>
         <Route path="/" element={<UserLanding />} />
         <Route path="/shop" element={<Shop />} />
