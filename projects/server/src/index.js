@@ -7,7 +7,11 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+      // process.env.WHITELISTED_DOMAIN &&
+      //   process.env.WHITELISTED_DOMAIN.split(","),
+    ],
   })
 );
 

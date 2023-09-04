@@ -29,8 +29,9 @@ const Navbar = () => {
   const login = localStorage.getItem("token");
   const [cartItemCount, setCartItemCount] = useState(0);
   const location = useLocation();
-  const dispatch = useDispatch();
-  const toast = useToast();
+const dispatch = useDispatch()
+const toast = useToast()  
+const navigate = useNavigate();
 
   function onKlik() {
     dispatch(logoutAuth(toast));
@@ -47,24 +48,18 @@ const Navbar = () => {
           borderBottom={1}
           borderStyle={"solid"}
           borderColor={"#D7F0AA"}
-          align={"center"}
-        >
+          align={"center"}>
           <Box w={"50%"} m={"16px 60px"}>
             <Flex justifyContent={"flex-start"} align={"center"}>
               <Link to={"/"}>
-                <Image
-                  src={Logo}
-                  h={"28px"}
-                  _hover={{ filter: "brightness(70%)", transition: "300ms" }}
-                ></Image>
+                <Image src={Logo} h={"28px"} _hover={{ filter: "brightness(70%)", transition: "300ms" }}></Image>
               </Link>
               <Text ml={8} fontWeight={"medium"} _hover={{ color: "#1c1c1c" }}>
                 <Link
                   to={"/"}
                   style={{
                     color: location.pathname === "/" ? "#59981A" : "inherit",
-                  }}
-                >
+                  }}>
                   Home
                 </Link>
               </Text>
@@ -72,8 +67,7 @@ const Navbar = () => {
                 to={"/shop"}
                 style={{
                   color: location.pathname === "/shop" ? "#59981A" : "inherit",
-                }}
-              >
+                }}>
                 <Text ml={4} fontWeight={"medium"}>
                   Shop
                 </Text>
@@ -82,8 +76,7 @@ const Navbar = () => {
                 to={"/about"}
                 style={{
                   color: location.pathname === "/about" ? "#59981A" : "inherit",
-                }}
-              >
+                }}>
                 <Text ml={4} fontWeight={"medium"}>
                   About
                 </Text>
@@ -91,10 +84,8 @@ const Navbar = () => {
               <Link
                 to={"/contact"}
                 style={{
-                  color:
-                    location.pathname === "/contact" ? "#59981A" : "inherit",
-                }}
-              >
+                  color: location.pathname === "/contact" ? "#59981A" : "inherit",
+                }}>
                 <Text ml={4} fontWeight={"medium"}>
                   Contact
                 </Text>
@@ -104,19 +95,11 @@ const Navbar = () => {
           <Box w={"50%"} m={"16px 60px"}>
             <Flex justifyContent={"flex-end"} align={"center"} gap={4}>
               <Link to={"/search"}>
-                <HiOutlineSearch
-                  fontSize={24}
-                  cursor={"pointer"}
-                  color={"gray.800"}
-                />
+                <HiOutlineSearch fontSize={24} cursor={"pointer"} color={"gray.800"} />
               </Link>
               <Link to={"/cart"} ml={4}>
                 <Flex alignItems={"center"} position="relative">
-                  <HiOutlineShoppingCart
-                    fontSize={24}
-                    cursor={"pointer"}
-                    color={"gray.800"}
-                  />
+                  <HiOutlineShoppingCart fontSize={24} cursor={"pointer"} color={"gray.800"} />
                   <Box
                     position="absolute"
                     top="-8px"
@@ -127,55 +110,72 @@ const Navbar = () => {
                     width={`${cartItemCount.toString().length * 10 + 8}px`}
                     display="flex"
                     alignItems="center"
-                    justifyContent="center"
-                  >
+                    justifyContent="center">
                     <Text fontSize={"xs"}>{cartItemCount}</Text>
                   </Box>
                 </Flex>
               </Link>
-              <ButtonGroup>
-                {login ? (
-                  <Flex alignItems={"center"} ml={10}>
-                    <Menu>
-                      <MenuButton
-                        as={Button}
-                        rounded={"full"}
-                        variant={"link"}
-                        cursor={"pointer"}
-                        minW={0}
-                      >
-                        <Avatar size={"sm"} name="User" src={"/profile"} />
-                      </MenuButton>
-                      <MenuList>
-                        <Link to={"/user-profile"}>
-                          <MenuItem>Profile</MenuItem>
-                        </Link>
-                        <Link to={"/change-password"}>
-                          <MenuItem>Change Password</MenuItem>
-                        </Link>
-                        <MenuDivider />
-                        <Link>
-                          <MenuItem color={"red"} onClick={() => onKlik()}>
-                            Sign Out
-                          </MenuItem>
-                        </Link>
-                      </MenuList>
-                    </Menu>
-                  </Flex>
-                ) : (
-                  <Box ml={10}>
-                    <Stack
-                      direction={"row"}
-                      spacing={6}
-                      ml={4}
-                      className="desktop"
-                    >
-                      <ButtonSignIn />
-                      <ButtonRegist />
-                    </Stack>
-                  </Box>
-                )}
-              </ButtonGroup>
+              {login ? (
+                <Flex alignItems={"center"} ml={10}>
+                  <Menu>
+                    <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+                      <Avatar size={"sm"} name="User" src={"/profile"} />
+                    </MenuButton>
+                    <MenuList>
+                      <Link to={"/user-profile"}>
+                        <MenuItem>Profile</MenuItem>
+                      </Link>
+                      <Link to={"/change-password"}>
+                        <MenuItem>Change Password</MenuItem>
+                      </Link>
+                      <MenuDivider />
+                      <Link>
+                        <MenuItem color={"red"} onClick={() => onKlik()}>Sign Out</MenuItem>
+                      </Link>
+                    </MenuList>
+                  </Menu>
+                </Flex>
+              ) : (
+                <Box ml={10}>
+                  <Stack direction={"row"} spacing={6} ml={4}>
+                    <Button
+                      as={"a"}
+                      display={"inline-flex"}
+                      fontSize={"sm"}
+                      fontWeight={700}
+                      color={"#37630A"}
+                      bg={"white"}
+                      border={"1px"}
+                      borderColor={"#37630A"}
+                      rounded={"lg"}
+                      href={"/sign-up"}
+                      _hover={{
+                        bg: "gray.100",
+                      }}>
+                      Log In
+                    </Button>
+                    <Button
+                      as={"a"}
+                      display={"inline-flex"}
+                      fontSize={"sm"}
+                      fontWeight={700}
+                      color={"white"}
+                      bg={"#37630A"}
+                      rounded={"lg"}
+                      _hover={{
+                        bg: "#457811",
+                      }}
+                      _active={{
+                        bg: "#2D5406",
+                      }}
+                      onClick={() => {
+                        navigate("/register");
+                      }}>
+                      Register
+                    </Button>
+                  </Stack>
+                </Box>
+              )}
             </Flex>
           </Box>
         </Flex>

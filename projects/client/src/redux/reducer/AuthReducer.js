@@ -53,11 +53,36 @@ export const logoutAuth = (toast) => {
         duration: 3000,
         isClosable: true,
       });
-    } catch (error) {
+    } catch (error){
       console.log(error)
     }
   }
 }
+export const registerUser = (value, toast) => {
+  return async () => {
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/user`, value);
+      console.log(data);
+      toast({
+        title: "Register Success",
+        description: `${value.username} berhasil dibuat`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log(error)
+      console.log(error.response.data.message);
+      toast({
+        title: "Register Gagal",
+        description: error.response.data.message,
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+};
 
 export const loginAuth = (values, setLoading, toast) => {
   return async (dispatch) => {
@@ -112,5 +137,5 @@ export const keepLogin = () => {
 }
 
 export const { loginSuccess, logoutSuccess, setUser } = AuthReducer.actions;
-
+      
 export default AuthReducer.reducer;
