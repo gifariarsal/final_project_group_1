@@ -9,6 +9,11 @@ import Store from "./pages/user/Store";
 import AdminSignIn from "./pages/admin/AdminSignIn";
 import SuperDashboard from "./pages/admin/SuperDashboard";
 import BranchDashboard from "./pages/admin/BranchDashboard";
+import Signin from "./pages/Signin";
+import Register from "./pages/Register";
+import UserAuth from "./userAuth";
+import Navbar from "./components/landing/Navbar";
+import "./style/main.css";
 
 function App() {
   // const [message, setMessage] = useState("");
@@ -23,15 +28,20 @@ function App() {
   // }, []);
   return (
     <>
-    <Routes>
-      <Route path="/" element={<UserLanding />}/>
-      <Route path="/shop" element={<Shop />}/>
-      <Route path="/about" element={<About />}/>
-      <Route path="/store" element={<Store />}/>
-      <Route path="/admin" element={<AdminSignIn />}/>
+      <UserAuth>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<UserLanding />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/signin" element={<Signin/>}/>
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<AdminSignIn />}/>
       <Route path="/admin/super" element={<SuperDashboard />}/>
       <Route path="/admin/branch" element={<BranchDashboard />}/>
-    </Routes>
+      </Routes>
+      </UserAuth>
     </>
   );
 }

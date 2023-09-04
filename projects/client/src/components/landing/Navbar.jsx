@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Flex,
   Image,
   Menu,
@@ -11,17 +12,32 @@ import {
   MenuList,
   Stack,
   Text,
+  useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
 import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
+import Hamburger from "./Hamburger";
+import ButtonSignIn from "./ButtonSignIn";
+import ButtonRegist from "./ButtonRegist";
+import { useDispatch } from "react-redux";
+import { logoutAuth, logoutSuccess } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
   const login = localStorage.getItem("token");
   const [cartItemCount, setCartItemCount] = useState(0);
   const location = useLocation();
+const dispatch = useDispatch()
+const toast = useToast()  
+const navigate = useNavigate();
 
+  function onKlik() {
+    dispatch(logoutAuth(toast));
+  }
+
+  const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (
     <header>
       <Box>
@@ -50,8 +66,7 @@ const Navbar = () => {
                   to={"/"}
                   style={{
                     color: location.pathname === "/" ? "#59981A" : "inherit",
-                  }}
-                >
+                  }}>
                   Home
                 </Link>
               </Text>
@@ -59,8 +74,7 @@ const Navbar = () => {
                 to={"/shop"}
                 style={{
                   color: location.pathname === "/shop" ? "#59981A" : "inherit",
-                }}
-              >
+                }}>
                 <Text ml={4} fontWeight={"medium"}>
                   Shop
                 </Text>
@@ -69,8 +83,7 @@ const Navbar = () => {
                 to={"/about"}
                 style={{
                   color: location.pathname === "/about" ? "#59981A" : "inherit",
-                }}
-              >
+                }}>
                 <Text ml={4} fontWeight={"medium"}>
                   About
                 </Text>
@@ -91,19 +104,11 @@ const Navbar = () => {
           <Box w={"50%"} m={"16px 100px"}>
             <Flex justifyContent={"flex-end"} align={"center"} gap={4}>
               <Link to={"/search"}>
-                <HiOutlineSearch
-                  fontSize={24}
-                  cursor={"pointer"}
-                  color={"gray.800"}
-                />
+                <HiOutlineSearch fontSize={24} cursor={"pointer"} color={"gray.800"} />
               </Link>
               <Link to={"/cart"} ml={4}>
                 <Flex alignItems={"center"} position="relative">
-                  <HiOutlineShoppingCart
-                    fontSize={24}
-                    cursor={"pointer"}
-                    color={"gray.800"}
-                  />
+                  <HiOutlineShoppingCart fontSize={24} cursor={"pointer"} color={"gray.800"} />
                   <Box
                     position="absolute"
                     top="-8px"
@@ -114,8 +119,7 @@ const Navbar = () => {
                     width={`${cartItemCount.toString().length * 10 + 8}px`}
                     display="flex"
                     alignItems="center"
-                    justifyContent="center"
-                  >
+                    justifyContent="center">
                     <Text fontSize={"xs"}>{cartItemCount}</Text>
                   </Box>
                 </Flex>
@@ -123,13 +127,7 @@ const Navbar = () => {
               {login ? (
                 <Flex alignItems={"center"} ml={10}>
                   <Menu>
-                    <MenuButton
-                      as={Button}
-                      rounded={"full"}
-                      variant={"link"}
-                      cursor={"pointer"}
-                      minW={0}
-                    >
+                    <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
                       <Avatar size={"sm"} name="User" src={"/profile"} />
                     </MenuButton>
                     <MenuList>
@@ -141,7 +139,7 @@ const Navbar = () => {
                       </Link>
                       <MenuDivider />
                       <Link>
-                        <MenuItem color={"red"}>Sign Out</MenuItem>
+                        <MenuItem color={"red"} onClick={() => onKlik()}>Sign Out</MenuItem>
                       </Link>
                     </MenuList>
                   </Menu>
@@ -162,8 +160,7 @@ const Navbar = () => {
                       href={"/sign-up"}
                       _hover={{
                         bg: "gray.100",
-                      }}
-                    >
+                      }}>
                       Log In
                     </Button>
                     <Button
@@ -174,14 +171,15 @@ const Navbar = () => {
                       color={"white"}
                       bg={"#37630A"}
                       rounded={"lg"}
-                      href={"/sign-up"}
                       _hover={{
                         bg: "#457811",
                       }}
                       _active={{
                         bg: "#2D5406",
                       }}
-                    >
+                      onClick={() => {
+                        navigate("/register");
+                      }}>
                       Register
                     </Button>
                   </Stack>
