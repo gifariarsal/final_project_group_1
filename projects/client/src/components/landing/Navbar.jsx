@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Flex,
   Image,
   Menu,
@@ -11,17 +12,31 @@ import {
   MenuList,
   Stack,
   Text,
+  useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
 import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
+import Hamburger from "./Hamburger";
+import ButtonSignIn from "./ButtonSignIn";
+import ButtonRegist from "./ButtonRegist";
+import { useDispatch } from "react-redux";
+import { logoutAuth, logoutSuccess } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
   const login = localStorage.getItem("token");
   const [cartItemCount, setCartItemCount] = useState(0);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const toast = useToast();
 
+  function onKlik() {
+    dispatch(logoutAuth(toast));
+  }
+
+  const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (
     <header>
       <Box>
@@ -118,73 +133,49 @@ const Navbar = () => {
                   </Box>
                 </Flex>
               </Link>
-              {login ? (
-                <Flex alignItems={"center"} ml={10}>
-                  <Menu>
-                    <MenuButton
-                      as={Button}
-                      rounded={"full"}
-                      variant={"link"}
-                      cursor={"pointer"}
-                      minW={0}
+              <ButtonGroup>
+                {login ? (
+                  <Flex alignItems={"center"} ml={10}>
+                    <Menu>
+                      <MenuButton
+                        as={Button}
+                        rounded={"full"}
+                        variant={"link"}
+                        cursor={"pointer"}
+                        minW={0}
+                      >
+                        <Avatar size={"sm"} name="User" src={"/profile"} />
+                      </MenuButton>
+                      <MenuList>
+                        <Link to={"/user-profile"}>
+                          <MenuItem>Profile</MenuItem>
+                        </Link>
+                        <Link to={"/change-password"}>
+                          <MenuItem>Change Password</MenuItem>
+                        </Link>
+                        <MenuDivider />
+                        <Link>
+                          <MenuItem color={"red"} onClick={() => onKlik()}>
+                            Sign Out
+                          </MenuItem>
+                        </Link>
+                      </MenuList>
+                    </Menu>
+                  </Flex>
+                ) : (
+                  <Box ml={10}>
+                    <Stack
+                      direction={"row"}
+                      spacing={6}
+                      ml={4}
+                      className="desktop"
                     >
-                      <Avatar size={"sm"} name="User" src={"/profile"} />
-                    </MenuButton>
-                    <MenuList>
-                      <Link to={"/user-profile"}>
-                        <MenuItem>Profile</MenuItem>
-                      </Link>
-                      <Link to={"/change-password"}>
-                        <MenuItem>Change Password</MenuItem>
-                      </Link>
-                      <MenuDivider />
-                      <Link>
-                        <MenuItem color={"red"}>Sign Out</MenuItem>
-                      </Link>
-                    </MenuList>
-                  </Menu>
-                </Flex>
-              ) : (
-                <Box ml={10}>
-                  <Stack direction={"row"} spacing={6} ml={4}>
-                    <Button
-                      as={"a"}
-                      display={"inline-flex"}
-                      fontSize={"sm"}
-                      fontWeight={700}
-                      color={"#37630A"}
-                      bg={"white"}
-                      border={"1px"}
-                      borderColor={"#37630A"}
-                      rounded={"lg"}
-                      href={"/sign-up"}
-                      _hover={{
-                        bg: "gray.100",
-                      }}
-                    >
-                      Log In
-                    </Button>
-                    <Button
-                      as={"a"}
-                      display={"inline-flex"}
-                      fontSize={"sm"}
-                      fontWeight={700}
-                      color={"white"}
-                      bg={"#37630A"}
-                      rounded={"lg"}
-                      href={"/sign-up"}
-                      _hover={{
-                        bg: "#457811",
-                      }}
-                      _active={{
-                        bg: "#2D5406",
-                      }}
-                    >
-                      Register
-                    </Button>
-                  </Stack>
-                </Box>
-              )}
+                      <ButtonSignIn />
+                      <ButtonRegist />
+                    </Stack>
+                  </Box>
+                )}
+              </ButtonGroup>
             </Flex>
           </Box>
         </Flex>

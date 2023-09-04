@@ -6,7 +6,10 @@ import UserLanding from "./pages/UserLanding";
 import Shop from "./pages/Shop";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-
+import Signin from "./pages/Signin";
+import Verify from "./pages/verify";
+import "./style/main.css"
+import UserAuth from "./userAuth";
 function App() {
   // const [message, setMessage] = useState("");
 
@@ -20,12 +23,15 @@ function App() {
   // }, []);
   return (
     <>
+    <UserAuth>
     <Routes>
       <Route path="/" element={<UserLanding />}/>
       <Route path="/shop" element={<Shop />}/>
       <Route path="/about" element={<About />}/>
       <Route path="/contact" element={<Contact />}/>
+      <Route path="/signin" element={<Signin/>}/>
     </Routes>
+    </UserAuth>
     </>
   );
 }
