@@ -59,6 +59,26 @@ const authController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  verifyAccount: async (req, res) => {
+    try {
+      const { id } = req.user;
+      const users = await User.findOne({ where: { id } });
+      if (users.dataValues.isverify === true) throw new Error("Already verify / token expired");
+      await User.update(
+        {
+          isverify: true,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return res.status(200).json({ message: "Verification Success" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = authController;

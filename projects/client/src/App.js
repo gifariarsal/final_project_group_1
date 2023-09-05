@@ -15,6 +15,7 @@ import UserAuth from "./userAuth";
 // import Navbar from "./components/landing/Navbar";
 import "./style/main.css";
 import Notfound from "./pages/Notfound";
+import Verify from "./pages/verify";
 
 function App() {
   const role = "";
@@ -40,6 +41,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<AdminSignIn />} />
+          <Route path="/verification/:token" element={<Verify />} />
         </>
       );
     }
