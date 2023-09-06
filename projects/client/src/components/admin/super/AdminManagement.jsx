@@ -18,7 +18,7 @@ const AdminManagement = () => {
         bg={"white"}
         borderBottom={1}
         borderStyle={"solid"}
-        borderColor={"#A2AABA"}
+        borderColor={"#D7F0AA"}
         py={4}
         px={8}
       >
@@ -29,16 +29,17 @@ const AdminManagement = () => {
         </Box>
         <Box>
           <Button
-            // onClick={onCreate}
+            onClick={onCreate}
             gap={2}
             rounded={"lg"}
-            bg={"#D27321"}
+            bg={"#37630A"}
             ml={4}
             color={"white"}
-            _hover={{ bg: "#E38C41" }}
+            _hover={{ bg: "#457811" }}
+            _active={{ bg: "#2D5406" }}
           >
             <IoAddOutline size={24} />
-            Add Cashier
+            Add Admin
           </Button>
         </Box>
       </Box>
