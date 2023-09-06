@@ -42,6 +42,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<AdminSignIn />} />
           <Route path="/verification/:token" element={<Verify />} />
+          <Route path="/admin/super" element={<SuperDashboard />} />
         </>
       );
     }
