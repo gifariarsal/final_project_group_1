@@ -38,6 +38,31 @@ const changeNameValidator = [
   const birthdateValidator = [
     body("newBirthdate").notEmpty().withMessage("Birthday is required"),
 ]
+const createBranchAdmin = [
+  body("name").notEmpty().withMessage("Name is required"),
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/)
+    .withMessage(
+      "Password must be at least 8 characters, 1 symbol, and 1 uppercase"
+    ),
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords must match");
+      }
+      return true;
+    }),
+];
+
 const validateRegist = (req, res, next) => {
     const errors = validationResult(req);
   //   validationResult memiliki method isEmpty untuk mengembalikan nilai true/false
@@ -47,4 +72,4 @@ const validateRegist = (req, res, next) => {
     next();
   };
 
-module.exports = {loginValidator, changeEmailValidator, changeNameValidator, changePasswordValidator, birthdateValidator, genderValidator, validateRegist}
+module.exports = {loginValidator,  changeEmailValidator, changeNameValidator, changePasswordValidator, birthdateValidator, genderValidator, createBranchAdmin, validateRegist}
