@@ -16,11 +16,13 @@ import UserAuth from "./userAuth";
 import "./style/main.css";
 import Notfound from "./pages/Notfound";
 import Verify from "./pages/verify";
+import { setUserLocation } from "./redux/reducer/AuthReducer";
+import { useDispatch } from "react-redux";
 
 function App() {
   const role = "";
-  // const [message, setMessage] = useState("");
-
+  const [userlocation, setUserlocation] = useState("");
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   (async () => {
   //     const { data } = await axios.get(
@@ -29,6 +31,25 @@ function App() {
   //     setMessage(data?.message || "");
   //   })();
   // }, []);
+
+  const fetchLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { longitude, latitude } = position.coords;
+          dispatch(setUserLocation(latitude, longitude));
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.log("Geolocation not supported");
+    }
+  };
+  useEffect(() => {
+    fetchLocation();
+  }, []);
 
   const defaultRoutes = () => {
     if (role === "") {

@@ -1,30 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Box, Text, Center, Flex, Spinner } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const UserLocation = () => {
-  const [userLocation, setUserLocation] = useState(null);
-
-  useEffect(() => {
-    // Minta izin pengguna untuk mengakses lokasi
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation({ latitude, longitude });
-      });
-    } else {
-      console.log("Geolocation is not available in this browser.");
-    }
-  }, []);
+  const userLocation = useSelector((state) => state.AuthReducer.location);
+  // console.log(userLocation.state);
 
   return (
     <Box p={4}>
       <Center>
         {userLocation ? (
-          <Flex align={"center"}>
-            <Text fontSize="xl">Lokasi Anda:</Text>
-            <Text>Latitude: {userLocation.latitude}</Text>
-            <Text>Longitude: {userLocation.longitude}</Text>
-          </Flex>
+          <Flex align={"center"}>{<Text fontSize="xl">Lokasi Anda: {userLocation.state}</Text>}</Flex>
         ) : (
           <Spinner size="xs" />
         )}
