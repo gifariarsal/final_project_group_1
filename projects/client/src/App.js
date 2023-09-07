@@ -15,6 +15,7 @@ import UserAuth from "./userAuth";
 // import Navbar from "./components/landing/Navbar";
 import "./style/main.css";
 import Verify from "./pages/verify";
+import UserProfile from "./components/landing/UserProfile";
 
 function App() {
   // const [message, setMessage] = useState("");
@@ -41,6 +42,7 @@ function App() {
       <Route path="/admin/super" element={<SuperDashboard />}/>
       <Route path="/admin/branch" element={<BranchDashboard />}/>
       <Route path="/verification/:token" element={<Verify/>}/>
+      <Route path="/profile" element={<UserProfile/>}/>
       </Routes>
       </UserAuth>
     </>
