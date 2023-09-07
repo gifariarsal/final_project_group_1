@@ -20,6 +20,7 @@ export const AdminReducer = createSlice({
     setBranchAdmin: (state, action) => {
       const { id, name, email, role_id } = action.payload;
       state.branchAdmin = { id, name, email, role_id };
+      state.login = true;
     },
     loginSuccess: (state) => {
       state.login = true;
@@ -33,7 +34,7 @@ export const AdminReducer = createSlice({
   },
 });
 
-export const loginAdmin = (values, setLoading, toast) => {
+export const loginAdmin = (values, setLoading, toast, navigate) => {
   return async (dispatch) => {
     try {
       setLoading(true);
@@ -46,6 +47,11 @@ export const loginAdmin = (values, setLoading, toast) => {
       localStorage.setItem("token", token);
       dispatch(setBranchAdmin(respon.data.Account));
       dispatch(loginSuccess());
+      if (respon.data.Account.role_id === 1) {
+        navigate("/admin/super");
+      } else if (respon.data.Account.role_id === 2) {
+        navigate("/admin/branch");
+      }
       toast({
         title: "Login Success",
         status: "success",
@@ -67,6 +73,23 @@ export const loginAdmin = (values, setLoading, toast) => {
   };
 };
 
+export const keepLoginAdmin = () => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+    try {
+      const respon = await axios.get(`${URL_API}/keep`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(setBranchAdmin(respon.data.findAdmin));
+      dispatch(loginSuccess());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const logoutAdmin = (toast) => {
   return async (dispatch) => {
     try {
@@ -84,28 +107,13 @@ export const logoutAdmin = (toast) => {
   };
 };
 
-export const keepLoginAdmin = () => {
-  return async (dispatch) => {
-    const token = localStorage.getItem("token");
-    try {
-      const respon = await axios.get(`${URL_API}/admin/keep`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch(setBranchAdmin(respon.data.findAdmin));
-      dispatch(loginSuccess());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-
 export const createBranchAdmin = (value, toast) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/admin/branch-admin`, value);
+        `${process.env.REACT_APP_API_BASE_URL}/admin/branch-admin`,
+        value
+      );
       toast({
         title: "Success",
         description: `${value.name} berhasil dibuat`,

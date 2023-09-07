@@ -10,11 +10,10 @@ const adminController = {
       const { email, password } = req.body;
       let where = {};
 
-      if (email) {
-        where.email = email;
-      }
+      if (email) where.email = email;
 
       const checkLogin = await Admin.findOne({ where });
+      console.log(checkLogin);
       if (!checkLogin) {
         return res.status(404).json({ message: "Admin not found" });
       }
@@ -35,13 +34,9 @@ const adminController = {
         expiresIn: "24h",
       });
 
-      return res
-        .status(200)
-        .json({ message: "Login success", Account: checkLogin, token: token });
+      return res.status(200).json({ message: "Login success", Account: checkLogin, token: token });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Login failed", error: error.message });
+      return res.status(500).json({ message: "Login failed", error: error.message });
     }
   },
 
@@ -74,7 +69,7 @@ const adminController = {
           { name, email, password: hashPassword, role_id: 2 },
           { transaction: t }
         );
-        res.status(200).json({ message: "Branch admin created successfully", data: newBranchAdmin });
+        res.status(200).json({ message: "Branch admin is created successfully", data: newBranchAdmin });
       });
     } catch (err) {
       res.status(500).json({ message: err.message });

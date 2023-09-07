@@ -22,6 +22,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { loginAdmin } from "../../redux/reducer/AdminReducer";
+import { useNavigate } from "react-router-dom";
 // import ForgotPasswordModal from "../components/ForgotPasswordModal";
 
 const AdminSignIn = () => {
@@ -30,32 +31,13 @@ const AdminSignIn = () => {
   const handleClick = () => setShow(!show);
   const toast = useToast();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onForgot = () => {
     onOpen();
   };
-
-  // const login = async (values) => {
-  //   try {
-  //     const res = await axios.post("http://localhost:8000/api/admin", {
-  //       email: values.email,
-  //       password: values.password,
-  //     });
-  //     console.log(res);
-  //     if (res.status === 200) {
-  //       dispatch(loginSuccess(res.data.token));
-  //       if (res.data.role === 1) {
-  //         navigate("/admin/super");
-  //       } else if (res.data.role === 2) {
-  //         navigate("/admin/branch");
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -71,7 +53,7 @@ const AdminSignIn = () => {
     },
     validationSchema: LoginSchema,
     onSubmit: (values) => {
-      dispatch(loginAdmin(values, setLoading, toast));
+      dispatch(loginAdmin(values, setLoading, toast, navigate));
     },
   });
 
