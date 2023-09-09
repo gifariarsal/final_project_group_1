@@ -147,7 +147,13 @@ export const setUserLocation = (latitude, longitude) => {
       const { data } = await axios.get(
         `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${KEY}`
       );
-      dispatch(setLocation(data.results[0].components));
+      const foundLocation = data.results;
+      for (let i = 0; i < data.results.length; i++) {
+        if (data.results[i].components.city) {
+          dispatch(setLocation(data.results[i].components));
+          break;
+        } else throw new Error("Location not found");
+      }
     } catch (error) {
       console.log(error);
     }
