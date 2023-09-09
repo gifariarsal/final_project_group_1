@@ -7,6 +7,61 @@ const loginValidator = [
     .matches(/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/)
     .withMessage("Password must contain 8 character, one uppercase, one number, and one special case character"),
 ]
+const changeNameValidator = [
+    body("newName").notEmpty().withMessage("Name cannot be empty")
+      .matches(/^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$/)
+      .withMessage("Name must contain at least 6 characters, one uppercase"),
+  ];
+
+  const changePasswordValidator = [
+    body("currentPassword").notEmpty().withMessage("Password cannot be empty"),
+    body("newPassword").notEmpty().withMessage("Password cannot be empty")
+    .matches(/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/)
+    .withMessage("Password must contain 8 character, one uppercase, one number, and one special case character"),
+    body("confirmPassword").custom((confirmPassword, {req}) => {
+      if(confirmPassword !== req.body.newPassword){
+        throw new Error("Password not match")
+      }
+      return true
+    })
+  ]
+
+  const changeEmailValidator = [
+    body("newEmail").notEmpty().withMessage("Email cannot be empty")
+    .isEmail().withMessage("Invalid email address format"),
+  ]
+  
+  const genderValidator = [
+    body("chooseGender").notEmpty().withMessage("Choose gender is required"),
+]
+
+  const birthdateValidator = [
+    body("newBirthdate").notEmpty().withMessage("Birthday is required"),
+]
+const createBranchAdmin = [
+  body("name").notEmpty().withMessage("Name is required"),
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/)
+    .withMessage(
+      "Password must be at least 8 characters, 1 symbol, and 1 uppercase"
+    ),
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords must match");
+      }
+      return true;
+    }),
+];
 
 const validateRegist = (req, res, next) => {
     const errors = validationResult(req);
@@ -17,4 +72,4 @@ const validateRegist = (req, res, next) => {
     next();
   };
 
-module.exports = {loginValidator, validateRegist}
+module.exports = {loginValidator,  changeEmailValidator, changeNameValidator, changePasswordValidator, birthdateValidator, genderValidator, createBranchAdmin, validateRegist}

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setBranchAdmin } from "./AdminReducer";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 const KEY = process.env.REACT_APP_KEY;
 
@@ -24,10 +25,11 @@ export const AuthReducer = createSlice({
   name: "AuthReducer",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      console.log("isi", action.payload);
-      const { id, username, name, birhdate, email, gender, profileimg, refcode, refby } = action.payload;
-      state.user = { id, username, name, birhdate, email, gender, profileimg, refcode, refby };
+    setUser : (state, action) => {
+      console.log("isi", action.payload)
+      const {id, username, name, birhdate, email, gender, profileimg, refcode, refby} = action.payload
+      state.user = {id, username, name, birhdate, email, gender, profileimg, refcode, refby}
+      state.login = true;
     },
     loginSuccess: (state, action) => {
       // state.user = {...action.payload};
@@ -130,11 +132,12 @@ export const keepLogin = () => {
     try {
       const respon = await axios.get(`${URL_API}/auth/keep`, {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch(setUser(respon.data.findUser));
-      dispatch(loginSuccess());
+          Authorization: `Bearer ${token}`
+        }
+      })
+      console.log(respon.data)
+      if (respon.data.findAdmin) dispatch(setBranchAdmin(respon.data.findAdmin))
+      if (respon.data.findUser) dispatch(setUser(respon.data.findUser))
     } catch (error) {
       console.log(error);
     }

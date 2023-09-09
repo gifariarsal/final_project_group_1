@@ -18,19 +18,13 @@ import Notfound from "./pages/Notfound";
 import Verify from "./pages/verify";
 import { setUserLocation } from "./redux/reducer/AuthReducer";
 import { useDispatch } from "react-redux";
+import UserProfile from "./components/landing/UserProfile";
+import { useSelector } from "react-redux";
 
 function App() {
-  const role = "";
+  const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
   const [userlocation, setUserlocation] = useState("");
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   (async () => {
-  //     const { data } = await axios.get(
-  //       `${process.env.REACT_APP_API_BASE_URL}/greetings`
-  //     );
-  //     setMessage(data?.message || "");
-  //   })();
-  // }, []);
 
   const fetchLocation = async () => {
     if (navigator.geolocation) {
@@ -70,7 +64,7 @@ function App() {
   };
 
   const adminRoutes = () => {
-    if (role === "2") {
+    if (role === 2) {
       return (
         <>
           <Route path="/admin/super" element={<SuperDashboard />} />
@@ -82,7 +76,7 @@ function App() {
   };
 
   const superadminRoutes = () => {
-    if (role === "1") {
+    if (role === 1) {
       return (
         <>
           <Route path="/admin/super" element={<SuperDashboard />} />
@@ -94,7 +88,7 @@ function App() {
   };
 
   const userRoutes = () => {
-    if (role === "3") {
+    if (role === 3) {
       return (
         <>
           <Route path="/shop" element={<Shop />} />
