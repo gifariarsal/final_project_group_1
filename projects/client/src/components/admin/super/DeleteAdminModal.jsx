@@ -41,10 +41,10 @@ const DeleteAdminModal = ({ isOpen, onClose, admin_id }) => {
     }
   };
 
-  const handleDelete = () => {
-    deleteBranchAdmin(admin_id);
+  const handleDelete = async () => {
+    await deleteBranchAdmin(admin_id);
     onClose();
-    dispatch(getBranchAdmin());
+    await dispatch(getBranchAdmin());
   };
 
   return (

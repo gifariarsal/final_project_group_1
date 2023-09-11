@@ -24,6 +24,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { createBranchAdmin } from "../../../redux/reducer/AdminReducer";
 import stateData from "../../../data/stateData.json";
+import { getBranchAdmin } from "../../../redux/reducer/AdminReducer";
 
 const AddBranchAdmin = ({ isOpen, onClose }) => {
   const [show, setShow] = useState(false);
@@ -80,6 +81,7 @@ const AddBranchAdmin = ({ isOpen, onClose }) => {
         setSubmitLoading(true);
         await dispatch(createBranchAdmin(values, toast, onClose, resetForm));
         setSubmitLoading(false);
+        await dispatch(getBranchAdmin());
       } catch (error) {
         console.error(error);
       }
