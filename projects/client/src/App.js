@@ -20,6 +20,7 @@ import { setUserLocation } from "./redux/reducer/AuthReducer";
 import { useDispatch } from "react-redux";
 import UserProfile from "./components/landing/UserProfile";
 import { useSelector } from "react-redux";
+import Cart from "./components/landing/cart";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -57,6 +58,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<AdminSignIn />} />
           <Route path="/verification/:token" element={<Verify />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<UserProfile />} />
         </>
       );
     }
