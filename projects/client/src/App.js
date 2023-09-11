@@ -46,7 +46,7 @@ function App() {
   }, []);
 
   const defaultRoutes = () => {
-    if (role === "") {
+    if (role === "" || role === "3") {
       return (
         <>
           <Route path="/" element={<UserLanding />} />
@@ -67,7 +67,6 @@ function App() {
     if (role === 2) {
       return (
         <>
-          <Route path="/admin/super" element={<SuperDashboard />} />
           <Route path="/admin/branch" element={<BranchDashboard />} />
         </>
       );
@@ -80,7 +79,6 @@ function App() {
       return (
         <>
           <Route path="/admin/super" element={<SuperDashboard />} />
-          <Route path="/admin/branch" element={<BranchDashboard />} />
         </>
       );
     }
@@ -94,6 +92,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/profile" element={<UserProfile />} />
         </>
       );
     }
