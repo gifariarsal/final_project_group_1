@@ -19,7 +19,7 @@ app.use(express.json());
 
 //#region API ROUTES
 const db = require("../models");
-const { authRouter, productRouter, storeRouter, adminRouter } = require("./router");
+const { authRouter, productRouter, storeRouter, adminRouter, categoryRouter } = require("./router");
 // db.sequelize.sync({ alter: true });
 
 // ===========================
@@ -29,6 +29,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/store", storeRouter);
+app.use("/api/category", categoryRouter);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
