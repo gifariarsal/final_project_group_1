@@ -64,6 +64,70 @@ export const getCategory = () => {
   };
 };
 
+export const deleteCategory = (id, toast) => {
+  return async () => {
+    try {
+      await axios.patch(`${URL_API}/category/deactivate/${id}`);
+      toast({
+        title: "Success",
+        description: "Category has been deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed",
+        description: error.response.data.message,
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.log(error);
+    }
+  };
+};
+
+export const editCategory = (id, values, toast, onClose, resetForm) => {
+  return async () => {
+    try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("category_img", values.image);
+
+      const response = await axios.patch(
+        `${URL_API}/category/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast({
+          title: "Category Updated",
+          description: "Category has been updated successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        resetForm();
+        onClose();
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+};
+
 export const { setCategory } = CategoryReducer.actions;
 
 export default CategoryReducer.reducer;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Flex, IconButton, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategory } from "../../../redux/reducer/CategoryReducer";
@@ -6,21 +6,20 @@ import {
   IoCreateOutline,
   IoTrashOutline,
 } from "react-icons/io5";
-const IMAGE_URL = process.env.REACT_APP_IMAGE_URL;
+import DeleteCategoryModal from "./DeleteCategoryModal";
+import getImage from "../../getImage/getImage";
+import EditCategoryModal from "./EditCategoryModal";
 
 const CategoryList = () => {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.CategoryReducer.category);
+  const [categoryId, setCategoryId] = useState(null);
   const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
-
-  const getImageUrl = (imagePath) => {
-    return `${IMAGE_URL}${imagePath}`;
-  };
 
   return (
     <Box px={8} py={4}>
@@ -41,7 +40,7 @@ const CategoryList = () => {
             w={"200px"}
           >
             <Image
-              src={getImageUrl(category.category_img)}
+              src={getImage(category.category_img)}
               alt={category.name}
               w={"100px"}
             />
@@ -62,6 +61,10 @@ const CategoryList = () => {
                 size={"md"}
                 colorScheme="green"
                 rounded={"full"}
+                onClick={() => {
+                  setCategoryId(category.id);
+                  onOpenEdit();
+                }}
               />
               <IconButton
                 variant={"ghost"}
@@ -70,11 +73,17 @@ const CategoryList = () => {
                 size={"md"}
                 colorScheme="red"
                 rounded={"full"}
+                onClick={() => {
+                  setCategoryId(category.id);
+                  onOpenDelete();
+                }}
               />
             </Box>
           </Box>
         ))}
       </Flex>
+      <DeleteCategoryModal isOpen={isOpenDelete} onClose={onCloseDelete} id={categoryId} />
+      <EditCategoryModal isOpen={isOpenEdit} onClose={onCloseEdit} id={categoryId} />
     </Box>
   );
 };
