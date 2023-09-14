@@ -28,7 +28,7 @@ export const AuthReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      console.log("isi", action.payload);
+      // console.log("isi", action.payload);
       const { id, username, name, birthdate, email, gender, profileimg, refcode, refby } = action.payload;
       state.user = { id, username, name, birthdate, email, gender, profileimg, refcode, refby };
       state.login = true;
@@ -97,7 +97,7 @@ export const registerUser = (value, toast) => {
   };
 };
 
-export const loginAuth = (values, setLoading, toast) => {
+export const loginAuth = (values, setLoading, toast, navigate) => {
   return async (dispatch) => {
     try {
       setLoading(true);
@@ -105,7 +105,6 @@ export const loginAuth = (values, setLoading, toast) => {
         email: values.email,
         password: values.password,
       });
-      console.log("ini respon", respon);
       // dispatch(setUser())
       const token = respon.data.token;
       localStorage.setItem("token", token);
@@ -117,6 +116,9 @@ export const loginAuth = (values, setLoading, toast) => {
         duration: 3000,
         isClosable: true,
       });
+      setTimeout(() => {
+        navigate("/")
+      }, 550)
     } catch (error) {
       console.log(error);
       toast({
@@ -141,7 +143,7 @@ export const keepLogin = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(respon.data);
+      // console.log(respon.data);
       if (respon.data.findAdmin) dispatch(setBranchAdmin(respon.data.findAdmin));
       if (respon.data.findUser) dispatch(setUser(respon.data.findUser));
     } catch (error) {

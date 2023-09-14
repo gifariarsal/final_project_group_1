@@ -19,10 +19,12 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
 import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutAuth, logoutSuccess } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
+  const { cart } = useSelector((state) => state.ProductReducer);
+  const cartLength = cart.reduce((total, item) => total + item.quantity, 0);
   const login = localStorage.getItem("token");
   const [cartItemCount, setCartItemCount] = useState(0);
   const location = useLocation();
@@ -123,12 +125,12 @@ const Navbar = () => {
                     bg="red"
                     color="white"
                     borderRadius="100%"
-                    width={`${cartItemCount.toString().length * 10 + 8}px`}
+                    width={`${cartLength.toString().length * 10 + 8}px`}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Text fontSize={"xs"}>{cartItemCount}</Text>
+                    <Text fontSize={"xs"}>{cartLength}</Text>
                   </Box>
                 </Flex>
               </Link>

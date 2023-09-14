@@ -14,11 +14,58 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Navbar from "./Navbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import Transactions from "./Transactions";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  addCart,
+  addToCart,
+  deleteFromCart,
+} from "../../redux/reducer/ProductReducer";
 export default function Cart() {
   const { login } = useSelector((state) => state.AuthReducer);
+  const { cart } = useSelector((state) => state.ProductReducer);
+  // const {total_harga}
+  const dispatch = useDispatch();
+  const inCart = async (products) => {
+    await dispatch(addToCart(products));
+
+    const cartData = {
+      total_price: calculateTotal(cart),
+      cartItems: cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+    await dispatch(addCart(cartData));
+  };
+
+  const calculateTotal = (cart) => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const [item, setItem] = useState([]);
+  const getItem = () => {
+    return async (dispatch) => {
+      try {
+        const fetchData = await axios.get(
+          "http://localhost:8000/api/product/item"
+        );
+        console.log(fetchData);
+        setItem(fetchData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  };
+
+  useEffect(() => {
+    getItem();
+  }, []);
   return (
     <>
       <Navbar />
@@ -35,49 +82,68 @@ export default function Cart() {
               <Text>Keranjang</Text>
             </Box>
             <Divider colorScheme="blackAlpha"></Divider>
-            <Card w={"800px"} ml={"100px"} boxShadow={"lg"}>
-              <CardBody>
-                <Box fontWeight={"bold"} mb={"24px"}>
-                  <Text>Click and Play</Text>
-                </Box>
-                <Flex>
-                  <Box w={"100px"} h={"100px"} bgColor={"gray"}>
-                    Image
-                  </Box>
-                  <Box ml={"32px"}>
-                    <Text>
-                      konektor converter usb type c to hdmi multiport macbook
-                      2016
-                    </Text>
-                    <Text fontWeight={"bold"}>Rp. 30.000</Text>
-                  </Box>
-                </Flex>
-              </CardBody>
-              <CardFooter>
-                <Flex justify={"space-between"}>
+            <Flex>
+              {cart.map((item) => {
+                return (
                   <Box>
-                    <IconButton
-                      color={"blackAlpha.600"}
-                      variant={""}
-                      icon={<IoTrashOutline size={"md"} />}
-                    />
+                    <Card
+                      w={"800px"}
+                      ml={"100px"}
+                      boxShadow={"lg"}
+                      key={item.id}
+                    >
+                      <CardBody>
+                        <Box fontWeight={"bold"} mb={"24px"}>
+                          <Text>Click and Play</Text>
+                        </Box>
+                        <Flex>
+                          <Box w={"100px"} h={"100px"} bgColor={"gray"}>
+                            Image
+                          </Box>
+                          <Box ml={"32px"}>
+                            <Text fontWeight={"bold"}>
+                              {item.Category?.name}
+                            </Text>
+                            <Text>{item.name}</Text>
+                            <Text fontWeight={"bold"}>Rp. {item.price}</Text>
+                          </Box>
+                        </Flex>
+                      </CardBody>
+                      <CardFooter>
+                        <Flex justify={"space-between"}>
+                          <Box>
+                            <IconButton
+                              color={"blackAlpha.600"}
+                              variant={""}
+                              icon={<IoTrashOutline size={"md"} />}
+                            />
+                          </Box>
+                          <Box ml={"600px"}>
+                            <ButtonGroup variant={"none"}>
+                              <IconButton
+                                color={"red"}
+                                icon={<AiOutlineMinusCircle />}
+                                onClick={() => dispatch(deleteFromCart(item))}
+                              ></IconButton>
+                              <Text fontSize={"2xl"}>{item.quantity}</Text>
+                              <IconButton
+                                color={"green"}
+                                icon={<AiOutlinePlusCircle />}
+                                onClick={() => inCart(item)}
+                              ></IconButton>
+                            </ButtonGroup>
+                          </Box>
+                        </Flex>
+                      </CardFooter>
+                    </Card>
                   </Box>
-                  <Box ml={"600px"}>
-                    <ButtonGroup variant={"none"}>
-                      <IconButton
-                        color={"red"}
-                        icon={<AiOutlineMinusCircle />}
-                      ></IconButton>
-                      <Text fontSize={"2xl"}>1</Text>
-                      <IconButton
-                        color={"green"}
-                        icon={<AiOutlinePlusCircle />}
-                      ></IconButton>
-                    </ButtonGroup>
-                  </Box>
-                </Flex>
-              </CardFooter>
-            </Card>
+                );
+              })}
+
+              <Box>
+                <Transactions />
+              </Box>
+            </Flex>
           </Stack>
         </Box>
       ) : (
