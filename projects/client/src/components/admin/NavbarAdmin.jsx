@@ -30,7 +30,15 @@ const NavbarAdmin = (props) => {
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             {props.title}
           </Text>
-          <Button onClick={handleLogout} color={"white"} bg={"brand.main"} _hover={{ bg: "brand.hover" }} _active={{ bg: "brand.active" }}>Logout</Button>
+          <Button
+            onClick={handleLogout}
+            variant={"ghost"}
+            color={"brand.main"}
+            _hover={{ bg: "gray.100" }}
+            _active={{ bg: "gray.300" }}
+          >
+            Logout
+          </Button>
         </Flex>
       </Box>
     </header>

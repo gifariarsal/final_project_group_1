@@ -5,8 +5,14 @@ const { Op } = db.Sequelize;
 const categoryController = {
   addCategory: async (req, res) => {
     try {
-      const { name, category_img } = req.body;
-      const categoryExist = await Category.findOne({ where: { name } });
+      const { name } = req.body;
+
+      // Check if a file has been uploaded
+      if (!req.file) {
+        return res.status(400).json({ message: "Category image is required" });
+      }
+
+      const categoryExist = await Category.findOne({ where: { name, isactive: true } });
       if (categoryExist) {
         return res.status(400).json({ message: "Category already exists" });
       }
@@ -19,6 +25,7 @@ const categoryController = {
         return res.status(200).json({ message: "Category added", newCategory });
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   },
@@ -40,31 +47,39 @@ const categoryController = {
 
   updateCategory: async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name } = req.body;
+      const { id } = req.params;
+      const { name } = req.body;
 
-        const updatedFields = { name };
+      const updatedFields = { name };
 
-        if (req.file) {
-          updatedFields.category_img = req.file.path;
-        }
+      if (req.file) {
+        updatedFields.category_img = req.file.path;
+      }
 
-        const categoryExist = await Category.findOne({ where: { name: name }, id: { [Op.ne]: id } });
+      const categoryExist = await Category.findOne({
+        where: { name: name },
+        id: { [Op.ne]: id },
+      });
 
-        if (categoryExist) {
-          return res.status(400).json({ message: "Category already exists" });
-        }
+      if (categoryExist) {
+        return res.status(400).json({ message: "Category already exists" });
+      }
 
-        const updatedCategory = await Category.findByPk(id);
-        if (!updatedCategory) {
-          return res.status(404).json({ message: "Category not found" });
-        }
+      const updatedCategory = await Category.findByPk(id);
+      if (!updatedCategory) {
+        return res.status(404).json({ message: "Category not found" });
+      }
 
-        await db.sequelize.transaction(async (t) => {
-          await updatedCategory.update( updatedFields, { where: { id: id } }, { transaction: t });
-          return res.status(200).json({ message: "Category updated", updatedCategory });
-        });
-
+      await db.sequelize.transaction(async (t) => {
+        await updatedCategory.update(
+          updatedFields,
+          { where: { id: id } },
+          { transaction: t }
+        );
+        return res
+          .status(200)
+          .json({ message: "Category updated", updatedCategory });
+      });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -83,7 +98,7 @@ const categoryController = {
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
-  }
+  },
 };
 
 module.exports = categoryController;

@@ -1,6 +1,7 @@
 require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const { join } = require("path");
 
 const PORT = process.env.PORT || 8000;
@@ -30,6 +31,7 @@ app.use("/api/product", productRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/store", storeRouter);
 app.use("/api/category", categoryRouter);
+app.use("/public", express.static(path.resolve(__dirname, "../public")));
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
