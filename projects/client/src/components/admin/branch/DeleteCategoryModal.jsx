@@ -1,9 +1,7 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useToast } from '@chakra-ui/react';
-import axios from 'axios';
 import React from 'react'
 import { useDispatch } from 'react-redux';
 import { deleteCategory, getCategory } from '../../../redux/reducer/CategoryReducer';
-const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const DeleteCategoryModal = ({ isOpen, onClose, id }) => {
     const dispatch = useDispatch();

@@ -50,7 +50,7 @@ const EditCategoryModal = ({ isOpen, onClose, id }) => {
       <ModalContent>
         <ModalHeader>
           <Text fontSize={"xl"} fontWeight={700}>
-            Edit New Category
+            Edit Category
           </Text>
         </ModalHeader>
         <ModalCloseButton />

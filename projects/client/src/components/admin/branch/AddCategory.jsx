@@ -17,10 +17,8 @@ import {
 import React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addCategory, getCategory } from "../../../redux/reducer/CategoryReducer";
-const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const AddCategory = ({ isOpen, onClose }) => {
   const toast = useToast();

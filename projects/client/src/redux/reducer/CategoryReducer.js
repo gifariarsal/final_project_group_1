@@ -64,6 +64,17 @@ export const getCategory = () => {
   };
 };
 
+export const getCategoryById = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${URL_API}/category/${id}`);
+      dispatch(setCategory(response.data.category));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export const deleteCategory = (id, toast) => {
   return async () => {
     try {
