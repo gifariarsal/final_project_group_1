@@ -7,25 +7,39 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCart } from "../../redux/reducer/CartReducer";
 
 export default function Transactions() {
-  const { totalHarga, cart } = useSelector((state) => state.ProductReducer);
-  const cartLength = cart.reduce((total, item) => total + item.quantity, 0);
+  const { carts, item } = useSelector((state) => state.CartReducer);
+  const { totalHarga } = useSelector((state) => state.ProductReducer);
+  let price = 0;
+  {
+    carts.map((cart) => {
+      price += cart.total_price;
+    });
+  }
+  console.log("harga", price);
+  const cartLength = item.reduce((total, item) => total + item.quantity, 0);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCart());
+  }, []);
   return (
     <>
       <Box ml={"24px"}>
-        {cart.map((item) => {
+        {item.map((item) => {
           return (
             <Box>
               <Card key={item.key}>
                 <CardBody>
-                  <Text fontWeight={"bold"}>Ringkasan Belanja</Text>
+                  <Text fontWeight={"bold"}>Shopping Summary</Text>
                   <Divider />
-                  <Text>Harga barang Rp. {item.price}</Text>
-                  <Text>Total Barang : {cartLength}</Text>
+                  <Text>Product price Rp. {item.price}</Text>
+                  <Text>Total products: {cartLength}</Text>
                   <Divider mt={"20px"} bgColor={"black"} />
-                  <Text fontWeight={"bold"}>Total Harga : {totalHarga}</Text>
+                  <Text fontWeight={"bold"}>Total price : Rp. {price}</Text>
                   <CardFooter mt={"24px"}>
                     <Button w={"200px"} isDisabled={cartLength <= 0}>
                       Checkout
@@ -36,7 +50,6 @@ export default function Transactions() {
             </Box>
           );
         })}
-        ;
       </Box>
     </>
   );

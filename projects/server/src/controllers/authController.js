@@ -12,6 +12,7 @@ require("dotenv").config({
   path: path.resolve("../.env"),
 });
 
+
 const transporter  = require("../helpers/transporter");
 
 const createRefCode = (length = 8) => {
@@ -106,7 +107,8 @@ const authController = {
         return res.status(200).json({ message: "Still Login", findAdmin });
       }
       const findUser = await User.findOne({ where: { id } });
-      return res.status(200).json({ message: "Still Login", findUser });
+      const token = jwt.sign({findUser}, process.env.JWT_KEY)
+      return res.status(200).json({ message: "Still Login", findUser, token : token });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

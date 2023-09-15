@@ -14,30 +14,6 @@ export const ProductReducer = createSlice({
   name: "ProductReducer",
   initialState,
   reducers: {
-    addToCart : (state, action) => {
-      const {id} = action.payload
-      console.log("redux cart => ", action.payload)
-      console.log("carts ", state.cart)
-      const existCart = state.cart.findIndex((item) => item.id === id)
-      if(existCart !== -1){
-        state.cart[existCart].quantity += 1
-      }else {
-        state.cart.push({ ...action.payload, quantity : 1})
-      }
-      state.totalHarga += action.payload.price
-    },
-    deleteFromCart: (state, action) => {
-      const { id } = action.payload;
-
-      const existCart = state.cart.findIndex((item) => item.id === id);
-      if (existCart !== -1) {
-        console.log("=>", state.cart[existCart].quantity);
-        if (state.cart[existCart].quantity > 0) {
-          state.cart[existCart].quantity -= 1;
-          state.totalHarga -= action.payload.price;
-        }
-      }
-    },
     setProduct: (state, action) => {
       state.product = [...action.payload];
     },
@@ -73,24 +49,7 @@ export const getStoreProduct = ({ userLocation, lat, lon }) => {
     }
   };
 };
-export const addCart = (cartData) => {
-  return async (dispatch) => {
-    console.log("cartData => ", cartData)
-    const total_price = cartData.total_price
-    console.log("price ", total_price)
-    const token = localStorage.getItem("token")
-    try {
-      const result = await axios.patch("http://localhost:8000/api/product/cart", {total_price}, 
-      {
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-}
 
-export const { setProduct, setStore_id, addToCart, deleteFromCart } = ProductReducer.actions;
+
+export const { setProduct, setStore_id } = ProductReducer.actions;
 export default ProductReducer.reducer;

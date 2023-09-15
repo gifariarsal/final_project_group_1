@@ -15,33 +15,24 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductListItem from "./ProductListItem";
 import { Pagination } from "../components/Pagination";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { addCart, addToCart } from "../../redux/reducer/ProductReducer";
+import { addCart, addToCart } from "../../redux/reducer/CartReducer";
+import Swal from "sweetalert2";
 
 const ProductList = () => {
   const products = useSelector((state) => state.ProductReducer.product);
   const [index, setIndex] = useState(1);
-  const { page, cart } = useSelector((state) => state.ProductReducer);
+  const { page, cart, totalHarga } = useSelector(
+    (state) => state.ProductReducer
+  );
+
   const dispatch = useDispatch();
 
   const inCart = async (products) => {
     await dispatch(addToCart(products));
-
-    const cartData = {
-      total_price: calculateTotal(cart),
-      cartItems: cart.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    };
-    await dispatch(addCart(cartData));
+    await dispatch(addCart(products, Swal));
   };
 
-  const calculateTotal = (cart) => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
-
-  useEffect(() => {}, [index]);
+  useEffect(() => {}, [index, cart]);
 
   if (products.length < 1) {
     return (
@@ -77,9 +68,7 @@ const ProductList = () => {
           </Card>
         ))}
       </Flex>
-      <Pagination
-      // page={page} index={index} setIndex={setIndex}
-      />
+      <Pagination />
     </Box>
   );
 };

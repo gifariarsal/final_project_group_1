@@ -145,7 +145,8 @@ export const keepLogin = () => {
       });
       // console.log(respon.data);
       if (respon.data.findAdmin) dispatch(setBranchAdmin(respon.data.findAdmin));
-      if (respon.data.findUser) dispatch(setUser(respon.data.findUser));
+      if (respon.data.findUser)  dispatch(setUser(respon.data.findUser));
+        
     } catch (error) {
       console.log(error);
     }

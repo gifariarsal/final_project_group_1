@@ -12,6 +12,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,47 +25,32 @@ import {
   addCart,
   addToCart,
   deleteFromCart,
-} from "../../redux/reducer/ProductReducer";
+  deleteItem,
+  getCart,
+  getItem,
+} from "../../redux/reducer/CartReducer";
 export default function Cart() {
   const { login } = useSelector((state) => state.AuthReducer);
-  const { cart } = useSelector((state) => state.ProductReducer);
+  const { cart, carts, item } = useSelector((state) => state.CartReducer);
+  const toast = useToast();
   // const {total_harga}
   const dispatch = useDispatch();
   const inCart = async (products) => {
     await dispatch(addToCart(products));
-
-    const cartData = {
-      total_price: calculateTotal(cart),
-      cartItems: cart.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    };
-    await dispatch(addCart(cartData));
+    await dispatch(addCart(products));
+    await dispatch(getItem());
+    await dispatch(getCart());
   };
 
-  const calculateTotal = (cart) => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
-
-  const [item, setItem] = useState([]);
-  const getItem = () => {
-    return async (dispatch) => {
-      try {
-        const fetchData = await axios.get(
-          "http://localhost:8000/api/product/item"
-        );
-        console.log(fetchData);
-        setItem(fetchData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const outCart = async (products) => {
+    await dispatch(deleteFromCart(products));
+    await dispatch(deleteItem(products));
+    await dispatch(getItem());
+    await dispatch(getCart());
   };
 
   useEffect(() => {
-    getItem();
+    dispatch(getItem());
   }, []);
   return (
     <>
@@ -79,18 +65,18 @@ export default function Cart() {
               fontWeight={"bold"}
               fontFamily={"montserrat"}
             >
-              <Text>Keranjang</Text>
+              <Text>Cart</Text>
             </Box>
             <Divider colorScheme="blackAlpha"></Divider>
             <Flex>
-              {cart.map((item) => {
+              {item.map((products) => {
                 return (
                   <Box>
                     <Card
                       w={"800px"}
                       ml={"100px"}
                       boxShadow={"lg"}
-                      key={item.id}
+                      key={products.id}
                     >
                       <CardBody>
                         <Box fontWeight={"bold"} mb={"24px"}>
@@ -101,11 +87,10 @@ export default function Cart() {
                             Image
                           </Box>
                           <Box ml={"32px"}>
+                            <Text>{products.name}</Text>
                             <Text fontWeight={"bold"}>
-                              {item.Category?.name}
+                              Rp. {products.price}
                             </Text>
-                            <Text>{item.name}</Text>
-                            <Text fontWeight={"bold"}>Rp. {item.price}</Text>
                           </Box>
                         </Flex>
                       </CardBody>
@@ -123,13 +108,14 @@ export default function Cart() {
                               <IconButton
                                 color={"red"}
                                 icon={<AiOutlineMinusCircle />}
-                                onClick={() => dispatch(deleteFromCart(item))}
+                                isDisabled={products.quantity === 1}
+                                onClick={() => outCart(products)}
                               ></IconButton>
-                              <Text fontSize={"2xl"}>{item.quantity}</Text>
+                              <Text fontSize={"2xl"}>{products.quantity}</Text>
                               <IconButton
                                 color={"green"}
                                 icon={<AiOutlinePlusCircle />}
-                                onClick={() => inCart(item)}
+                                onClick={() => inCart(products)}
                               ></IconButton>
                             </ButtonGroup>
                           </Box>
