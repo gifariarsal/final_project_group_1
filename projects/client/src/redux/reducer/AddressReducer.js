@@ -4,6 +4,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
   address: [],
+  userAddress: [],
 };
 
 export const AddressReducer = createSlice({
@@ -13,6 +14,9 @@ export const AddressReducer = createSlice({
     setAddress: (state, action) => {
       state.address = [...action.payload];
     },
+    setUserAddress: (state, action) => {
+      state.userAddress = [...action.payload];
+    }
   },
 });
 
@@ -45,6 +49,17 @@ export const addAddress = (fullAddress, id, latitude, longitude, toast, onClose)
   };
 };
 
-export const { setAddress } = AddressReducer.actions;
+export const getAddress = (id) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_API}/address/${id}`);
+      dispatch(setUserAddress(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export const { setAddress, setUserAddress } = AddressReducer.actions;
 
 export default AddressReducer.reducer;

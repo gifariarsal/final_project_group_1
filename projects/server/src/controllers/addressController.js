@@ -29,11 +29,12 @@ const addressController = {
 
   getAddress: async (req, res) => {
     try {
-      const addressId = req.params.id;
+      const id = req.params.id;
       const userAddress = await UserAddress.findAll({
-        where: { id: addressId, isactive: true },
+        where: { user_id: id, isactive: true },
         attributes: { exclude: ["createdAt", "updatedAt"] },
       });
+      return res.status(200).json({ message: "Successfully retrieved", data: userAddress });
     } catch (error) {
       return res.status(500).json({ message: "Failed to get address" });
     }
@@ -64,18 +65,14 @@ const addressController = {
 
   deleteAddress: async (req, res) => {
     try {
-      const addressId = req.params.id;
-      const addressToDelete = await UserAddress.findByPk(addressId);
-
-      if (!addressToDelete) {
-        return res.status(404).json({ message: "Address not found" });
-      }
-
-      // Metode soft delete: Set isactive menjadi false
-      addressToDelete.isactive = false;
-      await addressToDelete.save();
-
-      return res.status(204).send();
+      const { id } = req.params;
+      await db.sequelize.transaction(async (t) => {
+        await UserAddress.update(
+          { isactive: false },
+          { where: { id: id }, transaction: t }
+        );
+        return res.status(200).json({ message: "Address deleted" });
+      });
     } catch (error) {
       return res.status(500).json({ message: "Failed to delete address" });
     }

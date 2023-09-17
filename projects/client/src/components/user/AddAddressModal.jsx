@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAddress } from "../../redux/reducer/AddressReducer";
+import { addAddress, getAddress } from "../../redux/reducer/AddressReducer";
 const API_KEY = process.env.REACT_APP_RO_KEY;
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 const KEY = process.env.REACT_APP_KEY;
@@ -34,6 +34,7 @@ const AddAddressModal = ({ isOpen, onClose }) => {
   const [district, setDistrict] = useState("");
   const [selectedProvinceData, setSelectedProvinceData] = useState(null);
   const [streetAddress, setStreetAddress] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const { user } = useSelector((state) => state.AuthReducer);
 
@@ -95,10 +96,13 @@ const AddAddressModal = ({ isOpen, onClose }) => {
 
   const onSubmit = async () => {
     if (selectedProvince && selectedCity && district && streetAddress) {
+      setSubmitLoading(true);
       await saveAddressData();
-      dispatch(
+      await dispatch(
         addAddress(fullAddress, id, latitude, longitude, toast, onClose)
       );
+      await dispatch(getAddress(id));
+      setSubmitLoading(false);
       resetFormValues();
     }
   };
@@ -194,6 +198,7 @@ const AddAddressModal = ({ isOpen, onClose }) => {
             color={"white"}
             bgColor={"brand.main"}
             onClick={onSubmit}
+            isLoading={submitLoading}
             isDisabled={
               !(selectedProvince && selectedCity && district && streetAddress)
             }
