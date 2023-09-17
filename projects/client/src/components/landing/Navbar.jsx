@@ -19,7 +19,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
 import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutAuth } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
@@ -30,6 +30,7 @@ const Navbar = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.AuthReducer);
   function onKlik() {
     dispatch(logoutAuth(toast));
   }
@@ -142,11 +143,14 @@ const Navbar = () => {
                       cursor={"pointer"}
                       minW={0}
                     >
-                      <Avatar size={"sm"} name="User" src={"/profile"} />
+                      <Avatar size={"sm"} name={user.username} src={"/profile"} />
                     </MenuButton>
                     <MenuList>
                       <Link to={"/profile"}>
                         <MenuItem>Profile</MenuItem>
+                      </Link>
+                      <Link to={"/address"}>
+                        <MenuItem>Manage Address</MenuItem>
                       </Link>
                       <Link to={"/change-password"}>
                         <MenuItem>Change Password</MenuItem>

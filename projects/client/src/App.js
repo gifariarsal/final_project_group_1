@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import Cart from "./components/landing/cart";
 import Product from "./pages/Product";
 import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
+import Address from "./pages/user/Address";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -100,6 +101,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="address" element={<Address />} />
         </>
       );
     }
