@@ -49,8 +49,9 @@ function App() {
 
   useEffect(() => {
     fetchLocation();
+    if (!location) dispatch(getProduct({}));
+    if (location) dispatch(getStoreProduct({ location, lon, lat }));
   }, []);
-
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
       return (

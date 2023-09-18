@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const db = require("../../models");
+const { check } = require("express-validator");
 const { Product, Category, Store, ProductStore } = db;
 
 let includeStore = [{ model: Store, attributes: { exclude: ["createdAt", "updatedAt"] }, where: { isactive: true } }];
@@ -143,6 +144,53 @@ const productController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getProductDetail: async (req, res) => {
+    try {
+      const { id } = req.query;
+      const product = await Product.findOne({
+        where: { id },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "category_id"],
+        },
+        include: includeCategory,
+      });
+      res.status(200).json({ data: product });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getProductStock: async (req, res) => {
+    try {
+      const { id, store_id } = req.query;
+      if (!store_id) return productController.getProductDetail(req, res);
+      const product = await ProductStore.findOne({
+        where: { store_id, product_id: id },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "product_id", "store_id"],
+        },
+        include: [...includeProductStore, ...includeStore],
+      });
+      res.status(200).json({ data: product });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  getStoreProduct: async (req, res) => {
+    try {
+      const { id } = req.query;
+      const product = await ProductStore.findAll({
+        where: { product_id: id },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "product_id", "store_id"],
+        },
+        include: [...includeProductStore, ...includeStore],
+      });
+      res.status(200).json({ data: product });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },  
 };
 
 module.exports = productController;

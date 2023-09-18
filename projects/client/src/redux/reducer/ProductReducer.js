@@ -31,6 +31,15 @@ export const ProductReducer = createSlice({
     setStoreStock: (state, action) => {
       state.storeStock = [...action.payload];
     },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setProductDetail: (state, action) => {
+      state.productDetail = action.payload;
+    },
+    setStoreStock: (state, action) => {
+      state.storeStock = [...action.payload];
+    },
   },
 });
 
