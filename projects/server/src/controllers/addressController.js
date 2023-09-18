@@ -95,13 +95,17 @@ const addressController = {
 
   setPrimaryAddress: async (req, res) => {
     try {
-      const addressId = req.params.id;
+      const { id } = req.params;
 
-      const addressToSetPrimary = await UserAddress.findByPk(addressId);
+      const addressToSetPrimary = await UserAddress.findByPk(id);
 
       if (!addressToSetPrimary) {
         return res.status(404).json({ message: "Address not found" });
       }
+
+      if (addressToSetPrimary.isdefault) {
+      return res.status(400).json({ message: "Address is already set as default" });
+    }
 
       await UserAddress.update(
         { isdefault: false },

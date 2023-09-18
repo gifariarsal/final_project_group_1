@@ -7,21 +7,41 @@ import {
   Stack,
   IconButton,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
 import Navbar from "../../components/landing/Navbar";
 import AddAddressModal from "../../components/user/AddAddressModal";
-import { IoAddOutline, IoTrashOutline, IoCreateOutline } from "react-icons/io5";
+import {
+  IoAddOutline,
+  IoTrashOutline,
+  IoCreateOutline,
+  IoStar,
+  IoStarOutline,
+} from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddress } from "../../redux/reducer/AddressReducer";
+import {
+  getAddress,
+  setPrimaryAddress,
+} from "../../redux/reducer/AddressReducer";
 import DeleteAddressModal from "../../components/user/DeleteAddressModal";
 import EditAddressModal from "../../components/user/EditAddressModal";
+import { setUserLocation } from "../../redux/reducer/AuthReducer";
 
 function Address() {
   const [addressToDeleteId, setAddressToDeleteId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
-  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+  } = useDisclosure();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const { user } = useSelector((state) => state.AuthReducer);
 
@@ -29,7 +49,21 @@ function Address() {
 
   useEffect(() => {
     dispatch(getAddress(id));
-  }, [dispatch]);
+  }, []);
+
+  const handleDefault = async (address_id) => {
+    const defaultAddress = userAddress.find((address) => address.isdefault);
+
+    if (!defaultAddress) {
+      return;
+    }
+
+    const { latitude, longitude } = defaultAddress;
+
+    await dispatch(setPrimaryAddress(address_id, toast));
+    await dispatch(setUserLocation(latitude, longitude));
+    await dispatch(getAddress(id));
+  };
 
   const userAddress = useSelector((state) => state.AddressReducer.userAddress);
 
@@ -59,7 +93,10 @@ function Address() {
           </Button>
         </Box>
         <Box mt={8}>
-          <Stack spacing={4}>
+          <Text color={"gray.400"} fontStyle={"italic"}>
+            Click star to set address as default
+          </Text>
+          <Stack mt={2} spacing={4}>
             {userAddress.map((address) => (
               <Box
                 key={address.id}
@@ -69,8 +106,22 @@ function Address() {
                 boxShadow="md"
               >
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Text>{address.address}</Text>
-                  <Box>
+                  <Box display={"flex"} alignItems={"center"} gap={4}>
+                    <Text>{address.address}</Text>
+                  </Box>
+                  <Box gap={4}>
+                    <IconButton
+                      variant={"ghost"}
+                      icon={address.isdefault ? <IoStar /> : <IoStarOutline />}
+                      size={"md"}
+                      colorScheme="yellow"
+                      rounded={"full"}
+                      onClick={() => {
+                        if (!address.isdefault) {
+                          handleDefault(address.id);
+                        }
+                      }}
+                    />
                     <IconButton
                       variant={"ghost"}
                       icon={<IoCreateOutline />}
@@ -108,7 +159,11 @@ function Address() {
         onClose={onCloseDelete}
         address_id={addressToDeleteId}
       />
-      <EditAddressModal isOpen={isOpenEdit} onClose={onCloseEdit} address_id={addressToDeleteId} />
+      <EditAddressModal
+        isOpen={isOpenEdit}
+        onClose={onCloseEdit}
+        address_id={addressToDeleteId}
+      />
     </Box>
   );
 }

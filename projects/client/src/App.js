@@ -22,13 +22,24 @@ import UserProfile from "./components/landing/UserProfile";
 import { useSelector } from "react-redux";
 import Cart from "./components/landing/cart";
 import Product from "./pages/Product";
-import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
+import {
+  getProduct,
+  getStoreProduct,
+  getStore_id,
+} from "./redux/reducer/ProductReducer";
 import Address from "./pages/user/Address";
+import { getAddress, setPrimaryAddress } from "./redux/reducer/AddressReducer";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
   const { location, lon, lat } = useSelector((state) => state.AuthReducer);
+  const { userAddress, defaultAddress } = useSelector(
+    (state) => state.AddressReducer
+  );
+  const { user } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
+
+  console.log(defaultAddress);
 
   const fetchLocation = () => {
     if (navigator.geolocation) {
@@ -46,11 +57,34 @@ function App() {
       console.log("Geolocation not supported");
     }
   };
+
+  const defaultUserAddress = async () => {
+    const defaultAddress = userAddress.find((address) => address.isdefault);
+
+    if (!defaultAddress) {
+      return;
+    }
+
+    const { latitude, longitude } = defaultAddress;
+
+    // await dispatch(setPrimaryAddress(address_id, toast));
+    await dispatch(setUserLocation(latitude, longitude));
+    await dispatch(getAddress(user.id));
+  };
+
   useEffect(() => {
-    fetchLocation();
+    if (user) {
+      dispatch(getAddress(user.id));
+      defaultUserAddress();
+    }
+    if (userAddress.length > 0) {
+      defaultUserAddress();
+    }
+    if (userAddress.length < 1) fetchLocation();
     if (!location) dispatch(getProduct({}));
     if (location) dispatch(getStoreProduct({ location, lon, lat }));
-  }, []);
+  }, [user]);
+
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
       return (
