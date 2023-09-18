@@ -41,7 +41,7 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(getItem());
-  }, []);
+  }, [item]);
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (

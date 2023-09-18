@@ -108,12 +108,15 @@ export const addCart = (products, Swal) => {
 
 export const deleteItem = (products) => {
   return async (dispatch) => {
+    console.log("del ", products)
+    console.log("del ", products.id)
+    console.log("del id ", products.product_id)
     const token = localStorage.getItem("token");
     const total_price = products.price;
     try {
       const response = await axios.patch(
         `${URL_API}/cart/item`,
-        { productId: products.id, total_price },
+        { productId: products.product_id, total_price },
         {
           headers: {
             Authorization: `Bearer ${token}`,

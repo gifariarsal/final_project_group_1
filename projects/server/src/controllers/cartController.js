@@ -47,6 +47,7 @@ const cartController = {
     try {
       const { id } = req.user;
       const { total_price, cartId, productId } = req.body;
+      console.log("cart back product Id", productId)
       const checkCart = await cart.findOne({ where: { user_id: id } });
       console.log("cart back remove => ", checkCart);
       const checkProduct = await product.findOne({ where: { id: productId } });
