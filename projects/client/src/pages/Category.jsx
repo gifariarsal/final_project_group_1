@@ -1,26 +1,23 @@
-import { Box, Button, Center, Flex, HStack, Heading, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import Navbar from "../components/landing/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import ProductListItem from "./ProductListItem";
-import { Pagination } from "../components/Pagination";
-import { getProduct, getStoreProduct } from "../../redux/reducer/ProductReducer";
-import SearchProducts from "../components/SearchProducts";
-import { MdFilterList } from "react-icons/md";
+import { getProduct, getStoreProduct } from "../redux/reducer/ProductReducer";
+import { Pagination } from "../components/components/Pagination";
+import ProductListItem from "../components/landing/ProductListItem";
+import SearchProducts from "../components/components/SearchProducts";
 
-const ProductList = () => {
+const Category = () => {
   const products = useSelector((state) => state.ProductReducer.product);
   const { store } = useSelector((state) => state.ProductReducer);
   const [orderBy, setOrderBy] = useState("name");
   const [order, setOrder] = useState("ASC");
   const { location, lon, lat } = useSelector((state) => state.AuthReducer);
   const { page } = useSelector((state) => state.ProductReducer);
-  const [index, setIndex] = useState(1);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!location) dispatch(getProduct({ index, orderBy, order }));
-    if (location) dispatch(getStoreProduct({ location, lon, lat, index, orderBy, order }));
-  }, [index, location, orderBy, order]);
+  const [index, setIndex] = useState(1);
+  const pathname = window.location.pathname.split("/");
+  const id = pathname[pathname.length - 1];
 
   const handleOrderBy = () => {
     setOrderBy(orderBy === "name" ? "price" : "name");
@@ -29,14 +26,20 @@ const ProductList = () => {
     setOrder(order === "ASC" ? "DESC" : "ASC");
   };
 
+  useEffect(() => {
+    if (!location) dispatch(getProduct({ category: id, orderBy, order }));
+    if (location) dispatch(getStoreProduct({ location, lon, lat, orderBy, order, category: id }));
+  }, [index, orderBy, order, location]);
+
   if (products.length < 1) {
     return (
-      <Box w={"100%"} py={"40px"} px={{ base: "60px", lg: "100px" }}>
-        <Center>
+      <Box w={"100%"}>
+        <Navbar />
+
+        <Center mt={4}>
           <Stack mb={10} align={"center"}>
-            <Heading as={"h2"}>Anda Sedang Melihat {store ? store : "Produk Semua Cabang"}</Heading>
+            <Heading mb={4}>Category</Heading>
             <Flex gap={2}>
-              <SearchProducts />
               <Button onClick={handleOrderBy} gap={2}>
                 <Text>Order By: </Text>
                 {orderBy === "name" ? "name" : "Price"}
@@ -54,24 +57,23 @@ const ProductList = () => {
       </Box>
     );
   }
-
   return (
-    <Box w={"100%"} py={"40px"} px={{ base: "60px", lg: "100px" }}>
+    <Box w={"100%"}>
+      <Navbar />
+      <Center mt={4}>
+        <Heading mb={4}>Category</Heading>
+      </Center>
       <Center>
-        <Stack mb={10} align={"center"}>
-          <Heading as={"h2"}>Anda Sedang Melihat {store ? store : "Produk Semua Cabang"}</Heading>
-          <Flex gap={2}>
-            <SearchProducts />
-            <Button onClick={handleOrderBy} gap={2}>
-              <Text>Order By: </Text>
-              {orderBy === "name" ? "name" : "Price"}
-            </Button>
-            <Button onClick={handleOrder} gap={2}>
-              <Text>Order: </Text>
-              {order === "ASC" ? "Ascending" : "Descending"}
-            </Button>
-          </Flex>
-        </Stack>
+        <Flex gap={2}>
+          <Button onClick={handleOrderBy} gap={2}>
+            <Text>Order By: </Text>
+            {orderBy === "name" ? "name" : "Price"}
+          </Button>
+          <Button onClick={handleOrder} gap={2}>
+            <Text>Order: </Text>
+            {order === "ASC" ? "Ascending" : "Descending"}
+          </Button>
+        </Flex>
       </Center>
       <Flex gap={{ base: 4, md: 8 }} w={"80%"} justifyContent={"center"}>
         {products.map((product) => (
@@ -83,4 +85,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default Category;

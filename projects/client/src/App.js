@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import Cart from "./components/landing/cart";
 import Product from "./pages/Product";
 import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
+import Category from "./pages/Category";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -45,11 +46,11 @@ function App() {
       console.log("Geolocation not supported");
     }
   };
+
   useEffect(() => {
     fetchLocation();
-    if (!location) dispatch(getProduct({}));
-    if (location) dispatch(getStoreProduct({ location, lon, lat }));
   }, []);
+
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
       return (
@@ -64,6 +65,7 @@ function App() {
           <Route path="/verification/:token" element={<Verify />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/*" element={<Product />} />
+          <Route path="/category/*" element={<Category />} />
         </>
       );
     }
