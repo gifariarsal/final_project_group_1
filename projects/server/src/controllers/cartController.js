@@ -9,12 +9,12 @@ const cartController = {
       const { id } = req.user;
       const { total_price, cartId, productId } = req.body;
       const checkCart = await cart.findOne({ where: { user_id: id } });
-      console.log("cart back => ", checkCart);
+      // console.log("cart back => ", checkCart);
       console.log(productId);
       const checkProduct = await product.findOne({ where: { id: productId } });
-      console.log("backend product => ", checkProduct);
+      // console.log("backend product => ", checkProduct);
       const totalPrice = (checkCart.total_price += checkProduct.price);
-      console.log("total_price db => ", totalPrice);
+      // console.log("total_price db => ", totalPrice);
       const checkItem = await items.findOne({ where: { product_id: checkProduct.id } });
       await db.sequelize.transaction(async (t) => {
         const result = await cart.update({ total_price: totalPrice }, { where: { user_id: id } }, { transaction: t });
@@ -26,7 +26,7 @@ const cartController = {
             checkItem.quantity += 1;
           }
           checkItem.save();
-          console.log("quantity ", checkItem.quantity);
+          // console.log("quantity ", checkItem.quantity);
           return res.status(200).json({ message: "Success" });
         } else {
           const addItem = await items.create({
@@ -71,6 +71,26 @@ const cartController = {
       });
     } catch (error) {
       return res.status(500).json({ message: "Failed", error: error.message });
+    }
+  },
+  removeFromCart : async(req, res) => {
+    try {
+      const {id} = req.user
+      const {productId} = req.params
+      console.log("id remove", productId)
+      const checkCart = await cart.findOne({where : {user_id: id}})
+      console.log("back delete cart ", checkCart)
+      const checkProduct = await product.findOne({where : {id : productId}})
+      console.log("id ", checkProduct)
+      const totalPrice = (checkCart.total_price -= checkProduct.price)
+      console.log("price yang di hilangkan ", totalPrice)
+      const checkItem = await items.findOne({where : {product_id : checkProduct.id}})
+      console.log("check item delete ", checkItem)
+
+      return res.status(200).json({message : "Success"})
+
+    } catch (error) {
+      return res.status(500).json({message : "Failed", error : error.message})
     }
   },
   getItemsCart: async (req, res) => {

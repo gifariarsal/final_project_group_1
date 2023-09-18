@@ -26,6 +26,8 @@ import {
   addToCart,
   deleteFromCart,
   deleteItem,
+  deleteItemCart,
+  deleteItemFromCart,
   getCart,
   getItem,
 } from "../../redux/reducer/CartReducer";
@@ -50,6 +52,11 @@ export default function Cart() {
     await dispatch(deleteItem(products));
     await dispatch(getItem());
     await dispatch(getCart());
+  };
+
+  const destroy = async (products) => {
+    await dispatch(deleteItemCart(products));
+    await dispatch(deleteItemFromCart(products));
   };
 
   useEffect(() => {
@@ -107,6 +114,7 @@ export default function Cart() {
                                 color={"blackAlpha.600"}
                                 variant={""}
                                 icon={<IoTrashOutline size={"md"} />}
+                                onClick={() => destroy(products)}
                               />
                             </Box>
                             <Box ml={"600px"}>

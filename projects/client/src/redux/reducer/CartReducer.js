@@ -46,6 +46,17 @@ export const CartReducer = createSlice({
         }
       }
     },
+    deleteItemCart : (state, action) => {
+      console.log("dele", action.payload)
+      const {id} = action.payload
+      console.log("isi del",id)
+      const existCart = state.cart.findIndex((item) => item.id === id);
+      if (existCart !== -1) {
+        console.log("sampe")
+        state.totalHarga -= action.payload.harga_produk * state.cart[existCart].quantity;
+        state.cart.splice(existCart, 1);
+      }
+    }
   },
 });
 export const getItem = () => {
@@ -85,7 +96,7 @@ export const addCart = (products, Swal) => {
   return async (dispatch) => {
     const dataProduct = products.Product || products;
     const total_price = dataProduct.price;
-    console.log("data", dataProduct);
+    // console.log("data", dataProduct);
     const productId = dataProduct.product_id || dataProduct.id;
     console.log("id", productId);
     const token = localStorage.getItem("token");
@@ -129,5 +140,29 @@ export const deleteItem = (products) => {
   };
 };
 
-export const { addToCart, deleteFromCart, setItem, setCarts } = CartReducer.actions;
+export const deleteItemFromCart = (products) => {
+  return async (dispatch) => {
+    console.log("delete from",products)
+    const dataProduct = products.Product || products
+    console.log("data delete", dataProduct)
+    const total_price = dataProduct.price
+    console.log("price delete", total_price)
+    const productId = dataProduct.product_id || dataProduct.id
+    console.log("id delete", productId)
+    const token = localStorage.getItem("token")
+    try {
+      const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, 
+      {
+        headers : {
+          Authorization : `Bearer ${token}`
+        }
+      })
+      alert("Done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
+export const { addToCart, deleteFromCart, setItem, setCarts, deleteItemCart } = CartReducer.actions;
 export default CartReducer.reducer;
