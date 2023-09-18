@@ -5,26 +5,22 @@ import {
   Text,
   useDisclosure,
   Stack,
-  Center,
-  VStack,
-  HStack,
   IconButton,
   Flex,
 } from "@chakra-ui/react";
 import Navbar from "../../components/landing/Navbar";
 import AddAddressModal from "../../components/user/AddAddressModal";
-import { IoAddOutline, IoTrashOutline } from "react-icons/io5";
+import { IoAddOutline, IoTrashOutline, IoCreateOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { getAddress } from "../../redux/reducer/AddressReducer";
 import DeleteAddressModal from "../../components/user/DeleteAddressModal";
-
-const API_KEY = process.env.REACT_APP_RO_KEY;
-const URL_API = process.env.REACT_APP_API_BASE_URL;
+import EditAddressModal from "../../components/user/EditAddressModal";
 
 function Address() {
   const [addressToDeleteId, setAddressToDeleteId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.AuthReducer);
@@ -77,6 +73,18 @@ function Address() {
                   <Box>
                     <IconButton
                       variant={"ghost"}
+                      icon={<IoCreateOutline />}
+                      aria-label="Edit"
+                      size={"md"}
+                      colorScheme="green"
+                      rounded={"full"}
+                      onClick={() => {
+                        setAddressToDeleteId(address.id);
+                        onOpenEdit();
+                      }}
+                    />
+                    <IconButton
+                      variant={"ghost"}
                       icon={<IoTrashOutline />}
                       aria-label="Delete"
                       size={"sm"}
@@ -95,7 +103,12 @@ function Address() {
         </Box>
       </Box>
       <AddAddressModal isOpen={isOpen} onClose={onClose} />
-      <DeleteAddressModal isOpen={isOpenDelete} onClose={onCloseDelete} address_id={addressToDeleteId} />
+      <DeleteAddressModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        address_id={addressToDeleteId}
+      />
+      <EditAddressModal isOpen={isOpenEdit} onClose={onCloseEdit} address_id={addressToDeleteId} />
     </Box>
   );
 }

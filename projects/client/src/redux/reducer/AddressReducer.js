@@ -16,11 +16,18 @@ export const AddressReducer = createSlice({
     },
     setUserAddress: (state, action) => {
       state.userAddress = [...action.payload];
-    }
+    },
   },
 });
 
-export const addAddress = (fullAddress, id, latitude, longitude, toast, onClose) => {
+export const addAddress = (
+  fullAddress,
+  id,
+  latitude,
+  longitude,
+  toast,
+  onClose
+) => {
   return async () => {
     try {
       await axios.post(`${URL_API}/address`, {
@@ -58,7 +65,60 @@ export const getAddress = (id) => {
       console.log(error);
     }
   };
-}
+};
+
+export const deleteAddress = (address_id, toast) => {
+  return async () => {
+    try {
+      await axios.patch(`${URL_API}/address/deactivate/${address_id}`);
+      toast({
+        title: "Success",
+        description: "Address has been deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed",
+        description: error.response.data.message,
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.log(error);
+    }
+  };
+};
+
+export const editAddress = (address_id, id, fullAddress, latitude, longitude, toast, onClose) => {
+  return async () => {
+    try {
+      await axios.patch(`${URL_API}/address/${address_id}`, {
+        user_id: id,
+        address: fullAddress,
+        longitude,
+        latitude,
+      });
+      toast({
+        title: "Success",
+        description: "Address has been updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Failed",
+        description: error.response.data.message,
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+};
 
 export const { setAddress, setUserAddress } = AddressReducer.actions;
 

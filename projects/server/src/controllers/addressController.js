@@ -7,21 +7,22 @@ const addressController = {
       const { user_id, address, longitude, latitude } = req.body;
 
       const existingAddress = await UserAddress.findOne({
-        where: { user_id, address },
+        where: { user_id, address, isactive: true },
       });
 
       if (existingAddress) {
         return res.status(400).json({ message: "Address already exists" });
       }
 
-      const newAddress = await UserAddress.create({
-        user_id,
-        address,
-        longitude,
-        latitude,
+      await db.sequelize.transaction(async (t) => {
+        const newAddress = await UserAddress.create({
+          user_id,
+          address,
+          longitude,
+          latitude,
+        });
+        return res.status(200).json({ message: "Successfully added", data: newAddress });
       });
-
-      return res.status(201).json({ message: "Successfully added", data: newAddress });
     } catch (error) {
       return res.status(500).json({ message: "Failed to add address" });
     }
@@ -34,7 +35,9 @@ const addressController = {
         where: { user_id: id, isactive: true },
         attributes: { exclude: ["createdAt", "updatedAt"] },
       });
-      return res.status(200).json({ message: "Successfully retrieved", data: userAddress });
+      return res
+        .status(200)
+        .json({ message: "Successfully retrieved", data: userAddress });
     } catch (error) {
       return res.status(500).json({ message: "Failed to get address" });
     }
@@ -42,24 +45,36 @@ const addressController = {
 
   updateAddress: async (req, res) => {
     try {
-      const addressId = req.params.id;
-      const { address, longitude, latitude } = req.body;
+      const { id } = req.params;
+      const { user_id, address, longitude, latitude } = req.body;
 
-      const addressToUpdate = await UserAddress.findByPk(addressId);
+      const existingAddress = await UserAddress.findOne({
+        where: { user_id, address, isactive: true },
+      });
 
-      if (!addressToUpdate) {
+      if (existingAddress) {
+        return res.status(400).json({ message: "Address already exists" });
+      }
+
+      const updatedAddress = await UserAddress.findByPk(id);
+      if (!updatedAddress) {
         return res.status(404).json({ message: "Address not found" });
       }
 
-      addressToUpdate.address = address || addressToUpdate.address;
-      addressToUpdate.longitude = longitude || addressToUpdate.longitude;
-      addressToUpdate.latitude = latitude || addressToUpdate.latitude;
+      await db.sequelize.transaction(async (t) => {
+        await updatedAddress.update(
+          {
+            address,
+            longitude,
+            latitude,
+          },
+          { where: { id: id }, transaction: t }
+        );
 
-      await addressToUpdate.save();
-
-      return res.status(200).json({ message: "Successfully updated", data: addressToUpdate });
+        return res.status(200).json({ message: "Address updated", data: updatedAddress });
+      });
     } catch (error) {
-      return res.status(500).json({ message: "Failed to update address" });
+      return res.status(500).json({ message: "Failed to update address", error: error.message });
     }
   },
 
@@ -96,7 +111,10 @@ const addressController = {
       addressToSetPrimary.isdefault = true;
       await addressToSetPrimary.save();
 
-      return res.status(200).json({ message: "Successfully set primary address", data: addressToSetPrimary });
+      return res.status(200).json({
+        message: "Successfully set primary address",
+        data: addressToSetPrimary,
+      });
     } catch (error) {
       return res.status(500).json({ message: "Failed to set primary address" });
     }

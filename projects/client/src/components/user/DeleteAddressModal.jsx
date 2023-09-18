@@ -10,11 +10,9 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddress } from "../../redux/reducer/AddressReducer";
-const URL_API = process.env.REACT_APP_API_BASE_URL;
+import { deleteAddress, getAddress } from "../../redux/reducer/AddressReducer";
 
 const DeleteAddressModal = ({ isOpen, onClose, address_id }) => {
   const dispatch = useDispatch();
@@ -23,30 +21,8 @@ const DeleteAddressModal = ({ isOpen, onClose, address_id }) => {
 
   const id = user.id;
 
-  const deleteAddress = async () => {
-    try {
-      await axios.patch(`${URL_API}/address/deactivate/${address_id}`);
-      toast({
-        title: "Success",
-        description: "Address has been deleted",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Failed",
-        description: error.response.data.message,
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      console.log(error);
-    }
-  };
-
   const handleDelete = async () => {
-    await deleteAddress(address_id);
+    await dispatch(deleteAddress(address_id, toast));
     onClose();
     await dispatch(getAddress(id));
   }
