@@ -14,25 +14,26 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListItem from "./ProductListItem";
 import { Pagination } from "../components/Pagination";
+import { getProduct, getStoreProduct } from "../../redux/reducer/ProductReducer";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { addCart, addToCart } from "../../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
 
 const ProductList = () => {
   const products = useSelector((state) => state.ProductReducer.product);
+  const { location, lon, lat } = useSelector((state) => state.AuthReducer);
+  const { page } = useSelector((state) => state.ProductReducer);
   const [index, setIndex] = useState(1);
-  const { page, cart, totalHarga } = useSelector(
-    (state) => state.ProductReducer
-  );
-
   const dispatch = useDispatch();
 
   const inCart = async (products) => {
     await dispatch(addToCart(products));
     await dispatch(addCart(products, Swal));
   };
-
-  useEffect(() => {}, [index, cart]);
+  useEffect(() => {
+    if (!location) dispatch(getProduct({ index }));
+    if (location) dispatch(getStoreProduct({ location, lon, lat, index }));
+  }, [index, location]);
 
   if (products.length < 1) {
     return (
@@ -68,7 +69,7 @@ const ProductList = () => {
           </Card>
         ))}
       </Flex>
-      <Pagination />
+      <Pagination page={page} index={index} setIndex={setIndex} />
     </Box>
   );
 };

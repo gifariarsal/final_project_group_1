@@ -20,8 +20,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
 import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAuth, logoutSuccess } from "../../redux/reducer/AuthReducer";
 import { getItem } from "../../redux/reducer/CartReducer";
+import { logoutAuth } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
   const { item, carts } = useSelector((state) => state.CartReducer);
