@@ -169,7 +169,7 @@ const productController = {
         attributes: {
           exclude: ["createdAt", "updatedAt", "product_id", "store_id"],
         },
-        include: [...includeProductStore, ...includeStore],
+        include: [...includeProduct, ...includeStore],
       });
       res.status(200).json({ data: product });
     } catch (error) {
@@ -184,13 +184,13 @@ const productController = {
         attributes: {
           exclude: ["createdAt", "updatedAt", "product_id", "store_id"],
         },
-        include: [...includeProductStore, ...includeStore],
+        include: [...includeProduct, ...includeStore],
       });
       res.status(200).json({ data: product });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  },  
+  },
 };
 
 module.exports = productController;

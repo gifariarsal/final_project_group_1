@@ -1,11 +1,10 @@
-import { Box, Button, Card, CardBody, CardFooter, Center, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, Center, Flex, Heading, Spinner, Text, Stack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListItem from "./ProductListItem";
 import { Pagination } from "../components/Pagination";
 import { getProduct, getStoreProduct } from "../../redux/reducer/ProductReducer";
 import SearchProducts from "../components/SearchProducts";
-import { MdFilterList } from "react-icons/md";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { addCart, addToCart } from "../../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
@@ -21,6 +20,7 @@ const ProductList = () => {
   const dispatch = useDispatch();
 
   const inCart = async (products) => {
+    console.log("product list", products);
     await dispatch(addToCart(products));
     await dispatch(addCart(products, Swal));
   };
