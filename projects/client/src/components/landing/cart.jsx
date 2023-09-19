@@ -57,6 +57,8 @@ export default function Cart() {
   const destroy = async (products) => {
     await dispatch(deleteItemCart(products));
     await dispatch(deleteItemFromCart(products));
+    await dispatch(getItem());
+    await dispatch(getCart());
   };
 
   useEffect(() => {

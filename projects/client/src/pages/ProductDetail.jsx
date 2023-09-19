@@ -58,6 +58,7 @@ const ProductDetail = () => {
 
   const inCart = async (products) => {
     console.log("product list", products);
+    console.log("product list discount admin", products.admin_discount);
     await dispatch(addToCart(products));
     await dispatch(addCart(products, Swal));
   };

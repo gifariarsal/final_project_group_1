@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Swal from 'sweetalert2'
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
@@ -95,10 +96,12 @@ export const getCart = () => {
 export const addCart = (products, Swal) => {
   return async (dispatch) => {
     const dataProduct = products.Product || products;
-    const total_price = dataProduct.price;
-    // console.log("data", dataProduct);
+    const discount = dataProduct.price - products.admin_discount
+    console.log("harga baru setelah diskon ", discount)
+    const total_price = discount;
     const productId = dataProduct.product_id || dataProduct.id;
     console.log("id", productId);
+    console.log("total", total_price)
     const token = localStorage.getItem("token");
     try {
       const result = await axios.patch(
@@ -110,7 +113,14 @@ export const addCart = (products, Swal) => {
           },
         }
       );
-      Swal.fire("Success!", "Product successfully added to cart", "success");
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Product successfully added to cart',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      // Swal.fire("Success!", "Product successfully added to cart", "success");
     } catch (error) {
       console.log(error);
     }
@@ -150,6 +160,20 @@ export const deleteItemFromCart = (products) => {
     const productId = dataProduct.product_id || dataProduct.id
     console.log("id delete", productId)
     const token = localStorage.getItem("token")
+    // Swal.fire({
+    //   title: 'Do you want to save the changes?',
+    //   showDenyButton: true,
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Save',
+    //   denyButtonText: `Don't save`,
+    // }).then((result) => {
+    //   /* Read more about isConfirmed, isDenied below */
+    //   if (result.isConfirmed) {
+    //     Swal.fire('Saved!', '', 'success')
+    //   } else if (result.isDenied) {
+    //     Swal.fire('Changes are not saved', '', 'info')
+    //   }
+    // })
     try {
       const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, 
       {
@@ -158,6 +182,7 @@ export const deleteItemFromCart = (products) => {
         }
       })
       alert("Done")
+      
     } catch (error) {
       console.log(error)
     }
