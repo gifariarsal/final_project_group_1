@@ -27,7 +27,7 @@ const {
   adminRouter,
   categoryRouter,
   addressRouter,
-  regionRouter,
+  regionRouter, cartRouter, profileRouter
 } = require("./router");
 // db.sequelize.sync({ alter: true });
 
@@ -38,6 +38,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/store", storeRouter);
+app.use("/api/cart", cartRouter)
+app.use("/api", profileRouter)
 app.use("/api/category", categoryRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/region", regionRouter);

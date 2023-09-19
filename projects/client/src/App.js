@@ -25,6 +25,7 @@ import Product from "./pages/Product";
 import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
 import Address from "./pages/user/Address";
 import { getAddress, getDefaultAddress, setPrimaryAddress } from "./redux/reducer/AddressReducer";
+import Category from "./pages/Category";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -75,8 +76,6 @@ function App() {
       defaultUserAddress();
     }
     if (userAddress.length < 1) fetchLocation();
-    if (!location) dispatch(getProduct({}));
-    if (location) dispatch(getStoreProduct({ location, lon, lat }));
   }, [user]);
 
   const defaultRoutes = () => {
@@ -93,6 +92,7 @@ function App() {
           <Route path="/verification/:token" element={<Verify />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/*" element={<Product />} />
+          <Route path="/category/*" element={<Category />} />
         </>
       );
     }
