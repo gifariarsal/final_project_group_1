@@ -20,7 +20,15 @@ app.use(express.json());
 
 //#region API ROUTES
 const db = require("../models");
-const { authRouter, productRouter, storeRouter, adminRouter, categoryRouter, addressRouter, regionRouter } = require("./router");
+const {
+  authRouter,
+  productRouter,
+  storeRouter,
+  adminRouter,
+  categoryRouter,
+  addressRouter,
+  regionRouter,
+} = require("./router");
 // db.sequelize.sync({ alter: true });
 
 // ===========================

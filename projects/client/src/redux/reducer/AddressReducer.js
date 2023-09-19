@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setUserLocation } from "./AuthReducer";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
@@ -20,18 +21,11 @@ export const AddressReducer = createSlice({
     },
     setDefaultAddress: (state, action) => {
       state.defaultAddress = action.payload;
-    }
+    },
   },
 });
 
-export const addAddress = (
-  fullAddress,
-  id,
-  latitude,
-  longitude,
-  toast,
-  onClose
-) => {
+export const addAddress = (fullAddress, id, latitude, longitude, toast, onClose) => {
   return async () => {
     try {
       await axios.post(`${URL_API}/address`, {
@@ -94,15 +88,7 @@ export const deleteAddress = (address_id, toast) => {
   };
 };
 
-export const editAddress = (
-  address_id,
-  id,
-  fullAddress,
-  latitude,
-  longitude,
-  toast,
-  onClose
-) => {
+export const editAddress = (address_id, id, fullAddress, latitude, longitude, toast, onClose) => {
   return async () => {
     try {
       await axios.patch(`${URL_API}/address/${address_id}`, {
@@ -134,6 +120,7 @@ export const editAddress = (
 export const setPrimaryAddress = (id, toast) => {
   return async (dispatch) => {
     try {
+      console.log(id);
       const { data } = await axios.patch(`${URL_API}/address/default/${id}`);
       toast({
         title: "Success",
@@ -141,8 +128,8 @@ export const setPrimaryAddress = (id, toast) => {
         status: "success",
         duration: 3000,
         isClosable: true,
-      })
-      await dispatch(setDefaultAddress(data.data));
+      });
+      await dispatch(setUserLocation(data.data.latitude, data.data.longitude));
     } catch (error) {
       toast({
         title: "Failed",
@@ -150,7 +137,21 @@ export const setPrimaryAddress = (id, toast) => {
         status: "warning",
         duration: 3000,
         isClosable: true,
-      })
+      });
+    }
+  };
+};
+
+export const getDefaultAddress = () => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_API}/address/default`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      await dispatch(setUserLocation(data.data.latitude, data.data.longitude));
+      await dispatch(setDefaultAddress(data.data));
+    } catch (error) {
+      console.log(error);
     }
   };
 };

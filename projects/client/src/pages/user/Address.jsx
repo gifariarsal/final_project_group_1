@@ -1,28 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Text,
-  useDisclosure,
-  Stack,
-  IconButton,
-  Flex,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Text, useDisclosure, Stack, IconButton, Flex, useToast } from "@chakra-ui/react";
 import Navbar from "../../components/landing/Navbar";
 import AddAddressModal from "../../components/user/AddAddressModal";
-import {
-  IoAddOutline,
-  IoTrashOutline,
-  IoCreateOutline,
-  IoStar,
-  IoStarOutline,
-} from "react-icons/io5";
+import { IoAddOutline, IoTrashOutline, IoCreateOutline, IoStar, IoStarOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAddress,
-  setPrimaryAddress,
-} from "../../redux/reducer/AddressReducer";
+import { getAddress, setPrimaryAddress } from "../../redux/reducer/AddressReducer";
 import DeleteAddressModal from "../../components/user/DeleteAddressModal";
 import EditAddressModal from "../../components/user/EditAddressModal";
 import { setUserLocation } from "../../redux/reducer/AuthReducer";
@@ -30,16 +12,8 @@ import { setUserLocation } from "../../redux/reducer/AuthReducer";
 function Address() {
   const [addressToDeleteId, setAddressToDeleteId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenDelete,
-    onOpen: onOpenDelete,
-    onClose: onCloseDelete,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenEdit,
-    onOpen: onOpenEdit,
-    onClose: onCloseEdit,
-  } = useDisclosure();
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -52,16 +26,14 @@ function Address() {
   }, []);
 
   const handleDefault = async (address_id) => {
-    const defaultAddress = userAddress.find((address) => address.isdefault);
+    let defaultAddress = userAddress.find((address) => address.isdefault);
 
     if (!defaultAddress) {
-      return;
+      setPrimaryAddress(address_id, toast);
+      defaultAddress = userAddress.find(async (address) => await address.isdefault);
     }
 
-    const { latitude, longitude } = defaultAddress;
-
     await dispatch(setPrimaryAddress(address_id, toast));
-    await dispatch(setUserLocation(latitude, longitude));
     await dispatch(getAddress(id));
   };
 
@@ -71,11 +43,7 @@ function Address() {
     <Box>
       <Navbar />
       <Box w={"full"} p={"16px 100px"}>
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
+        <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
           <Text fontSize={"4xl"} fontWeight={"medium"}>
             Address
           </Text>
@@ -86,8 +54,7 @@ function Address() {
             bg={"brand.main"}
             color={"white"}
             _hover={{ bg: "brand.hover" }}
-            _active={{ bg: "brand.active" }}
-          >
+            _active={{ bg: "brand.active" }}>
             <IoAddOutline size={24} />
             Add Address
           </Button>
@@ -98,13 +65,7 @@ function Address() {
           </Text>
           <Stack mt={2} spacing={4}>
             {userAddress.map((address) => (
-              <Box
-                key={address.id}
-                p={4}
-                borderWidth="1px"
-                borderRadius="lg"
-                boxShadow="md"
-              >
+              <Box key={address.id} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Box display={"flex"} alignItems={"center"} gap={4}>
                     <Text>{address.address}</Text>
@@ -154,16 +115,8 @@ function Address() {
         </Box>
       </Box>
       <AddAddressModal isOpen={isOpen} onClose={onClose} />
-      <DeleteAddressModal
-        isOpen={isOpenDelete}
-        onClose={onCloseDelete}
-        address_id={addressToDeleteId}
-      />
-      <EditAddressModal
-        isOpen={isOpenEdit}
-        onClose={onCloseEdit}
-        address_id={addressToDeleteId}
-      />
+      <DeleteAddressModal isOpen={isOpenDelete} onClose={onCloseDelete} address_id={addressToDeleteId} />
+      <EditAddressModal isOpen={isOpenEdit} onClose={onCloseEdit} address_id={addressToDeleteId} />
     </Box>
   );
 }

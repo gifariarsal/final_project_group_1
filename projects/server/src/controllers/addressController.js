@@ -35,9 +35,7 @@ const addressController = {
         where: { user_id: id, isactive: true },
         attributes: { exclude: ["createdAt", "updatedAt"] },
       });
-      return res
-        .status(200)
-        .json({ message: "Successfully retrieved", data: userAddress });
+      return res.status(200).json({ message: "Successfully retrieved", data: userAddress });
     } catch (error) {
       return res.status(500).json({ message: "Failed to get address" });
     }
@@ -82,10 +80,7 @@ const addressController = {
     try {
       const { id } = req.params;
       await db.sequelize.transaction(async (t) => {
-        await UserAddress.update(
-          { isactive: false },
-          { where: { id: id }, transaction: t }
-        );
+        await UserAddress.update({ isactive: false }, { where: { id: id }, transaction: t });
         return res.status(200).json({ message: "Address deleted" });
       });
     } catch (error) {
@@ -104,13 +99,10 @@ const addressController = {
       }
 
       if (addressToSetPrimary.isdefault) {
-      return res.status(400).json({ message: "Address is already set as default" });
-    }
+        return res.status(400).json({ message: "Address is already set as default" });
+      }
 
-      await UserAddress.update(
-        { isdefault: false },
-        { where: { user_id: addressToSetPrimary.user_id } }
-      );
+      await UserAddress.update({ isdefault: false }, { where: { user_id: addressToSetPrimary.user_id } });
 
       addressToSetPrimary.isdefault = true;
       await addressToSetPrimary.save();
@@ -121,6 +113,23 @@ const addressController = {
       });
     } catch (error) {
       return res.status(500).json({ message: "Failed to set primary address" });
+    }
+  },
+  getDefaultAddress: async (req, res) => {
+    try {
+      console.log("1");
+      const { id } = req.user;
+      console.log(req.user);
+      const result = await UserAddress.findOne({
+        where: { user_id: id, isdefault: true },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
+      return res.status(200).json({
+        message: "Successfully Get Default Address",
+        data: result,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "No Default Address Found" });
     }
   },
 };

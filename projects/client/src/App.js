@@ -22,20 +22,14 @@ import UserProfile from "./components/landing/UserProfile";
 import { useSelector } from "react-redux";
 import Cart from "./components/landing/cart";
 import Product from "./pages/Product";
-import {
-  getProduct,
-  getStoreProduct,
-  getStore_id,
-} from "./redux/reducer/ProductReducer";
+import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
 import Address from "./pages/user/Address";
-import { getAddress, setPrimaryAddress } from "./redux/reducer/AddressReducer";
+import { getAddress, getDefaultAddress, setPrimaryAddress } from "./redux/reducer/AddressReducer";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
   const { location, lon, lat } = useSelector((state) => state.AuthReducer);
-  const { userAddress, defaultAddress } = useSelector(
-    (state) => state.AddressReducer
-  );
+  const { userAddress, defaultAddress } = useSelector((state) => state.AddressReducer);
   const { user } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
 
@@ -74,8 +68,8 @@ function App() {
 
   useEffect(() => {
     if (user) {
+      dispatch(getDefaultAddress());
       dispatch(getAddress(user.id));
-      defaultUserAddress();
     }
     if (userAddress.length > 0) {
       defaultUserAddress();
