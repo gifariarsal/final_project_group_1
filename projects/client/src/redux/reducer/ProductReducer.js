@@ -127,5 +127,42 @@ export const getProductSearch = ({ category, name, store_id }) => {
   };
 };
 
+export const addProduct = (values) => {
+  return async(dispatch) => {
+    // const {name, } = req.body
+    try {
+      const data = await axios.post(
+        `${URL_API}/product`, values)
+        console.log("add product", data)
+        alert("Done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
+export const updateProduct = (values) => {
+  return async() => {
+    const id = values.id
+    try {
+      console.log("update product", values)
+      const {newName, category_id, price, admin_discount, product_img} = values
+      console.log("id", id)
+      // const data = await axios.patch(
+      //   `${URL_API}/product/${id}`, 
+      //   {
+      //     name,
+      //     category_id,
+      //     price, admin_discount,
+      //     product_img
+      //   }
+      // )
+      // alert("done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 export const { setProduct, setStore_id, setPage, setProductDetail, setStoreStock } = ProductReducer.actions;
 export default ProductReducer.reducer;

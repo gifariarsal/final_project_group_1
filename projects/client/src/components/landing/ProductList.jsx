@@ -36,7 +36,7 @@ const ProductList = () => {
     if (!location) dispatch(getProduct({ index, orderBy, order }));
     if (location)
       dispatch(getStoreProduct({ location, lon, lat, index, orderBy, order }));
-  }, [index, location, orderBy, order]);
+  }, [index, location, orderBy, order, store]);
 
   const handleOrderBy = () => {
     setOrderBy(orderBy === "name" ? "price" : "name");
