@@ -129,7 +129,6 @@ export const getProductSearch = ({ category, name, store_id }) => {
 
 export const addProduct = (values) => {
   return async(dispatch) => {
-    // const {name, } = req.body
     try {
       const data = await axios.post(
         `${URL_API}/product`, values)
@@ -141,23 +140,32 @@ export const addProduct = (values) => {
   }
 }
 
-export const updateProduct = (values) => {
+export const updateProduct = (values, productImg) => {
   return async() => {
     const id = values.id
     try {
       console.log("update product", values)
-      const {newName, category_id, price, admin_discount, product_img} = values
+      console.log("update product name", values.newName)
       console.log("id", id)
-      // const data = await axios.patch(
-      //   `${URL_API}/product/${id}`, 
-      //   {
-      //     name,
-      //     category_id,
-      //     price, admin_discount,
-      //     product_img
-      //   }
-      // )
-      // alert("done")
+      console.log("image", productImg)
+      const formData = new FormData();
+      formData.append("name", values.newName); // Correct the key to "name"
+      formData.append("category_id", values.categoryId);
+      formData.append("price", values.price);
+      formData.append("admin_discount", values.admin_discount);
+      formData.append("description", values.description);
+      formData.append("product_img", productImg);
+      // const {newName, category_id, price, admin_discount, description} = values
+      // console.log("id", id)
+      const data = await axios.patch(
+        `${URL_API}/product/${id}`, formData,
+        {
+          headers : {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
+      alert("done")
     } catch (error) {
       console.log(error)
     }

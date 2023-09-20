@@ -1,11 +1,7 @@
 import {
   Box,
-  Button,
-  ButtonGroup,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
   Divider,
   Flex,
   Heading,
@@ -23,23 +19,24 @@ import {
 } from "../../../redux/reducer/ProductReducer";
 import ButtonAddProduct from "../../components/ButtonAddProduct";
 import { IoTrashOutline } from "react-icons/io5";
-import { BiSolidEdit } from "react-icons/bi";
+import ButtonEditProduct from "../../components/ButtonEditProduct";
+import ButtonChangeImageProduct from "../../components/ButtonChangeImageProduct";
 
 const ProductManagement = () => {
   const PUBLIC_URL = "http://localhost:8000";
   const [product, setProduct] = useState([]);
-  const [isDiscount, setIsDiscount] = useState(false);
   const dispatch = useDispatch();
 
   const fetchData = async () => {
     const response = await axios.get("http://localhost:8000/api/product");
-    console.log("respon", response.data.data);
+    console.log("respon", response.data);
     setProduct(response.data.data);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+  // console.log("id", product.id);
 
   const editProduct = (values) => {
     dispatch(updateProduct(values));
@@ -62,13 +59,14 @@ const ProductManagement = () => {
           <ButtonAddProduct />
           <Divider mt={"10px"} />
           {product.map((item) => {
+            console.log("id", item.id);
             const active = item.isactive;
             const newPrice = item.price - item.admin_discount;
             return (
               <Box>
                 {active ? (
                   <Card
-                    key={item.key}
+                    key={item.id}
                     ml={"24px"}
                     w={"800px"}
                     mt={"20px"}
@@ -104,12 +102,8 @@ const ProductManagement = () => {
                         </Stack>
                         <Box right={10} top={50} position={"absolute"}>
                           <Stack>
-                            <IconButton
-                              color={"blackAlpha.800"}
-                              variant={""}
-                              icon={<BiSolidEdit size={"md"} />}
-                              onClick={() => editProduct(item)}
-                            />
+                            <ButtonEditProduct id={item.id} />
+                            {/* onClick={() => editProduct(item)} */}
                             <IconButton
                               color={"red"}
                               variant={""}
@@ -118,6 +112,7 @@ const ProductManagement = () => {
                           </Stack>
                         </Box>
                       </Flex>
+                      {/* <ButtonChangeImageProduct id={item.id} /> */}
                     </CardBody>
                   </Card>
                 ) : (

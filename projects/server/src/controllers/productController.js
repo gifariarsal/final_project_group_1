@@ -231,12 +231,6 @@ const productController = {
       if(newName === findProduct.name){
         return res.status(500).json({message : "Product already exist"})
       }
-      if(findProduct.product_img){
-        console.log("ada")
-        fs.unlink(path.resolve(__dirname, `../../${findProduct.product_img}`), (err) => {
-          return res.status(500).json({message : err.message})
-        })
-      }
       await db.sequelize.transaction(async (t) => {
         await Product.update(
           {
@@ -244,10 +238,33 @@ const productController = {
             category_id, 
             price, 
             admin_discount, 
-            product_img : req,file,path,
             description,
           }, { where : {id}}, { transaction : t})
           return res.status(200).json({message : "Product updated"})
+      })
+    } catch (error) {
+      return res.status(500).json({message : "Failed", error: error.message})
+    }
+  },
+  updateProductImage: async (req, res) => {
+    console.log("ada")
+    try {
+      const {id} = req.params
+      const findProduct = await Product.findOne({where : {id}})
+      console.log("update", findProduct)
+      if(findProduct.product_img){
+        console.log("ada")
+        fs.unlink(path.resolve(__dirname, `../../${findProduct.product_img}`), (err) => {
+          return res.status(500).json({message : err.message})
+        })
+      }
+      console.log("gambar tidak ada")
+      await db.sequelize.transaction(async (t) => {
+        await Product.update(
+          {
+            product_img : req.file.path,
+          }, { where : {id}}, { transaction : t})
+          return res.status(200).json({message : "Image Product updated"})
       })
     } catch (error) {
       return res.status(500).json({message : "Failed", error: error.message})
