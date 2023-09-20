@@ -4,6 +4,7 @@ import ProductReducer from "./reducer/ProductReducer";
 import AdminReducer from "./reducer/AdminReducer";
 import CategoryReducer from "./reducer/CategoryReducer";
 import CartReducer from "./reducer/CartReducer";
+import TransactionReducer from "./reducer/TransactionReducer";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     ProductReducer: ProductReducer,
     AdminReducer: AdminReducer,
     CategoryReducer: CategoryReducer,
-    CartReducer : CartReducer
+    CartReducer: CartReducer,
+    TransactionReducer: TransactionReducer,
   },
 });

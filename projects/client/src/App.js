@@ -24,6 +24,7 @@ import Cart from "./components/landing/cart";
 import Product from "./pages/Product";
 import { getProduct, getStoreProduct, getStore_id } from "./redux/reducer/ProductReducer";
 import Category from "./pages/Category";
+import UserOrder from "./components/landing/UserOrder";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -49,8 +50,6 @@ function App() {
 
   useEffect(() => {
     fetchLocation();
-    if (!location) dispatch(getProduct({}));
-    if (location) dispatch(getStoreProduct({ location, lon, lat }));
   }, []);
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
@@ -103,6 +102,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/User-Order" element={<UserOrder />} />
         </>
       );
     }

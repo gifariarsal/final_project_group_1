@@ -53,6 +53,8 @@ const adminController = {
       const branchAdminExist = await Store.findOne({
         where: { location: branch, isactive: true },
       });
+
+    
       if (branchAdminExist)
         return res.status(400).json({ message: "Admin in this branch already exists" });
 
