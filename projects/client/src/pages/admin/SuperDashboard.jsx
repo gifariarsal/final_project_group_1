@@ -36,7 +36,7 @@ const SuperDashboard = () => {
       <Flex>
         <Box
           w={{ base: "100%", md: "26%" }}
-          bg={"#37630A"}
+          bg={"brand.main"}
           color="white"
           minH={"100vh"}
           mt={"60px"}

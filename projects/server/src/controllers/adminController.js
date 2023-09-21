@@ -1,5 +1,6 @@
 const db = require("../../models");
 const { Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 const Admin = db.Admin;
 const Store = db.Store;
 const jwt = require("jsonwebtoken");
@@ -18,6 +19,10 @@ const adminController = {
       const checkLogin = await Admin.findOne({ where });
       if (!checkLogin) {
         return res.status(404).json({ message: "Admin not found" });
+      }
+
+      if (!checkLogin.isactive) {
+        return res.status(401).json({ message: "Admin is not active" });
       }
 
       const passwordValid = await bcrypt.compare(password, checkLogin.password);
@@ -43,9 +48,9 @@ const adminController = {
 
   createBranchAdmin: async (req, res) => {
     try {
-      const { name, email, branch, password, confirmPassword } = req.body;
+      const { name, email, branch, password, confirmPassword, city_id } = req.body;
       const findAdmin = await Admin.findOne({
-        where: { [Sequelize.Op.or]: [{ name }, { email }] },
+        where: { [Sequelize.Op.or]: [{ name }, { email }, {}] },
       });
       if (findAdmin)
         return res.status(400).json({ message: "Name or Email already exists" });
@@ -53,8 +58,29 @@ const adminController = {
       const branchAdminExist = await Store.findOne({
         where: { location: branch, isactive: true },
       });
-      if (branchAdminExist)
-        return res.status(400).json({ message: "Store already exists" });
+
+      if (branchAdminExist?.admin_id > 1) {
+        return res.status(400).json({ message: "Admin in this branch already exists" });
+      }
+      if (branchAdminExist) {
+        try {
+          const salt = await bcrypt.genSalt(10);
+          const hashPassword = await bcrypt.hash(password, salt);
+
+          const newBranchAdmin = await Admin.create({
+            name,
+            email,
+            password: hashPassword,
+            role_id: 2,
+            isactive: true,
+          });
+          branchAdminExist.admin_id = newBranchAdmin.id;
+          await branchAdminExist.save();
+          return res.status(200).json({ message: "Branch admin is created" });
+        } catch (error) {
+          return res.status(500).json({ message: error.message });
+        }
+      }
 
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(password, salt);
@@ -71,7 +97,6 @@ const adminController = {
           { name, email, password: hashPassword, role_id: 2 },
           { transaction: t }
         );
-
         const newBranch = await Store.create(
           {
             name: `Branch ${branch}`,
@@ -79,15 +104,16 @@ const adminController = {
             admin_id: newBranchAdmin.id,
             latitude,
             longitude,
+            city_id: city_id,
             isactive: true,
           },
           { transaction: t }
         );
         res.status(200).json({
-            message: "Branch admin is created successfully",
-            admin_data: newBranchAdmin,
-            store_data: newBranch,
-          });
+          message: "Branch admin is created successfully",
+          admin_data: newBranchAdmin,
+          store_data: newBranch,
+        });
       });
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -95,23 +121,30 @@ const adminController = {
   },
 
   getBranchAdmin: async (req, res) => {
-  try {
-    const stores = await Store.findAll({
-      include: [{
-        model: Admin,
-        where: { role_id: 2 },
-        attributes: ['name', 'email'],
-        required: false,
-      }],
-      where: { isactive: true },
-    });
+    try {
+      const admins = await Store.findAll({
+        include: [
+          {
+            model: Admin,
+            where: { role_id: 2, isactive: true },
+            attributes: ["name", "email"],
+            required: false,
+          },
+        ],
+        where: { isactive: true, admin_id: { [Op.ne]: 1 } },
+      });
 
-    return res.status(200).json({ message: "Brandh admins retrieved successfully", data: stores });
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve branch admins", error: error.message });
-  }
-},
-
+      return res.status(200).json({
+          message: "Branch admins retrieved successfully",
+          data: admins,
+        });
+    } catch (error) {
+      return res.status(500).json({
+          message: "Failed to retrieve branch admins",
+          error: error.message,
+        });
+    }
+  },
 
   // getAdminsById: async (req, res) => {
   //   try {
@@ -127,14 +160,19 @@ const adminController = {
     try {
       const { id } = req.params;
       await db.sequelize.transaction(async (t) => {
-        const updateBranchAdmin = await Store.update(
+         await Admin.update(
+           { isactive: false },
+           { where: { id }, transaction: t }
+         );
+
+        await Store.update(
           { admin_id: 1 },
           { where: { admin_id: id }, transaction: t }
         );
-        return res.status(200).json({ message: "Admin deactivated" });
+        return res.status(200).json({ message: "Admin is deleted" });
       });
     } catch (error) {
-      return res.status(500).json({ message: "Failed to deactivate admin", error: error.message });
+      return res.status(500).json({ message: "Failed to delete admin", error: error.message });
     }
   },
 };
