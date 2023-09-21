@@ -11,6 +11,7 @@ router.get("/stock", productController.getStoreProductEachBranch);
 router.get("/search", productController.getSearchProduct);
 router.post("/", multerUpload.single("product_img"), productController.createProduct)
 router.patch("/:id", multerUpload.single("product_img"), productController.updateProduct)
-router.patch("/image/:id", multerUpload.single("product_img"), productController.updateProductImage)
+router.patch("/delete/:id", productController.deleteProduct)
+router.patch("/restore/:id", productController.activeProduct)
 
 module.exports = router;

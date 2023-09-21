@@ -18,9 +18,9 @@ import {
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { updateProduct } from "../../redux/reducer/ProductReducer";
+import { getCategory } from "../../redux/reducer/CategoryReducer";
 
 const editProductSchema = Yup.object().shape({
   newName: Yup.string().required("Name is required"),
@@ -30,20 +30,11 @@ const editProductSchema = Yup.object().shape({
 });
 export default function ModalEditProduct({ isOpen, onClose, id }) {
   const { category } = useSelector((state) => state.CategoryReducer);
-  const [categories, setCategory] = useState([]);
   const dispatch = useDispatch();
-  const getCategory = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/category");
-      console.log("respon", response.data?.categories);
-      setCategory(response.data.categories);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   useEffect(() => {
-    getCategory();
-  }, []);
+    dispatch(getCategory());
+  }, [dispatch]);
   const formik = useFormik({
     initialValues: {
       id: id,
@@ -63,6 +54,7 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
       onClose();
     },
   });
+  const isButtonDisabled = formik.isValid || formik.isSubmitting;
   return (
     <>
       <Box fontFamily={"montserrat"}>
@@ -105,7 +97,7 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
                       id="categoryId"
                       name="categoryId"
                     >
-                      {categories.map((item) => {
+                      {category.map((item) => {
                         return <option value={item.id}>{item.name}</option>;
                       })}
                     </Select>
@@ -185,6 +177,7 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
                     <Input
                       type="file"
                       mt={5}
+                      accept=".jpeg, .jpg, .png, .gif"
                       variant={""}
                       id="product_img"
                       name="product_img"
@@ -207,7 +200,17 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
                     onChange={formik.handleChange}
                   />
                   <ModalFooter>
-                    <Button type="submit">submit</Button>
+                    <Button
+                      bg={"brand.maain"}
+                      isLoading={formik.isSubmitting}
+                      loadingText="Changing Product..."
+                      color={"black"}
+                      _hover={{ bg: "brand.hover" }}
+                      type="submit"
+                      isDisabled={isButtonDisabled}
+                    >
+                      Edit Product
+                    </Button>
                   </ModalFooter>
                 </form>
               </Box>

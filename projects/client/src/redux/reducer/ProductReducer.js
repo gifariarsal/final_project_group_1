@@ -127,13 +127,27 @@ export const getProductSearch = ({ category, name, store_id }) => {
   };
 };
 
-export const addProduct = (values) => {
+export const addProduct = (values, productImg) => {
   return async(dispatch) => {
+    console.log("prodcut", values)
+    console.log("prodcut image", productImg)
     try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("category_id", values.category_id);
+      formData.append("store_id", values.store_id)
+      formData.append("price", values.price);
+      formData.append("admin_discount", values.admin_discount);
+      formData.append("description", values.description);
+      formData.append("product_img", productImg);
       const data = await axios.post(
-        `${URL_API}/product`, values)
-        console.log("add product", data)
-        alert("Done")
+        `${URL_API}/product`, formData,
+        {
+          headers : {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
     } catch (error) {
       console.log(error)
     }
@@ -144,19 +158,13 @@ export const updateProduct = (values, productImg) => {
   return async() => {
     const id = values.id
     try {
-      console.log("update product", values)
-      console.log("update product name", values.newName)
-      console.log("id", id)
-      console.log("image", productImg)
       const formData = new FormData();
-      formData.append("name", values.newName); // Correct the key to "name"
+      formData.append("newName", values.newName);
       formData.append("category_id", values.categoryId);
       formData.append("price", values.price);
       formData.append("admin_discount", values.admin_discount);
       formData.append("description", values.description);
       formData.append("product_img", productImg);
-      // const {newName, category_id, price, admin_discount, description} = values
-      // console.log("id", id)
       const data = await axios.patch(
         `${URL_API}/product/${id}`, formData,
         {
@@ -166,6 +174,35 @@ export const updateProduct = (values, productImg) => {
         }
       )
       alert("done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+export const deleteProduct = (values) => {
+  return async () => {
+    try {
+      const id = values.id
+      console.log("delete values", id)
+      const data = await axios.patch(
+        `${URL_API}/product/delete/${id}`,
+        {}
+      )
+      alert("Done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+export const restoreProduct = (values) => {
+  return async () => {
+    try {
+      const id = values.id
+      console.log("id restore", id)
+      const data = await axios.patch(
+        `${URL_API}/product/restore/${id}`, {}
+      )
+      alert("Done")
     } catch (error) {
       console.log(error)
     }

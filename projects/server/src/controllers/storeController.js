@@ -52,6 +52,18 @@ const storeController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getStore : async(req, res) => {
+    try {
+      const data = await Store.findAll({
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      })
+      return res.status(200).json({message : "Success", data : data})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  }
 };
 
 module.exports = storeController;

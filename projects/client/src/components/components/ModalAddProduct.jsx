@@ -1,6 +1,9 @@
 import {
   Box,
   Button,
+  Center,
+  FormControl,
+  FormErrorMessage,
   Input,
   Modal,
   ModalBody,
@@ -12,8 +15,57 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
+import axios from "axios";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../redux/reducer/CategoryReducer";
+import { addProduct } from "../../redux/reducer/ProductReducer";
 
+const addProductSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  category_id: Yup.string().required("Category is required"),
+  store_id: Yup.string().required("Store is required"),
+  price: Yup.number().required("Price must be number is required"),
+  description: Yup.string().required("Description is required"),
+});
 export default function ModalAddProduct({ isOpen, onClose }) {
+  const [store, setStore] = useState([]);
+  const dispatch = useDispatch();
+  const { category } = useSelector((state) => state.CategoryReducer);
+  const fetchData = async () => {
+    const respon = await axios.get("http://localhost:8000/api/store/branch");
+    console.log("sroe,", respon.data);
+    setStore(respon.data.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+    dispatch(getCategory());
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      category_id: "",
+      store_id: "",
+      price: "",
+      admin_discount: "",
+      description: "",
+    },
+    validationSchema: addProductSchema,
+    onSubmit: (values) => {
+      const productImg = document.getElementById("product_img").files[0];
+      const formData = new FormData();
+      formData.append("product_img", productImg);
+      console.log("masukk", productImg);
+      console.log("masukk", values);
+      dispatch(addProduct(values, productImg));
+    },
+  });
+
+  const isButtonDisabled = formik.isValid || formik.isSubmitting;
   return (
     <>
       <Box>
@@ -24,29 +76,147 @@ export default function ModalAddProduct({ isOpen, onClose }) {
             <ModalCloseButton />
             <ModalBody>
               <Box>
-                <Input placeholder="Product name"></Input>
-                <Select mt={5}>
-                  <option>Sayur</option>
-                </Select>
-                <Select mt={5}>
-                  <option>Branch Jakarta</option>
-                  <option>Branch Makassar</option>
-                  <option>Branch Lombok</option>
-                  <option>Branch Yogyakarta</option>
-                </Select>
-                <Input placeholder="Price" mt={5}></Input>
-                <Input placeholder="Discount" mt={5}></Input>
-                <Input type="file" mt={5}></Input>
-                <Input type="textarea" mt={5} placeholder="Description"></Input>
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl
+                    isInvalid={formik.touched.name && formik.errors.name}
+                  >
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      placeholder="Product name"
+                    ></Input>
+                    <Center>
+                      {formik.touched.newName && formik.errors.newName && (
+                        <FormErrorMessage>
+                          {formik.errors.newName}
+                        </FormErrorMessage>
+                      )}
+                    </Center>
+                  </FormControl>
+                  <Select
+                    {...formik.getFieldProps("category_id")}
+                    id="category_id"
+                    name="category_id"
+                    mt={5}
+                    placeholder="Select Category"
+                  >
+                    {category.map((category) => {
+                      return (
+                        <option value={category.id}>{category.name}</option>
+                      );
+                    })}
+                  </Select>
+                  <Select
+                    {...formik.getFieldProps("store_id")}
+                    id="store_id"
+                    name="store_id"
+                    mt={5}
+                    placeholder="Select Store"
+                  >
+                    {store.map((store) => {
+                      return <option value={store.id}>{store.name}</option>;
+                    })}
+                  </Select>
+                  <FormControl
+                    isInvalid={formik.touched.price && formik.errors.price}
+                  >
+                    <Input
+                      id="price"
+                      name="price"
+                      type="number"
+                      value={formik.values.price}
+                      onChange={formik.handleChange}
+                      placeholder="Price"
+                      mt={5}
+                    ></Input>
+                    <Center>
+                      {formik.touched.price && formik.errors.price && (
+                        <FormErrorMessage>
+                          {formik.errors.price}
+                        </FormErrorMessage>
+                      )}
+                    </Center>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={
+                      formik.touched.admin_discount &&
+                      formik.errors.admin_discount
+                    }
+                  >
+                    <Input
+                      placeholder="Discount (optional)"
+                      id="admin_discount"
+                      name="admin_discount"
+                      type="number"
+                      value={formik.values.admin_discount}
+                      onChange={formik.handleChange}
+                      mt={5}
+                    ></Input>
+                    <Center>
+                      {formik.touched.admin_discount &&
+                        formik.errors.admin_discount && (
+                          <FormErrorMessage>
+                            {formik.errors.admin_discount}
+                          </FormErrorMessage>
+                        )}
+                    </Center>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={
+                      formik.touched.product_img && formik.errors.product_img
+                    }
+                  >
+                    <Input
+                      type="file"
+                      mt={5}
+                      accept=".jpeg, .jpg, .png, .gif"
+                      variant={""}
+                      id="product_img"
+                      name="product_img"
+                      value={formik.values.product_img}
+                    ></Input>
+                    <Center>
+                      {formik.touched.product_img &&
+                        formik.errors.product_img && (
+                          <FormErrorMessage>
+                            {formik.errors.product_img}
+                          </FormErrorMessage>
+                        )}
+                    </Center>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={
+                      formik.touched.description && formik.errors.description
+                    }
+                  >
+                    <Input
+                      type="textarea"
+                      mt={5}
+                      placeholder="Description"
+                      id="description"
+                      name="description"
+                      value={formik.values.description}
+                      onChange={formik.handleChange}
+                    ></Input>
+                    <Center>
+                      {formik.touched.description &&
+                        formik.errors.description && (
+                          <FormErrorMessage>
+                            {formik.errors.description}
+                          </FormErrorMessage>
+                        )}
+                    </Center>
+                  </FormControl>
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} type="submit">
+                      Add Product
+                    </Button>
+                  </ModalFooter>
+                </form>
               </Box>
             </ModalBody>
-
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button variant="ghost">Secondary Action</Button>
-            </ModalFooter>
           </ModalContent>
         </Modal>
       </Box>

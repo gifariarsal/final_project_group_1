@@ -29,13 +29,13 @@ const productController = {
       const pagination = setPagination(limit, page);
       const totalProduct = await Product.count();
       const totalPage = Math.ceil(totalProduct / +limit);
-      const where = { isactive: true };
+      // const where = { isactive: true };
       if (category) where.category_id = category;
       const products = await Product.findAll({
         attributes: {
           exclude: ["createdAt", "updatedAt", "category_id"],
         },
-        where,
+        // where,
         include: includeCategory,
         ...pagination,
         order: [[orderBy, order]],
@@ -195,7 +195,7 @@ const productController = {
   },
   createProduct : async (req, res) => {
     try {
-      const { name, category_id, price, admin_discount, description } = req.body;
+      const { name, category_id, store_id, price, admin_discount, description } = req.body;
       if (!req.file) {
         return res.status(400).json({ message: "Product image is required" });
       }
@@ -208,6 +208,7 @@ const productController = {
         await Product.create({
           name,
           category_id,
+          store_id,
           price,
           admin_discount,
           product_img: req.file.path,
@@ -231,27 +232,6 @@ const productController = {
       if(newName === findProduct.name){
         return res.status(500).json({message : "Product already exist"})
       }
-      await db.sequelize.transaction(async (t) => {
-        await Product.update(
-          {
-            name : newName,
-            category_id, 
-            price, 
-            admin_discount, 
-            description,
-          }, { where : {id}}, { transaction : t})
-          return res.status(200).json({message : "Product updated"})
-      })
-    } catch (error) {
-      return res.status(500).json({message : "Failed", error: error.message})
-    }
-  },
-  updateProductImage: async (req, res) => {
-    console.log("ada")
-    try {
-      const {id} = req.params
-      const findProduct = await Product.findOne({where : {id}})
-      console.log("update", findProduct)
       if(findProduct.product_img){
         console.log("ada")
         fs.unlink(path.resolve(__dirname, `../../${findProduct.product_img}`), (err) => {
@@ -262,12 +242,49 @@ const productController = {
       await db.sequelize.transaction(async (t) => {
         await Product.update(
           {
+            name : newName,
+            category_id, 
+            price, 
+            admin_discount, 
             product_img : req.file.path,
+            description,
           }, { where : {id}}, { transaction : t})
-          return res.status(200).json({message : "Image Product updated"})
+          return res.status(200).json({message : "Product updated"})
       })
     } catch (error) {
       return res.status(500).json({message : "Failed", error: error.message})
+    }
+  },
+  deleteProduct: async(req, res) => {
+    try {
+      const {id} = req.params
+      const findProduct = await Product.findOne({where : {id}})
+      console.log("delete", findProduct)
+      await db.sequelize.transaction(async (t) => {
+        await Product.update(
+          {
+            isactive : false,
+          }, { where : {id}}, { transaction : t})
+          return res.status(200).json({message : "Product deleted"})
+      })
+    } catch (error) {
+      return res.status(500).json({message : "Failed", error: error.message})
+    }
+  },
+  activeProduct:async (req, res) => {
+    try {
+      const {id} = req.params
+      const findProduct = await Product.findOne({where : {id}})
+      console.log("active ", findProduct)
+      await db.sequelize.transaction(async (t) => {
+        await Product.update(
+          {
+            isactive : true,
+          }, { where : {id}}, { transaction : t})
+          return res.status(200).json({message : "Product active"})
+      })
+    } catch (error) {
+      return res.status(500).json({message : error.message})
     }
   }
 };
