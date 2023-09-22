@@ -35,6 +35,7 @@ const Navbar = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.AuthReducer);
   function onKlik() {
     dispatch(logoutAuth(toast));
   }
@@ -127,11 +128,14 @@ const Navbar = () => {
                 <Flex alignItems={"center"} ml={10}>
                   <Menu>
                     <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
-                      <Avatar size={"sm"} name="User" src={"/profile"} />
+                      <Avatar size={"sm"} name={user.username} src={"/profile"} />
                     </MenuButton>
                     <MenuList>
                       <Link to={"/profile"}>
                         <MenuItem>Profile</MenuItem>
+                      </Link>
+                      <Link to={"/address"}>
+                        <MenuItem>Manage Address</MenuItem>
                       </Link>
                       <Link to={"/change-password"}>
                         <MenuItem>Change Password</MenuItem>
