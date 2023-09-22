@@ -1,17 +1,19 @@
 import { Box } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getTransaction } from "../../redux/reducer/TransactionReducer";
-import UserOrderOngoingCard from "./UserOrderOngoingCard";
+import { getFinshedTransaction } from "../../redux/reducer/TransactionReducer";
+import UserOrderFinishedCard from "./UserOrderFinishedCard";
 import UserOrderOngoingCardDetails from "./UserOrderOngoingCardDetails";
-const UserOrderOngoing = ({ setDetail, detail }) => {
+import UserOrderFinishedCardDetails from "./UserOrderFinishedCardDetails";
+
+const UserOrderFinished = ({ setDetail, detail }) => {
   const { transaction } = useSelector((state) => state.TransactionReducer);
   const dispatch = useDispatch();
   const [transactionDetail, setTransactionDetail] = useState({});
   const [transactionProducts, setTransactionProducts] = useState([]);
 
   useEffect(() => {
-    dispatch(getTransaction({}));
+    dispatch(getFinshedTransaction({}));
   }, []);
 
   if (!detail) {
@@ -20,7 +22,7 @@ const UserOrderOngoing = ({ setDetail, detail }) => {
         {transaction.length > 0 && (
           <Box>
             {transaction.map((item) => (
-              <UserOrderOngoingCard
+              <UserOrderFinishedCard
                 key={item.id}
                 item={item}
                 setDetail={setDetail}
@@ -35,9 +37,9 @@ const UserOrderOngoing = ({ setDetail, detail }) => {
   }
   return (
     <Box>
-      <UserOrderOngoingCardDetails transactionDetail={transactionDetail} transactionProducts={transactionProducts} />
+      <UserOrderFinishedCardDetails transactionDetail={transactionDetail} transactionProducts={transactionProducts} />
     </Box>
   );
 };
 
-export default UserOrderOngoing;
+export default UserOrderFinished;

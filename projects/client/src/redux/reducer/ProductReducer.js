@@ -71,7 +71,6 @@ export const getStoreProductNext = ({ store_id, index, order, orderBy, category 
       if (order) query += `&order=${order}`;
       if (orderBy) query += `&orderBy=${orderBy}`;
       if (category) query += `&category=${category}`;
-      console.log(query);
       const products = await axios.get(`${URL_API}/product/store/?store_id=${store_id}${query}`);
       console.log(products.data);
       dispatch(setPage(products.data.totalPage));

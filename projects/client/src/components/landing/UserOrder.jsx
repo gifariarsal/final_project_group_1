@@ -1,9 +1,16 @@
 import { Box, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import UserOrderOngoing from "./UserOrderOngoing";
+import UserOrderFinished from "./UserOrderFinished";
 
 const UserOrder = () => {
+  const [detail, setDetail] = useState(false);
+
+  const handleSetDetail = () => {
+    setDetail(false);
+  };
+
   return (
     <Box>
       <Navbar />
@@ -11,21 +18,21 @@ const UserOrder = () => {
         Order
       </Text>
       <Stack align={"center"}>
-        <Tabs isFitted variant="enclosed" w={"50%"}>
+        <Tabs isFitted variant="enclosed" w={"50%"} isLazy>
           <TabList mb="1em">
-            <Tab bg={"red"} color={"white"}>
+            <Tab bg={"red"} color={"white"} onClick={handleSetDetail}>
               Ongoing Order
             </Tab>
-            <Tab bg={"green"} color={"white"}>
+            <Tab bg={"green"} color={"white"} onClick={handleSetDetail}>
               Finished Order
             </Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
-              <UserOrderOngoing />
+              <UserOrderOngoing setDetail={setDetail} detail={detail} />
             </TabPanel>
             <TabPanel>
-              <p>two!</p>
+              <UserOrderFinished setDetail={setDetail} detail={detail} />
             </TabPanel>
           </TabPanels>
         </Tabs>

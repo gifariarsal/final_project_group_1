@@ -4,7 +4,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
   transaction: [],
-  itemTransaction: {},
+  itemTransaction: [],
 };
 
 export const TransactionReducer = createSlice({
@@ -15,7 +15,7 @@ export const TransactionReducer = createSlice({
       state.transaction = [...action.payload];
     },
     setItemTransaction: (state, action) => {
-      state.itemTransaction = { ...action.payload };
+      state.itemTransaction = [...action.payload];
     },
   },
 });
@@ -34,12 +34,27 @@ export const getTransaction = () => {
   };
 };
 
+export const getFinshedTransaction = () => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_API}/transaction/done`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      dispatch(setTransaction(data.data));
+      dispatch(getTransactionItem(data.data[0].id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const getTransactionItem = (id) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get(`${URL_API}/transaction/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+      console.log(data.data);
       dispatch(setItemTransaction(data.data));
     } catch (error) {
       console.log(error);
