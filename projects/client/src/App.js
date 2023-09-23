@@ -78,7 +78,9 @@ function App() {
       defaultUserAddress();
     }
     if (userAddress.length < 1) fetchLocation();
-  }, [user]);
+  }, []);
+
+  console.log(userAddress);
 
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
