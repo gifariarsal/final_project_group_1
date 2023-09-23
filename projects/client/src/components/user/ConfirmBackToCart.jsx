@@ -4,7 +4,6 @@ import {
   Center,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -12,8 +11,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ConfirmBackToCart = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -27,8 +28,8 @@ const ConfirmBackToCart = ({ isOpen, onClose }) => {
         </ModalHeader>
         <ModalBody>
           <Center>
-            <Text color={"gray.400"}>
-              Discard all changes and return to cart?
+            <Text align={"center"} color={"gray.500"}>
+              Go back to your cart without checking out?
             </Text>
           </Center>
         </ModalBody>
@@ -48,10 +49,10 @@ const ConfirmBackToCart = ({ isOpen, onClose }) => {
               _hover={{ bg: "brand.hover" }}
               _active={{ bg: "brand.active" }}
             >
-              Stay On This Page
+              Stay To Checkout
             </Button>
             <Button
-              // onClick={handleDelete}
+              onClick={() => navigate("/cart")}
               mt={4}
               w={"80%"}
               color={"brand.main"}
@@ -62,7 +63,7 @@ const ConfirmBackToCart = ({ isOpen, onClose }) => {
               _hover={{ bg: "gray.100" }}
               _active={{ bg: "gray.300" }}
             >
-              Back and Discard Changes
+              Back To Cart
             </Button>
           </Box>
         </ModalFooter>

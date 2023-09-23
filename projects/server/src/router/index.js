@@ -7,5 +7,6 @@ const categoryRouter = require("./categoryRouter");
 const addressRouter = require("./addressRouter");
 const regionRouter = require("./regionRouter");
 const cartRouter = require("./cartRouter")
+const transactionRouter = require("./transactionRouter");
 
-module.exports = { authRouter, productRouter, storeRouter, adminRouter, profileRouter, categoryRouter, addressRouter, regionRouter, cartRouter };
+module.exports = { authRouter, productRouter, storeRouter, adminRouter, profileRouter, categoryRouter, addressRouter, regionRouter, cartRouter, transactionRouter };

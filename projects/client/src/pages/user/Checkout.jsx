@@ -17,34 +17,57 @@ import ConfirmBackToCart from "../../components/user/ConfirmBackToCart";
 import { useDispatch, useSelector } from "react-redux";
 import { getCart } from "../../redux/reducer/CartReducer";
 import PlainFooter from "../../components/user/PlainFooter";
+import axios from "axios";
+import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
+const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const Checkout = () => {
   const dispatch = useDispatch();
-  const [selectedAddress, setSelectedAddress] = useState("");
   const { user } = useSelector((state) => state.AuthReducer);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { userAddress, defaultAddress } = useSelector(
-    (state) => state.AddressReducer
-  );
+  const { defaultAddress } = useSelector((state) => state.AddressReducer);
   const { carts, item } = useSelector((state) => state.CartReducer);
-  let price = 0;
+  const { store_id } = useSelector((state) => state.ProductReducer);
   const nameExist = user.name ? user.name : user.username;
-
-  const selectOptions = userAddress.map((address) => ({
-    label: address.address,
-    value: address.address,
-  }));
-
-  const handleAddressSelect = (event) => {
-    setSelectedAddress(event.target.value);
-  };
+  let product_price = 0;
+  let delivery_price = 4000;
+  let voucher_discount = 2000;
 
   carts.map((cart) => {
-    return (price += cart.total_price);
+    return (product_price += cart.total_price);
   });
+
+  const total_price = product_price + delivery_price - voucher_discount;
+
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `${URL_API}/transaction`,
+        {
+          total_price: total_price,
+          delivery_price,
+          address: defaultAddress.address,
+          city_id: defaultAddress.city_id,
+          store_id: store_id,
+          voucher_discount,
+          courier: "JNE",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Success");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     dispatch(getCart());
+    dispatch(getDefaultAddress(user.id));
   }, []);
 
   return (
@@ -60,7 +83,10 @@ const Checkout = () => {
           align={"center"}
         >
           <Box w={"full"} my={"16px"} mx={{ base: "16px", lg: "100px" }}>
-            <Flex justifyContent={{ base:"center", lg:"flex-start"}} align={"center"}>
+            <Flex
+              justifyContent={{ base: "center", lg: "flex-start" }}
+              align={"center"}
+            >
               <div style={{ width: "184px" }}>
                 <Image
                   onClick={onOpen}
@@ -78,7 +104,7 @@ const Checkout = () => {
         </Flex>
       </Box>
       <Box w={"full"} py={"16px"} px={{ base: "28px", lg: "100px" }}>
-        <Text fontSize={{ base:"2xl", lg:"4xl"}} fontWeight={"medium"}>
+        <Text fontSize={{ base: "2xl", lg: "4xl" }} fontWeight={"medium"}>
           Checkout
         </Text>
         <Divider />
@@ -93,33 +119,20 @@ const Checkout = () => {
                 <Text fontWeight={"medium"}>{nameExist}</Text>
                 <Text my={2}>{user.phone}</Text>
                 <Text>
-                  {selectedAddress ? (
-                    selectedAddress
-                  ) : defaultAddress ? (
+                  {defaultAddress ? (
                     defaultAddress.address
                   ) : (
                     <Spinner size="sm" />
                   )}
                 </Text>
                 <Text
-                  my={2}
-                  fontSize={"xs"}
-                  color={"gray.500"}
+                  mt={2}
+                  fontSize={"sm"}
                   fontStyle={"italic"}
+                  color={"gray.500"}
                 >
-                  Want it sent to another address?
+                  *your order will be delivered to your default address
                 </Text>
-                <Select
-                  placeholder="Select another address"
-                  value={selectedAddress}
-                  onChange={handleAddressSelect}
-                >
-                  {selectOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
                 <Divider my={4} />
                 <Text fontWeight={"bold"} mb={2} color={"brand.main"}>
                   Delivery Options
@@ -183,22 +196,27 @@ const Checkout = () => {
                 </Text>
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Text>Product price:</Text>
-                  <Text> Rp.{price}</Text>
+                  <Text> Rp.{product_price}</Text>
                 </Flex>
-                <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Text>Shipping fee:</Text>
-                  <Text> Rp.</Text>
-                </Flex>
-                <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Text>Discount:</Text>
-                  <Text> Rp.</Text>
-                </Flex>
+                {delivery_price > 0 && (
+                  <Flex justifyContent={"space-between"} alignItems={"center"}>
+                    <Text>Shipping fee:</Text>
+                    <Text> Rp.{delivery_price}</Text>
+                  </Flex>
+                )}
+                {voucher_discount > 0 && (
+                  <Flex justifyContent={"space-between"} alignItems={"center"}>
+                    <Text>Voucher Discount:</Text>
+                    <Text> -Rp.{voucher_discount}</Text>
+                  </Flex>
+                )}
                 <Divider my={4} bg={"black"} />
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Text fontWeight={"bold"}>Total Payment:</Text>
-                  <Text fontWeight={"bold"}> Rp.</Text>
+                  <Text fontWeight={"bold"}> Rp.{total_price}</Text>
                 </Flex>
                 <Button
+                  onClick={handleCheckout}
                   w={"full"}
                   color={"white"}
                   bg={"brand.main"}
@@ -206,7 +224,7 @@ const Checkout = () => {
                   _active={{ bg: "brand.active" }}
                   mt={8}
                 >
-                  Order
+                  Checkout
                 </Button>
               </Box>
             </Box>
