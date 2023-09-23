@@ -4,6 +4,7 @@ import {
   ButtonGroup,
   Card,
   CardBody,
+  CardFooter,
   Center,
   Divider,
   Flex,
@@ -13,6 +14,7 @@ import {
   Select,
   Stack,
   Text,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -40,7 +42,9 @@ const ProductManagement = () => {
   const [totalPage, setTotalPage] = useState("");
   const [orderByPrice, setOrderByPrice] = useState(false);
   const [orderBy, setOrderBy] = useState("name");
+  const [category, setCategory] = useState("");
 
+  const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const handleNext = () => {
     setPage(page + 1);
   };
@@ -56,7 +60,7 @@ const ProductManagement = () => {
   const fetchData = async () => {
     const orderByParam = orderByPrice ? "price" : orderBy; // Use 'price' if orderByPrice is true, otherwise use orderBy
     const respon = await axios.get(
-      `http://localhost:8000/api/admin/product?limit=5&page=${page}&order=${order}&orderBy=${orderByParam}`
+      `http://localhost:8000/api/admin/product?limit=5&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
     );
     console.log("isi", respon.data);
     console.log("total", respon.data.totalPage);
@@ -72,7 +76,7 @@ const ProductManagement = () => {
       setModalClosedTrigger(false); // Reset the trigger
     }
     // fetchData();
-  }, [page, order, orderBy, orderByPrice, modalClosedTrigger]);
+  }, [page, order, orderBy, orderByPrice, category, modalClosedTrigger]);
 
   const handleOrderBy = () => {
     setOrderBy("name");
@@ -96,15 +100,10 @@ const ProductManagement = () => {
     await dispatch(deleteProduct(item, Swal));
     await fetchData();
   };
-  const newProduct = (values) => {
-    dispatch(addProduct(values));
-  };
 
   const getImage = (image) => {
     return `${PUBLIC_URL}/${image}`;
   };
-  const inactiveProducts = product.filter((item) => !item.isactive);
-
   return (
     <Box>
       <Stack>
@@ -127,6 +126,18 @@ const ProductManagement = () => {
           >
             <option value={"ASC"}>A-Z</option>
             <option value={"DESC"}>Z-A</option>
+          </Select>
+          <Select
+            pos={"absolute"}
+            right={350}
+            w={"300px"}
+            placeholder="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value={"1"}>Vegetables</option>
+            <option value={"2"}>Fruit</option>
+            <option value={"3"}>Beverage</option>
           </Select>
           <ButtonGroup mt={"12px"}>
             <Button
@@ -154,7 +165,8 @@ const ProductManagement = () => {
                 <Card
                   key={item.id}
                   ml={"48px"}
-                  w={{ md: "600px", lg: "800px" }}
+                  // w={{ md: "600px", lg: "800px" }}
+                  w={isLargerThanMD ? "800px" : "400px"}
                   mt={"20px"}
                   boxShadow={"lg"}
                   border={"2px"}
@@ -170,12 +182,20 @@ const ProductManagement = () => {
                         borderRadius="lg"
                       />
                       <Stack mt="6" spacing="3">
-                        <Heading color={item.isactive ? "green" : "red"}>
+                        <Heading
+                          color={item.isactive ? "green" : "red"}
+                          textDecoration={item.isactive ? "" : "line-through"}
+                        >
                           {item.Category?.name}
                         </Heading>
                         <Text>{item.name}</Text>
                         <Flex gap={2} fontSize={"12px"}>
-                          <Text fontWeight={"bold"}>Rp. {item.price}</Text>
+                          <Text
+                            textDecoration={item.isactive ? "" : "line-through"}
+                            fontWeight={"bold"}
+                          >
+                            Rp. {item.price}
+                          </Text>
                           <Text
                             textAlign={"center"}
                             fontWeight={"bold"}
@@ -188,7 +208,12 @@ const ProductManagement = () => {
                           </Text>
                         </Flex>
 
-                        <Text fontSize="2xl">Rp.{newPrice}</Text>
+                        <Text
+                          textDecoration={item.isactive ? "" : "line-through"}
+                          fontSize="2xl"
+                        >
+                          Rp.{newPrice}
+                        </Text>
                         <Text>{item.description}</Text>
                       </Stack>
                       <Box right={10} top={50} position={"absolute"}>
@@ -200,6 +225,7 @@ const ProductManagement = () => {
                           {item.isactive ? (
                             <IconButton
                               color={"red"}
+                              mt={"12px"}
                               variant={""}
                               icon={
                                 <RxCross1
@@ -214,6 +240,7 @@ const ProductManagement = () => {
                                 <IconButton
                                   color={"green"}
                                   variant={""}
+                                  mt={"12px"}
                                   icon={
                                     <FaCheck
                                       size={"md"}
@@ -222,6 +249,7 @@ const ProductManagement = () => {
                                   }
                                 />
                                 <IconButton
+                                  mt={"24px"}
                                   color={"red"}
                                   variant={""}
                                   icon={

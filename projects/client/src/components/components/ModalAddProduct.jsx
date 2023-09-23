@@ -31,18 +31,18 @@ const addProductSchema = Yup.object().shape({
   store_id: Yup.string().required("Store is required"),
   price: Yup.number().required("Price must be number is required"),
   description: Yup.string().required("Description is required"),
-  // product_img: Yup.mixed()
-  //   .required("Category Image is required")
-  //   .test(
-  //     "fileSize",
-  //     "File size is too large",
-  //     (value) => !value || value.size <= 1048576
-  //   )
-  //   .test(
-  //     "fileType",
-  //     "Invalid file format",
-  //     (value) => !value || /\/(jpg|png|gif)$/i.test(value.type)
-  //   ),
+  product_img: Yup.mixed()
+    .required("Product Image is required")
+    .test(
+      "fileSize",
+      "File size is too large",
+      (value) => !value || value.size <= 1048576
+    )
+    .test(
+      "fileType",
+      "Invalid file format",
+      (value) => !value || /\/(jpg|png|gif)$/i.test(value.type)
+    ),
 });
 export default function ModalAddProduct({ isOpen, onClose }) {
   const [store, setStore] = useState([]);
