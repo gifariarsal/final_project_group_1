@@ -221,7 +221,14 @@ const adminController = {
   }, 
   deleteProduct : async (req, res) => {
     try {
-      
+      const {productId} = req.params
+      console.log("id destroy", productId)
+      const checkProduct = await Product.findOne({where : {id: productId}})
+      console.log("id product destroy", checkProduct)
+      await db.sequelize.transaction(async (t) => {
+        const response = await Product.destroy({where : {id : productId}}, {transaction : t})
+      })
+      return res.status(200).json({message : "Success"})
     } catch (error) {
       return res.status(500).json({message : error.message})
     }

@@ -179,6 +179,24 @@ export const getProduct = ({ index = 1, order = "ASC", orderBy = "name", categor
   };
 };
 
+export const destroyProduct = (product, Swal) => {
+  return async (dispatch) => {
+    console.log("destroy ", product)
+    const productId = product.id
+    console.log("id destroy reducer", productId)
+    try {
+      const result = await axios.delete(`${URL_API}/admin/product/${productId}`)
+      Swal.fire({
+        icon: 'success',
+        title: 'Product Deleted...',
+        text: 'Back in business',
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export const { setBranchAdmin, setAdmin, loginSuccess, logoutSuccess, setRoleId, setPage, setProduct } = AdminReducer.actions;
 
 export default AdminReducer.reducer;

@@ -27,8 +27,9 @@ import ButtonAddProduct from "../../components/ButtonAddProduct";
 import { IoTrashOutline } from "react-icons/io5";
 import ButtonEditProduct from "../../components/ButtonEditProduct";
 import { RxCross1 } from "react-icons/rx";
-import { FaCheck } from "react-icons/fa6";
+import { FaCheck, FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import { destroyProduct } from "../../../redux/reducer/AdminReducer";
 
 const ProductManagement = () => {
   const PUBLIC_URL = "http://localhost:8000";
@@ -84,6 +85,11 @@ const ProductManagement = () => {
   };
   const restore = async (item) => {
     await dispatch(restoreProduct(item, Swal));
+    await fetchData();
+  };
+  const handleDeleteProduct = async (item) => {
+    console.log("destroy client", item);
+    await dispatch(destroyProduct(item, Swal));
     await fetchData();
   };
   const deactive = async (item) => {
@@ -145,7 +151,6 @@ const ProductManagement = () => {
             const newPrice = item.price - item.admin_discount;
             return (
               <Box>
-                {/* {active ? ( */}
                 <Card
                   key={item.id}
                   ml={"48px"}
@@ -204,16 +209,30 @@ const ProductManagement = () => {
                               }
                             />
                           ) : (
-                            <IconButton
-                              color={"green"}
-                              variant={""}
-                              icon={
-                                <FaCheck
-                                  size={"md"}
-                                  onClick={() => restore(item)}
+                            <Box>
+                              <Stack>
+                                <IconButton
+                                  color={"green"}
+                                  variant={""}
+                                  icon={
+                                    <FaCheck
+                                      size={"md"}
+                                      onClick={() => restore(item)}
+                                    />
+                                  }
                                 />
-                              }
-                            />
+                                <IconButton
+                                  color={"red"}
+                                  variant={""}
+                                  icon={
+                                    <FaTrashCan
+                                      size={"md"}
+                                      onClick={() => handleDeleteProduct(item)}
+                                    />
+                                  }
+                                />
+                              </Stack>
+                            </Box>
                           )}
                         </Stack>
                       </Box>

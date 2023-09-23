@@ -10,5 +10,6 @@ router.post("/branch-admin", createBranchAdmin, validateRegist, adminController.
 router.get("/branch-admin", adminController.getBranchAdmin);
 router.patch("/branch-admin/:id", adminController.deleteBranchAdmin);
 router.get("/product", adminController.fetchProduct)
+router.delete("/product/:productId", adminController.deleteProduct)
 
 module.exports = router;

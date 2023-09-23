@@ -81,15 +81,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
     },
   });
 
-  const isButtonDisabled =
-    !formik.dirty ||
-    formik.isSubmitting ||
-    formik.errors.newName ||
-    formik.errors.category_id ||
-    formik.errors.price ||
-    formik.errors.admin_discount ||
-    formik.errors.description ||
-    formik.errors.product_img;
+  const isButtonDisabled = !formik.isValid || formik.isSubmitting;
   return (
     <>
       <Box>
@@ -246,7 +238,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                       type="submit"
                       bg={"brand.main"}
                       _hover={{ bg: "brand.hover", color: "white" }}
-                      // isDisabled={isButtonDisabled}
+                      isDisabled={isButtonDisabled}
                       isLoading={formik.isSubmitting}
                       loadingText="Adding Product..."
                     >
