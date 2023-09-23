@@ -1,11 +1,50 @@
+const { Sequelize, Op } = require("sequelize");
 const db = require("../../models");
-const Transaction = db.Transaction;
-const TransactionItem = db.Transactionitem;
-const Product = db.Product;
-const Cart = db.Cart;
-const CartItem = db.Cartitem;
+const { Transaction, Product, Transactionitem, Cart, Cartitem } = db;
 
 const transactionController = {
+  getTransaction: async (req, res) => {
+    try {
+      const transaction = await Transaction.findAll({
+        where: {
+          user_id: req.user.id,
+          status: {
+            [Op.lt]: 5,
+          },
+        },
+      });
+      console.log("transaction", transaction);
+      res.status(200).json({ message: "Get Transaction Success", data: transaction });
+    } catch (error) {
+      res.status(500).json({ message: "Get Transaction Failed", error: error.message });
+    }
+  },
+  getFinishedTransaction: async (req, res) => {
+    try {
+      const transaction = await Transaction.findAll({
+        where: {
+          user_id: req.user.id,
+          status: {
+            [Op.gte]: 5,
+          },
+        },
+      });
+      console.log("transaction", transaction);
+      res.status(200).json({ message: "Get Transaction Success", data: transaction });
+    } catch (error) {
+      res.status(500).json({ message: "Get Transaction Failed", error: error.message });
+    }
+  },
+
+  getTransactionItemOne: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const item = await Transactionitem.findAll({ where: { transaction_id: id }, include: Product });
+      res.status(200).json({ message: "Get Transaction Success", data: item });
+    } catch (error) {
+      res.status(500).json({ message: "Get Transaction Item Failed", error: error.message });
+    }
+  },
   checkout: async (req, res) => {
     try {
       const { id } = req.user;
@@ -15,7 +54,7 @@ const transactionController = {
         return res.status(404).json({ message: "Cart not found" });
       }
 
-      const cartItems = await CartItem.findAll({ where: { cart_id: cart.id } });
+      const cartItems = await Cartitem.findAll({ where: { cart_id: cart.id } });
 
       const {
         name,
@@ -53,7 +92,7 @@ const transactionController = {
       for (const cartItem of cartItems) {
         const product = await Product.findByPk(cartItem.product_id);
 
-        await TransactionItem.create({
+        await Transactionitem.create({
           transaction_id: newTransaction.id,
           product_id: cartItem.product_id,
           quantity: cartItem.quantity,
@@ -65,7 +104,7 @@ const transactionController = {
 
       // Hitung total harga, dll. untuk transaksi dan simpan di dalam newTransaction
 
-      await CartItem.destroy({ where: { cart_id: cart.id } });
+      await Cartitem.destroy({ where: { cart_id: cart.id } });
 
       return res
         .status(200)
@@ -73,7 +112,7 @@ const transactionController = {
     } catch (error) {
       return res.status(500).json({ message: "Failed", error: error.message });
     }
-  },
+  }
 };
 
 module.exports = transactionController;

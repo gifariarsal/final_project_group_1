@@ -27,6 +27,8 @@ import Address from "./pages/user/Address";
 import { getAddress, getDefaultAddress, setPrimaryAddress } from "./redux/reducer/AddressReducer";
 import Category from "./pages/Category";
 import Checkout from "./pages/user/Checkout";
+import UserOrder from "./components/landing/UserOrder";
+import UserOrderOngoingCardDetails from "./components/landing/UserOrderOngoingCardDetails";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -78,6 +80,8 @@ function App() {
     }
     if (userAddress.length < 1) fetchLocation();
   }, [user]);
+
+  console.log(userAddress);
 
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
@@ -132,6 +136,7 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/address" element={<Address />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/User-Order" element={<UserOrder />} />
         </>
       );
     }

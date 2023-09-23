@@ -1,23 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getBranchAdmin } from "../../../redux/reducer/AdminReducer";
-import {
-  Box,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  Flex,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  IoChevronDownOutline,
-  IoChevronUpOutline,
-  IoTrashOutline,
-} from "react-icons/io5";
+import { Box, Table, Thead, Tr, Th, Tbody, Td, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
+import { IoChevronDownOutline, IoChevronUpOutline, IoTrashOutline } from "react-icons/io5";
 import DeleteAdminModal from "./DeleteAdminModal";
 
 const AdminList = () => {
@@ -82,11 +67,7 @@ const AdminList = () => {
           ))}
         </Tbody>
       </Table>
-      <DeleteAdminModal
-        isOpen={isOpen}
-        onClose={onClose}
-        admin_id={adminToDeleteId}
-      />
+      <DeleteAdminModal isOpen={isOpen} onClose={onClose} admin_id={adminToDeleteId} />
     </Box>
   );
 };
