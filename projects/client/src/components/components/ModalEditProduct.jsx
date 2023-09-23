@@ -14,23 +14,38 @@ import {
   ModalOverlay,
   Select,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { updateProduct } from "../../redux/reducer/ProductReducer";
 import { getCategory } from "../../redux/reducer/CategoryReducer";
+import Swal from "sweetalert2";
 
 const editProductSchema = Yup.object().shape({
   newName: Yup.string().required("Name is required"),
   categoryId: Yup.string().required("Category is required"),
   price: Yup.number().required("Price must be number is required"),
   description: Yup.string().required("Description is required"),
+  // product_img: Yup.mixed()
+  //   .required("Category Image is required")
+  //   .test(
+  //     "fileSize",
+  //     "File size is too large",
+  //     (value) => !value || value.size <= 1048576
+  //   )
+  //   .test(
+  //     "fileType",
+  //     "Invalid file format",
+  //     (value) => !value || /\/(jpg|png|gif)$/i.test(value.type)
+  //   ),
 });
 export default function ModalEditProduct({ isOpen, onClose, id }) {
   const { category } = useSelector((state) => state.CategoryReducer);
   const dispatch = useDispatch();
+  const toast = useToast();
 
   useEffect(() => {
     dispatch(getCategory());
@@ -43,6 +58,7 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
       price: "",
       admin_discount: "",
       description: "",
+      product_img: null,
     },
     validationSchema: editProductSchema,
     onSubmit: (values) => {
@@ -50,11 +66,12 @@ export default function ModalEditProduct({ isOpen, onClose, id }) {
       const formData = new FormData();
       formData.append("product_img", productImg);
       console.log(values, productImg);
-      dispatch(updateProduct(values, productImg));
+      dispatch(updateProduct(values, productImg, toast, Swal));
       onClose();
+      formik.resetForm();
     },
   });
-  const isButtonDisabled = formik.isValid || formik.isSubmitting;
+  const isButtonDisabled = !formik.isValid || formik.isSubmitting;
   return (
     <>
       <Box fontFamily={"montserrat"}>

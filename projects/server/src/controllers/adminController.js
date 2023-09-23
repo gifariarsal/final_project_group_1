@@ -2,10 +2,26 @@ const db = require("../../models");
 const { Sequelize } = require("sequelize");
 const Admin = db.Admin;
 const Store = db.Store;
+const { Product, Category, ProductStore } = db;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const KEY = process.env.KEY;
 const axios = require("axios");
+
+let includeStore = [{ model: Store, attributes: { exclude: ["createdAt", "updatedAt"] }, where: { isactive: true } }];
+const includeCategory = [{ model: Category, attributes: { exclude: ["createdAt", "updatedAt"] } }];
+const includeProduct = [
+  {
+    model: Product,
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { isactive: true },
+    include: includeCategory,
+  },
+];
+const setPagination = (limit, page) => {
+  const offset = (page - 1) * +limit;
+  return { limit: parseInt(limit), offset };
+};
 
 const adminController = {
   login: async (req, res) => {
@@ -156,6 +172,63 @@ const adminController = {
       return res.status(500).json({ message: "Failed to delete admin", error: error.message });
     }
   },
+
+  fetchProduct: async (req, res) => {
+    try {
+      const {
+        page = 1,
+        limit = 5,
+        order = 'ASC',
+        orderBy = 'name',
+        category = '',
+        minPrice = 0,
+        maxPrice = Infinity,
+      } = req.query;
+  
+      const pagination = setPagination(limit, page);
+      const totalProduct = await Product.count();
+      const totalPage = Math.ceil(totalProduct / +limit);
+      const where = {};
+  
+      if (category) {
+        where.category_id = category;
+      }
+  
+      let orderByColumn;
+      if (orderBy === 'price') {
+        orderByColumn = Sequelize.literal('price'); // Sort by price
+      } else {
+        orderByColumn = Sequelize.col(orderBy); // Sort by other columns
+      }
+  
+      const products = await Product.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt', 'category_id'],
+        },
+        include: includeCategory,
+        ...pagination,
+        where,
+        order: [
+          // [Sequelize.literal(`CASE WHEN Product.isactive = true THEN 0 ELSE 1 END`), order],
+          [orderByColumn, order],
+        ],
+      });
+      
+      res.status(200).json({ page, totalProduct, totalPage, limit, data: products });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }, 
+  deleteProduct : async (req, res) => {
+    try {
+      
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  }
+    
+  
+
 };
 
 module.exports = adminController;

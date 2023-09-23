@@ -14,6 +14,7 @@ import {
   ModalOverlay,
   Select,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import * as Yup from "yup";
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategory } from "../../redux/reducer/CategoryReducer";
 import { addProduct } from "../../redux/reducer/ProductReducer";
+import Swal from "sweetalert2";
 
 const addProductSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -29,10 +31,23 @@ const addProductSchema = Yup.object().shape({
   store_id: Yup.string().required("Store is required"),
   price: Yup.number().required("Price must be number is required"),
   description: Yup.string().required("Description is required"),
+  // product_img: Yup.mixed()
+  //   .required("Category Image is required")
+  //   .test(
+  //     "fileSize",
+  //     "File size is too large",
+  //     (value) => !value || value.size <= 1048576
+  //   )
+  //   .test(
+  //     "fileType",
+  //     "Invalid file format",
+  //     (value) => !value || /\/(jpg|png|gif)$/i.test(value.type)
+  //   ),
 });
 export default function ModalAddProduct({ isOpen, onClose }) {
   const [store, setStore] = useState([]);
   const dispatch = useDispatch();
+  const toast = useToast();
   const { category } = useSelector((state) => state.CategoryReducer);
   const fetchData = async () => {
     const respon = await axios.get("http://localhost:8000/api/store/branch");
@@ -53,19 +68,28 @@ export default function ModalAddProduct({ isOpen, onClose }) {
       price: "",
       admin_discount: "",
       description: "",
+      product_img: null,
     },
     validationSchema: addProductSchema,
     onSubmit: (values) => {
       const productImg = document.getElementById("product_img").files[0];
       const formData = new FormData();
       formData.append("product_img", productImg);
-      console.log("masukk", productImg);
-      console.log("masukk", values);
-      dispatch(addProduct(values, productImg));
+      dispatch(addProduct(values, productImg, Swal, toast));
+      onClose();
+      formik.resetForm();
     },
   });
 
-  const isButtonDisabled = formik.isValid || formik.isSubmitting;
+  const isButtonDisabled =
+    !formik.dirty ||
+    formik.isSubmitting ||
+    formik.errors.newName ||
+    formik.errors.category_id ||
+    formik.errors.price ||
+    formik.errors.admin_discount ||
+    formik.errors.description ||
+    formik.errors.product_img;
   return (
     <>
       <Box>
@@ -120,6 +144,35 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     })}
                   </Select>
                   <FormControl
+                    isInvalid={
+                      formik.touched.product_img && formik.errors.product_img
+                    }
+                  >
+                    <Input
+                      type="file"
+                      mt={5}
+                      accept=".jpeg, .jpg, .png, .gif"
+                      variant={""}
+                      id="product_img"
+                      name="product_img"
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          "product_img",
+                          e.currentTarget.files[0]
+                        );
+                      }}
+                      onBlur={formik.handleBlur}
+                    />
+                    <Center>
+                      {formik.touched.product_img &&
+                        formik.errors.product_img && (
+                          <FormErrorMessage>
+                            {formik.errors.product_img}
+                          </FormErrorMessage>
+                        )}
+                    </Center>
+                  </FormControl>
+                  <FormControl
                     isInvalid={formik.touched.price && formik.errors.price}
                   >
                     <Input
@@ -165,29 +218,6 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                   </FormControl>
                   <FormControl
                     isInvalid={
-                      formik.touched.product_img && formik.errors.product_img
-                    }
-                  >
-                    <Input
-                      type="file"
-                      mt={5}
-                      accept=".jpeg, .jpg, .png, .gif"
-                      variant={""}
-                      id="product_img"
-                      name="product_img"
-                      value={formik.values.product_img}
-                    ></Input>
-                    <Center>
-                      {formik.touched.product_img &&
-                        formik.errors.product_img && (
-                          <FormErrorMessage>
-                            {formik.errors.product_img}
-                          </FormErrorMessage>
-                        )}
-                    </Center>
-                  </FormControl>
-                  <FormControl
-                    isInvalid={
                       formik.touched.description && formik.errors.description
                     }
                   >
@@ -210,7 +240,16 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Center>
                   </FormControl>
                   <ModalFooter>
-                    <Button colorScheme="blue" mr={3} type="submit">
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      type="submit"
+                      bg={"brand.main"}
+                      _hover={{ bg: "brand.hover", color: "white" }}
+                      // isDisabled={isButtonDisabled}
+                      isLoading={formik.isSubmitting}
+                      loadingText="Adding Product..."
+                    >
                       Add Product
                     </Button>
                   </ModalFooter>

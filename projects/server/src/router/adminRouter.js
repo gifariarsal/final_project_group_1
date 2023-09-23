@@ -9,5 +9,6 @@ router.post("/branch-admin", createBranchAdmin, validateRegist, adminController.
 // router.get("/branch/:id", adminController.getAdminsById);
 router.get("/branch-admin", adminController.getBranchAdmin);
 router.patch("/branch-admin/:id", adminController.deleteBranchAdmin);
+router.get("/product", adminController.fetchProduct)
 
 module.exports = router;

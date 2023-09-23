@@ -29,13 +29,13 @@ const productController = {
       const pagination = setPagination(limit, page);
       const totalProduct = await Product.count();
       const totalPage = Math.ceil(totalProduct / +limit);
-      // const where = { isactive: true };
+      const where = { isactive: true };
       if (category) where.category_id = category;
       const products = await Product.findAll({
         attributes: {
           exclude: ["createdAt", "updatedAt", "category_id"],
         },
-        // where,
+        where,
         include: includeCategory,
         ...pagination,
         order: [[orderBy, order]],

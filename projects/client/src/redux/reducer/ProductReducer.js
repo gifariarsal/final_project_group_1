@@ -127,7 +127,7 @@ export const getProductSearch = ({ category, name, store_id }) => {
   };
 };
 
-export const addProduct = (values, productImg) => {
+export const addProduct = (values, productImg, Swal, toast) => {
   return async(dispatch) => {
     console.log("prodcut", values)
     console.log("prodcut image", productImg)
@@ -148,13 +148,27 @@ export const addProduct = (values, productImg) => {
           }
         }
       )
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Product successfully added',
+        showConfirmButton: false,
+        timer: 1500
+      })
     } catch (error) {
       console.log(error)
+      toast({
+        title: "Failed",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 }
 
-export const updateProduct = (values, productImg) => {
+export const updateProduct = (values, productImg, toast, Swal) => {
   return async() => {
     const id = values.id
     try {
@@ -173,13 +187,29 @@ export const updateProduct = (values, productImg) => {
           }
         }
       )
-      alert("done")
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Product successfully updated',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
     } catch (error) {
       console.log(error)
+      toast({
+        title: "Failed",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 }
-export const deleteProduct = (values) => {
+export const deleteProduct = (values, Swal, toast) => {
   return async () => {
     try {
       const id = values.id
@@ -188,13 +218,24 @@ export const deleteProduct = (values) => {
         `${URL_API}/product/delete/${id}`,
         {}
       )
-      alert("Done")
+      Swal.fire({
+        icon: 'error',
+        title: 'Product disabled...',
+        text: 'Restore the product is stock already exist',
+      })
     } catch (error) {
       console.log(error)
+      toast({
+        title: "Failed",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }
 }
-export const restoreProduct = (values) => {
+export const restoreProduct = (values, Swal) => {
   return async () => {
     try {
       const id = values.id
@@ -202,7 +243,11 @@ export const restoreProduct = (values) => {
       const data = await axios.patch(
         `${URL_API}/product/restore/${id}`, {}
       )
-      alert("Done")
+      Swal.fire({
+        icon: 'success',
+        title: 'Product restore...',
+        text: 'Back in business',
+      })
     } catch (error) {
       console.log(error)
     }
