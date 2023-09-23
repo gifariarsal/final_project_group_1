@@ -1,5 +1,5 @@
 const db = require("../../models");
-const { Sequelize } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const Admin = db.Admin;
 const Store = db.Store;
 const { Product, Category, ProductStore } = db;
@@ -142,7 +142,7 @@ const adminController = {
             required: false,
           },
         ],
-        where: { isactive: true },
+        where: { isactive: true, admin_id: { [Op.ne]: 1 } },
       });
 
       return res.status(200).json({ message: "Brandh admins retrieved successfully", data: stores });
