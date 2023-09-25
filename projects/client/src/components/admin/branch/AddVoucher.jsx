@@ -81,6 +81,7 @@ const AddVoucher = ({ isOpen, onClose }) => {
         return true;
       }
     ),
+    type: Yup.string().required("Voucher Type is required"),
     expired: Yup.string().required("Expired Date is required"),
   });
 
@@ -97,6 +98,7 @@ const AddVoucher = ({ isOpen, onClose }) => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
+        console.log(values);
         await dispatch(addVoucher(values, toast, onClose, resetForm));
         // await dispatch(getVoucher());
       } catch (error) {
@@ -119,7 +121,10 @@ const AddVoucher = ({ isOpen, onClose }) => {
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
-            <FormControl isInvalid={formik.errors.name && formik.touched.name}>
+            <FormControl
+              isRequired
+              isInvalid={formik.errors.name && formik.touched.name}
+            >
               <FormLabel>Name</FormLabel>
               <Input
                 type="text"
@@ -131,6 +136,7 @@ const AddVoucher = ({ isOpen, onClose }) => {
               <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
             </FormControl>
             <FormControl
+              isRequired
               isInvalid={
                 formik.errors.description && formik.touched.description
               }
@@ -190,21 +196,26 @@ const AddVoucher = ({ isOpen, onClose }) => {
                 <FormErrorMessage>{formik.errors.percent}</FormErrorMessage>
               </FormControl>
             </Flex>
-            <FormControl isInvalid={formik.errors.type && formik.touched.type}>
+            <FormControl
+              isRequired
+              isInvalid={formik.errors.type && formik.touched.type}
+            >
               <FormLabel mt={4}>Type</FormLabel>
               <Select
                 name="type"
-                value={formik.values.type || "discount"}
+                placeholder="Select Discount Type"
+                value={formik.values.type}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
                 <option value="discount">Discount</option>
                 <option value="freedelivery">Free Delivery</option>
                 <option value="buy1get1">Buy One get One</option>
-                <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
               </Select>
+              <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
             </FormControl>
             <FormControl
+              isRequired
               isInvalid={formik.errors.expired && formik.touched.expired}
             >
               <FormLabel mt={4}>Expired Date</FormLabel>

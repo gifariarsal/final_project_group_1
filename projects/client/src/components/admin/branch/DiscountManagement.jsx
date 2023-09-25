@@ -2,6 +2,7 @@ import { Box, Button, Text, useDisclosure } from '@chakra-ui/react';
 import React from 'react'
 import { IoAddOutline } from 'react-icons/io5';
 import AddVoucher from './AddVoucher';
+import VoucherList from './VoucherList';
 
 const DiscountManagement = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,7 +45,7 @@ const DiscountManagement = () => {
         </Box>
       </Box>
       <Box w={"full"}>
-        {/* <CategoryList /> */}
+        <VoucherList />
       </Box>
       <AddVoucher isOpen={isOpen} onClose={onClose} />
     </Box>

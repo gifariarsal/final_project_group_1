@@ -8,6 +8,15 @@ const voucherController = {
       const { name, product_id, description, nominal, percent, type, expired } =
         req.body;
 
+      const expirationDate = new Date(expired);
+      const currentDate = new Date();
+
+      if (expirationDate <= currentDate) {
+        return res
+          .status(400)
+          .json({ message: "Expired date must be in the future" });
+      }
+
       const voucherExist = await Voucherdetail.findOne({
         where: { name },
       });
@@ -39,6 +48,40 @@ const voucherController = {
           message: "Voucher created",
           data: newVoucher,
         });
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  getVoucher: async (req, res) => {
+    try {
+      const currentDate = new Date();
+      const vouchers = await Voucherdetail.findAll({
+        where: {
+          expired: {
+            [Op.gt]: currentDate,
+          },
+          isactive: true,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt", "isactive"] },
+      });
+      return res.status(200).json({ message: "Success", vouchers });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  deleteVoucher: async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.sequelize.transaction(async (t) => {
+        await Voucherdetail.update(
+          { isactive: false },
+          { where: { id } },
+          { transaction: t }
+        );
+        return res.status(200).json({ message: "Voucher deleted" });
       });
     } catch (error) {
       return res.status(500).json({ message: error.message });

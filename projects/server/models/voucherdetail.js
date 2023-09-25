@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       percent: DataTypes.INTEGER,
       type: DataTypes.ENUM("freedelivery", "discount", "buy1get1"),
       expired: DataTypes.DATE,
+      isactive: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
     {
       sequelize,
