@@ -1,39 +1,43 @@
-import { Box, Flex, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Box, Flex, VStack } from "@chakra-ui/react";
+import React, { useState } from "react";
 import {
   IoCartOutline,
   IoCubeOutline,
   IoPricetagsOutline,
   IoListOutline,
   IoBarChartOutline,
+  IoGridOutline,
 } from "react-icons/io5";
-import { Link } from 'react-router-dom';
-import MenuDashboard from '../../components/admin/MenuDashboard';
-import UserTransaction from '../../components/admin/branch/UserTransaction';
-import ProductManagement from '../../components/admin/branch/ProductManagement';
-import DiscountManagement from '../../components/admin/branch/DiscountManagement';
-import CategoryManagement from '../../components/admin/branch/CategoryManagement';
-import BranchSalesReport from '../../components/admin/branch/BranchSalesReport';
-import NavbarAdmin from '../../components/admin/NavbarAdmin';
+import { Link } from "react-router-dom";
+import MenuDashboard from "../../components/admin/MenuDashboard";
+import UserTransaction from "../../components/admin/branch/UserTransaction";
+import ProductManagement from "../../components/admin/branch/ProductManagement";
+import DiscountManagement from "../../components/admin/branch/DiscountManagement";
+import CategoryManagement from "../../components/admin/branch/CategoryManagement";
+import BranchSalesReport from "../../components/admin/branch/BranchSalesReport";
+import NavbarAdmin from "../../components/admin/NavbarAdmin";
+import StockManagement from "../../components/admin/branch/StockManagement";
 
 const BranchDashboard = () => {
-    const [activePage, setActivePage] = useState("transaction");
-    const renderPage = () => {
-      switch (activePage) {
-        case "transaction":
-          return <UserTransaction />;
-        case "product":
-          return <ProductManagement />;
-        case "discount":
-          return <DiscountManagement />;
-        case "category":
-          return <CategoryManagement />;
-        case "reports":
-          return <BranchSalesReport />;
-        default:
-          return null;
-      }
-    };
+  const [activePage, setActivePage] = useState("transaction");
+  const renderPage = () => {
+    switch (activePage) {
+      case "transaction":
+        return <UserTransaction />;
+      case "product":
+        return <ProductManagement />;
+      case "discount":
+        return <DiscountManagement />;
+      case "category":
+        return <CategoryManagement />;
+      case "reports":
+        return <BranchSalesReport />;
+      case "stock":
+        return <StockManagement />;
+      default:
+        return null;
+    }
+  };
   return (
     <Box>
       <NavbarAdmin title="Branch Admin Dashboard" />
@@ -53,7 +57,10 @@ const BranchDashboard = () => {
               <MenuDashboard icon={IoCubeOutline} name="Product Management" />
             </Link>
             <Link as={"button"} onClick={() => setActivePage("discount")}>
-              <MenuDashboard icon={IoPricetagsOutline} name="Discount Management" />
+              <MenuDashboard
+                icon={IoPricetagsOutline}
+                name="Discount Management"
+              />
             </Link>
             <Link as={"button"} onClick={() => setActivePage("category")}>
               <MenuDashboard icon={IoListOutline} name="Category Management" />
@@ -61,14 +68,17 @@ const BranchDashboard = () => {
             <Link as={"button"} onClick={() => setActivePage("reports")}>
               <MenuDashboard icon={IoBarChartOutline} name="Sales Report" />
             </Link>
+            <Link as={"button"} onClick={() => setActivePage("stock")}>
+              <MenuDashboard icon={IoGridOutline} name="Stock Management" />
+            </Link>
           </VStack>
         </Box>
-        <Box w={"full"} mt={{ base: "20px", md:"60px" }}>
+        <Box w={"full"} mt={{ base: "20px", md: "60px" }}>
           {renderPage()}
         </Box>
       </Flex>
     </Box>
   );
-}
+};
 
-export default BranchDashboard
+export default BranchDashboard;

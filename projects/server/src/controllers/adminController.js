@@ -197,10 +197,11 @@ const adminController = {
         order = 'ASC',
         orderBy = 'name',
         category = '',
+        name = '',
         minPrice = 0,
         maxPrice = Infinity,
       } = req.query;
-  
+      const findName = {name : {[Op.like] : `%${name || ""}%`}}
       const pagination = setPagination(limit, page);
       const totalProduct = await Product.count();
       const totalPage = Math.ceil(totalProduct / +limit);
@@ -223,7 +224,7 @@ const adminController = {
         },
         include: includeCategory,
         ...pagination,
-        where,
+        where : findName || "",
         order: [
           // [Sequelize.literal(`CASE WHEN Product.isactive = true THEN 0 ELSE 1 END`), order],
           [orderByColumn, order],

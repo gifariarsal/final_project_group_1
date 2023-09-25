@@ -11,6 +11,9 @@ import {
   Heading,
   IconButton,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Select,
   Stack,
   Text,
@@ -32,6 +35,7 @@ import { RxCross1 } from "react-icons/rx";
 import { FaCheck, FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import { destroyProduct } from "../../../redux/reducer/AdminReducer";
+import { BiSearchAlt } from "react-icons/bi";
 
 const ProductManagement = () => {
   const PUBLIC_URL = "http://localhost:8000";
@@ -43,6 +47,7 @@ const ProductManagement = () => {
   const [orderByPrice, setOrderByPrice] = useState(false);
   const [orderBy, setOrderBy] = useState("name");
   const [category, setCategory] = useState("");
+  const [name, setName] = useState("");
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const handleNext = () => {
@@ -60,7 +65,7 @@ const ProductManagement = () => {
   const fetchData = async () => {
     const orderByParam = orderByPrice ? "price" : orderBy; // Use 'price' if orderByPrice is true, otherwise use orderBy
     const respon = await axios.get(
-      `http://localhost:8000/api/admin/product?limit=5&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
+      `http://localhost:8000/api/admin/product?name=${name}&limit=5&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
     );
     console.log("isi", respon.data);
     console.log("total", respon.data.totalPage);
@@ -76,8 +81,13 @@ const ProductManagement = () => {
       setModalClosedTrigger(false); // Reset the trigger
     }
     // fetchData();
-  }, [page, order, orderBy, orderByPrice, category, modalClosedTrigger]);
+  }, [page, order, orderBy, orderByPrice, category, modalClosedTrigger, name]);
 
+  const handleSearch = () => {
+    const name = document.getElementById("search").value;
+    setName(name);
+    // if (name) dispatch(getProductSearch({ name, store_id }));
+  };
   const handleOrderBy = () => {
     setOrderBy("name");
     setOrderByPrice(false);
@@ -139,23 +149,26 @@ const ProductManagement = () => {
             <option value={"2"}>Fruit</option>
             <option value={"3"}>Beverage</option>
           </Select>
-          <ButtonGroup mt={"12px"}>
-            <Button
-              ml={"48px"}
-              variant={"ghost"}
-              _hover={{ bg: "brand.hover", color: "white" }}
-              onClick={() => handleOrderBy()}
-            >
-              Sort by name
-            </Button>
-            <Button
-              variant={"ghost"}
-              _hover={{ bg: "brand.hover", color: "white" }}
-              onClick={() => handleOrderByPrice()}
-            >
-              Sort by price
-            </Button>
-          </ButtonGroup>
+          <InputGroup ml={"48px"}>
+            <InputLeftElement>
+              <BiSearchAlt color="#37630A" />
+            </InputLeftElement>
+            <Input
+              id="search"
+              onChange={handleSearch}
+              placeholder={"Search Product"}
+              w={"300px"}
+            />
+          </InputGroup>
+          <Button
+            mt={5}
+            ml={"48px"}
+            variant={"ghost"}
+            _hover={{ bg: "brand.hover", color: "white" }}
+            onClick={() => handleOrderByPrice()}
+          >
+            Sort by price
+          </Button>
           <Divider mt={"10px"} />
           {product.map((item) => {
             const active = item.isactive;
