@@ -3,15 +3,15 @@ import axios from "axios";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
-  voucher: [],
+  adminVoucher: [],
 };
 
 export const VoucherReducer = createSlice({
   name: "VoucherReducer",
   initialState,
   reducers: {
-    setVoucher: (state, action) => {
-      state.voucher = [...action.payload];
+    setAdminVoucher: (state, action) => {
+      state.adminVoucher = [...action.payload];
     },
   },
 });
@@ -44,11 +44,11 @@ export const addVoucher = (values, toast, onClose, resetForm) => {
   };
 };
 
-export const getVoucher = () => {
+export const getAdminVoucher = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${URL_API}/voucher`);
-      dispatch(setVoucher(response.data.vouchers));
+      const response = await axios.get(`${URL_API}/voucher/admin`);
+      dispatch(setAdminVoucher(response.data.vouchers));
     } catch (error) {
       console.log(error);
     }
@@ -78,6 +78,6 @@ export const deleteVoucher = (id, toast) => {
   };
 }
 
-export const { setVoucher } = VoucherReducer.actions;
+export const { setAdminVoucher } = VoucherReducer.actions;
 
 export default VoucherReducer.reducer;

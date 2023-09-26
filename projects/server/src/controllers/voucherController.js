@@ -5,7 +5,7 @@ const Voucherdetail = db.Voucherdetail;
 const voucherController = {
   createDiscountVoucher: async (req, res) => {
     try {
-      const { name, product_id, description, nominal, percent, type, expired } =
+      const { name, product_id, description, nominal, percent, minimum_payment, type, expired } =
         req.body;
 
       const expirationDate = new Date(expired);
@@ -54,15 +54,15 @@ const voucherController = {
     }
   },
 
-  getVoucher: async (req, res) => {
+  getAdminVoucher: async (req, res) => {
     try {
       const currentDate = new Date();
       const vouchers = await Voucherdetail.findAll({
         where: {
-          expired: {
-            [Op.gt]: currentDate,
-          },
           isactive: true,
+          name: {
+            [Op.notLike]: "Referral Voucher",
+          },
         },
         attributes: { exclude: ["createdAt", "updatedAt", "isactive"] },
       });

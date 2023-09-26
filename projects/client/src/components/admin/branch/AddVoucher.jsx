@@ -20,7 +20,10 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { addVoucher } from "../../../redux/reducer/VoucherReducer";
+import {
+  addVoucher,
+  getAdminVoucher,
+} from "../../../redux/reducer/VoucherReducer";
 import axios from "axios";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
@@ -34,13 +37,13 @@ const AddVoucher = ({ isOpen, onClose }) => {
   }, []);
 
   const fetchProduct = async () => {
-    try{
-        const response = await axios.get(`${URL_API}/admin/product`,);
-        setProduct(response.data.data);
+    try {
+      const response = await axios.get(`${URL_API}/admin/product`);
+      setProduct(response.data.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const productData = () => {
     const sortedStateData = product.sort((a, b) => {
@@ -92,25 +95,32 @@ const AddVoucher = ({ isOpen, onClose }) => {
       product_id: "",
       nominal: 0,
       percent: 0,
+      minimum_payment: 0,
       type: "",
       expired: "",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
-        console.log(values);
         await dispatch(addVoucher(values, toast, onClose, resetForm));
-        // await dispatch(getVoucher());
+        await dispatch(getAdminVoucher());
       } catch (error) {
         console.log(error);
       }
     },
   });
 
+  const handleDateChange = (event) => {
+    const selectedDate = event.target.value;
+    const selectedDateWithTime = `${selectedDate}T23:59`;
+    formik.setFieldValue("expired", selectedDateWithTime);
+  };
+
   const isButtonDisabled =
     !formik.isValid || formik.isSubmitting || !formik.dirty;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -195,6 +205,25 @@ const AddVoucher = ({ isOpen, onClose }) => {
                 />
                 <FormErrorMessage>{formik.errors.percent}</FormErrorMessage>
               </FormControl>
+              <FormControl
+                isInvalid={
+                  formik.errors.minimum_payment &&
+                  formik.touched.minimum_payment
+                }
+              >
+                <FormLabel mt={4}>Min. Payment</FormLabel>
+                <Input
+                  type="text"
+                  name="minimum_payment"
+                  inputMode="numeric"
+                  value={formik.values.minimum_payment}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                <FormErrorMessage>
+                  {formik.errors.minimum_payment}
+                </FormErrorMessage>
+              </FormControl>
             </Flex>
             <FormControl
               isRequired
@@ -222,8 +251,8 @@ const AddVoucher = ({ isOpen, onClose }) => {
               <Input
                 type="date"
                 name="expired"
-                value={formik.values.expired}
-                onChange={formik.handleChange}
+                value={formik.values.expired.split("T")[0]}
+                onChange={handleDateChange}
                 onBlur={formik.handleBlur}
               />
               <FormErrorMessage>{formik.errors.expired}</FormErrorMessage>

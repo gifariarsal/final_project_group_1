@@ -19,12 +19,14 @@ import { getCart } from "../../redux/reducer/CartReducer";
 import PlainFooter from "../../components/user/PlainFooter";
 import axios from "axios";
 import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
+import TransactionVoucher from "../../components/user/TransactionVoucher";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.AuthReducer);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenVoucher, onOpen: onOpenVoucher, onClose: onCloseVoucher } = useDisclosure();
   const { defaultAddress } = useSelector((state) => state.AddressReducer);
   const { carts, item } = useSelector((state) => state.CartReducer);
   const { store_id } = useSelector((state) => state.ProductReducer);
@@ -187,7 +189,7 @@ const Checkout = () => {
               boxShadow={"lg"}
             >
               <Box w={"full"} p={4}>
-                <Select placeholder="Save more with discount"></Select>
+                <Button onClick={onOpenVoucher} w={"full"}>Use Voucher</Button>
               </Box>
               <Divider />
               <Box w={"full"} p={4}>
@@ -233,6 +235,7 @@ const Checkout = () => {
       </Box>
       <PlainFooter />
       <ConfirmBackToCart isOpen={isOpen} onClose={onClose} />
+      <TransactionVoucher isOpen={isOpenVoucher} onClose={onCloseVoucher} />
     </Box>
   );
 };

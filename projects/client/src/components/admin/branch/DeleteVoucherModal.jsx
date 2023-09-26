@@ -1,7 +1,7 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useToast } from '@chakra-ui/react';
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { deleteVoucher, getVoucher } from '../../../redux/reducer/VoucherReducer';
+import { deleteVoucher, getAdminVoucher } from '../../../redux/reducer/VoucherReducer';
 
 const DeleteVoucherModal = ({ isOpen, onClose, id }) => {
     const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const DeleteVoucherModal = ({ isOpen, onClose, id }) => {
     const handleDelete = async () => {
         await dispatch(deleteVoucher(id, toast));
         onClose();
-        await dispatch(getVoucher());
+        await dispatch(getAdminVoucher());
     }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
