@@ -7,9 +7,12 @@ import {
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { BiPackage } from "react-icons/bi";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { userCancel } from "../../redux/reducer/AuthReducer";
 
 const UserOrderOngoingCardDetailOrder = ({ status, transactionProducts }) => {
   const [confirmed, setConfirmed] = useState(false);
+  const dispatch = useDispatch();
 
   const handleConfirm = () => {
     setConfirmed(true);
@@ -19,6 +22,7 @@ const UserOrderOngoingCardDetailOrder = ({ status, transactionProducts }) => {
   const handleCancel = (item) => {
     // setConfirmed(false);
     console.log("cancel", item.transaction_id);
+    dispatch(userCancel(item));
   };
 
   const handleUpload = () => {

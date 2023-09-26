@@ -176,6 +176,25 @@ export const setUserLocation = (latitude, longitude) => {
     }
   };
 };
+export const userCancel = (item) => {
+  return async(dispatch) => {
+    console.log("user cancel reducer masuk ", item)
+    console.log("id ts", item.transaction_id);
+    const transaction_id = item.transaction_id
+    try {
+      const token = localStorage.getItem("token")
+      const response = await axios.delete(`${URL_API}/auth/transaction/${transaction_id}`,
+      {
+        headers : {
+          Authorization : `Bearer ${token}`
+        }
+      })
+      alert("Cancel Done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
 
 export const { loginSuccess, logoutSuccess, setUser, setLocation, setLonLat } = AuthReducer.actions;
 
