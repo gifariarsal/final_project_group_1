@@ -126,40 +126,37 @@ const ProductManagement = () => {
             Product Management
           </Text>
           <ButtonAddProduct setModalClosedTrigger={setModalClosedTrigger} />
-          <Select
-            pos={"absolute"}
-            right={10}
-            w={"300px"}
-            placeholder="Sort By"
-            value={order}
-            onChange={(e) => setOrder(e.target.value)}
-          >
-            <option value={"ASC"}>A-Z</option>
-            <option value={"DESC"}>Z-A</option>
-          </Select>
-          <Select
-            pos={"absolute"}
-            right={350}
-            w={"300px"}
-            placeholder="Category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value={"1"}>Vegetables</option>
-            <option value={"2"}>Fruit</option>
-            <option value={"3"}>Beverage</option>
-          </Select>
-          <InputGroup ml={"48px"}>
-            <InputLeftElement>
-              <BiSearchAlt color="#37630A" />
-            </InputLeftElement>
-            <Input
-              id="search"
-              onChange={handleSearch}
-              placeholder={"Search Product"}
-              w={"300px"}
-            />
-          </InputGroup>
+          <Flex justify={"space-around"} ml={"48px"}>
+            <Select
+              placeholder="Sort By"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+            >
+              <option value={"ASC"}>A-Z</option>
+              <option value={"DESC"}>Z-A</option>
+            </Select>
+            <Select
+              ml={"48px"}
+              placeholder="Category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value={"1"}>Vegetables</option>
+              <option value={"2"}>Fruit</option>
+              <option value={"3"}>Beverage</option>
+            </Select>
+            <InputGroup ml={"48px"}>
+              <InputLeftElement>
+                <BiSearchAlt color="#37630A" />
+              </InputLeftElement>
+              <Input
+                id="search"
+                w={"300px"}
+                onChange={handleSearch}
+                placeholder={"Search Product"}
+              />
+            </InputGroup>
+          </Flex>
           <Button
             mt={5}
             ml={"48px"}
@@ -169,6 +166,7 @@ const ProductManagement = () => {
           >
             Sort by price
           </Button>
+
           <Divider mt={"10px"} />
           {product.map((item) => {
             const active = item.isactive;

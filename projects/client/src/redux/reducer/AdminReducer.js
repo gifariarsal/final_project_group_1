@@ -12,6 +12,7 @@ const initialState = {
   login: false,
   admin: [],
   product : [],
+  store : [],
   page: 1,
 };
 
@@ -41,6 +42,9 @@ export const AdminReducer = createSlice({
     },
     setProduct: (state, action) => {
       state.product = [...action.payload];
+    },
+    setStore: (state, action) => {
+      state.store = [...action.payload];
     },
     setPage: (state, action) => {
       state.page = action.payload;
@@ -163,22 +167,28 @@ export const getBranchAdmin = () => {
   };
 };
 
-export const getProduct = ({ index = 1, order = "ASC", orderBy = "name", category = "" }) => {
+export const getProduct = () => {
   return async (dispatch) => {
     try {
-      let query = `?page=${index}`;
-      if (order) query += `&order=${order}`;
-      if (orderBy) query += `&orderBy=${orderBy}`;
-      if (category) query += `&category=${category}`;
-      const { data } = await axios.get(`${URL_API}/admin/product${query}`);
+      const { data } = await axios.get(`${URL_API}/admin/product?limit=100`);
       console.log(data);
-      dispatch(setPage(data.totalPage));
       dispatch(setProduct(data.data));
     } catch (error) {
       console.log(error);
     }
   };
 };
+export const fetchStore = () => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_API}/store/branch`);
+      dispatch(setStore(data.data))
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
 
 export const destroyProduct = (product, Swal) => {
   return async (dispatch) => {
@@ -198,6 +208,6 @@ export const destroyProduct = (product, Swal) => {
   };
 }
 
-export const { setBranchAdmin, setAdmin, loginSuccess, logoutSuccess, setRoleId, setPage, setProduct } = AdminReducer.actions;
+export const { setBranchAdmin,setStore, setAdmin, loginSuccess, logoutSuccess, setRoleId, setPage, setProduct } = AdminReducer.actions;
 
 export default AdminReducer.reducer;

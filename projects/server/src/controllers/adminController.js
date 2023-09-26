@@ -189,20 +189,21 @@ const adminController = {
     }
   },
 
-  fetchProduct: async (req, res) => {
+ fetchProduct : async (req, res) => {
     try {
       const {
         page = 1,
         limit = 5,
         order = 'ASC',
         orderBy = 'name',
-        category = '',
+        category = '', // This should correspond to a valid category ID
         name = '',
         minPrice = 0,
         maxPrice = Infinity,
       } = req.query;
-      const findName = {name : {[Op.like] : `%${name || ""}%`}}
-      const pagination = setPagination(limit, page);
+  
+      const findName = { name: { [Op.like]: `%${name || ""}%` } };
+      const pagination = { offset: (page - 1) * limit, limit: +limit };
       const totalProduct = await Product.count();
       const totalPage = Math.ceil(totalProduct / +limit);
       const where = {};
@@ -222,20 +223,17 @@ const adminController = {
         attributes: {
           exclude: ['createdAt', 'updatedAt', 'category_id'],
         },
-        include: includeCategory,
+        include: [{ model: Category, as: 'Category' }], // Make sure this is set up correctly
         ...pagination,
-        where : findName || "",
-        order: [
-          // [Sequelize.literal(`CASE WHEN Product.isactive = true THEN 0 ELSE 1 END`), order],
-          [orderByColumn, order],
-        ],
+        where: { ...findName, ...where },
+        order: [[orderByColumn, order]],
       });
-      
+  
       res.status(200).json({ page, totalProduct, totalPage, limit, data: products });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  }, 
+  },
   deleteProduct : async (req, res) => {
     try {
       const {productId} = req.params
@@ -249,7 +247,31 @@ const adminController = {
     } catch (error) {
       return res.status(500).json({message : error.message})
     }
+  },
+  updateStock : async(req, res) => {
+    try {
+      // const {id} = req.params
+      const {productId, quantity} = req.body
+      const store = await Store.findOne({ where: { admin_id: req.user.id } });
+      console.log("store ", store)
+      if (!store) {
+        return res.status(404).json({ message: "Store not found for the user." });
+      }
+      console.log("admin store", store.admin_id);
+      await db.sequelize.transaction(async(t) => {
+        const response = await ProductStore.create({
+          product_id : productId,
+          store_id : store.id,
+          quantity : quantity,
+          isactive : true
+        }, {transaction : t})
+      })
+      return res.status(200).json({message : "Success"})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
   }
+
     
   
 
