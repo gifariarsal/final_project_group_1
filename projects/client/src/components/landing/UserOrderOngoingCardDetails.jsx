@@ -19,7 +19,10 @@ import {
 import React, { useEffect, useState } from "react";
 import UserOrderOngoingCardDetailOrder from "./UserOrderOngoingCardDetailStatus";
 
-const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts }) => {
+const UserOrderOngoingCardDetails = ({
+  transactionDetail,
+  transactionProducts,
+}) => {
   const orderStatusArray = [
     { status: "Awaiting Payment", color: "red" },
     { status: "Waiting for Payment Confirmation", color: "orange" },
@@ -43,7 +46,11 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts })
           {orderStatusArray.map((step, index) => (
             <Step label={step.status} key={index}>
               <StepIndicator>
-                <StepStatus complete={<StepIcon />} incomplete={<StepNumber />} active={<StepNumber />} />
+                <StepStatus
+                  complete={<StepIcon />}
+                  incomplete={<StepNumber />}
+                  active={<StepNumber />}
+                />
               </StepIndicator>
 
               <StepSeparator _horizontal={{ ml: "0" }} />
@@ -58,7 +65,10 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts })
             Next Step {activeStep + 2}: <b>{nextStep}</b>
           </Text>
         </Flex>
-        <UserOrderOngoingCardDetailOrder status={transactionDetail.status} />
+        <UserOrderOngoingCardDetailOrder
+          status={transactionDetail.status}
+          transactionProducts={transactionProducts}
+        />
       </Stack>
     );
   };
@@ -75,7 +85,7 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts })
             <Box key={item.id}>
               <Flex justify={"space-between"}>
                 <Stack spacing="2">
-                  {console.log(item)}
+                  {console.log("inikah ?", item)}
                   <Text fontWeight={"bold"} fontSize={"20px"}>
                     {item.Product.name}
                   </Text>

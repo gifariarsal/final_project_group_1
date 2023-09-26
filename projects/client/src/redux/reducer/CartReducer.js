@@ -93,7 +93,7 @@ export const getCart = () => {
   };
 };
 
-export const addCart = (products, Swal) => {
+export const addCart = (products,store_id, Swal) => {
   return async (dispatch) => {
     const dataProduct = products.Product || products;
     const discount = dataProduct.price - products.admin_discount
@@ -102,11 +102,12 @@ export const addCart = (products, Swal) => {
     const productId = dataProduct.product_id || dataProduct.id;
     console.log("id", productId);
     console.log("total", total_price)
+    console.log("store reducer ", store_id)
     const token = localStorage.getItem("token");
     try {
       const result = await axios.patch(
         `${URL_API}/cart/`,
-        { productId, total_price },
+        { productId, total_price, store_id },
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -208,7 +208,6 @@ const productController = {
         await Product.create({
           name,
           category_id,
-          store_id,
           price,
           admin_discount,
           product_img: req.file.path,

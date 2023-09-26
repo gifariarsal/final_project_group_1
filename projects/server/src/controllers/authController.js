@@ -3,6 +3,8 @@ const db = require("../../models");
 const User = db.User;
 const Admin = db.Admin;
 const Cart = db.Cart;
+const tims = db.Transactionitem;
+const ts = db.Transaction;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const handlebars = require("handlebars");
@@ -146,6 +148,24 @@ const authController = {
       return res.status(200).json({message : "Admin", data : findAdmin})
     } catch (error) {
       return res.status(500).json({message : "Failed", error : error.message})
+    }
+  },
+  cancelTransaction:async(req, res) => {
+    try {
+      const {id} = req.user
+      const {transaction_id} = req.params;
+      const findTransaction = await ts.findOne({where : {user_id : id}})
+      const findCart = await Cart.findOne({where : {user_id: id}})
+      console.log("dapat transactionnya", findTransaction)
+      console.log("dapat cart transactionnya", findCart)
+      await db.sequelize.transaction(async(t) => {
+        const response = await tims.destroy({where : {transaction_id:transaction_id} }, {transaction : t})
+        const result = await ts.destroy({where : {user_id : id}}, {transaction: t})
+        const responseCart = await Cart.update({total_price: 0},{where : {user_id: id}}, {transaction: t})
+      })
+      return res.status(200).json({message : "Success"})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
     }
   }
 };

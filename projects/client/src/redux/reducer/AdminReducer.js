@@ -208,6 +208,56 @@ export const destroyProduct = (product, Swal) => {
   };
 }
 
+export const stockUpdate = (values) => {
+  return async(dispatch) => {
+    const token = localStorage.getItem("token")
+    console.log("update reducer ", values)
+    try {
+      await axios.patch(`${URL_API}/admin/stock`, {
+        productId : values.productId,
+        quantity : values.quantity
+      }, {
+        headers : {
+          Authorization : `Bearer ${token}`
+        }
+      }
+      )
+      alert("Done")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+export const disableProduct = (values, Swal, toast) => {
+  return async () => {
+    console.log("masuk")
+    try {
+      const id = values.id
+      console.log("delete values", id)
+      const data = await axios.patch(
+        `${URL_API}/admin/delete/${id}`,
+        {}
+      )
+      Swal.fire({
+        icon: 'error',
+        title: 'Product disabled...',
+        text: 'Restore the product is stock already exist',
+      })
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Failed",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }
+}
+
+
+
 export const { setBranchAdmin,setStore, setAdmin, loginSuccess, logoutSuccess, setRoleId, setPage, setProduct } = AdminReducer.actions;
 
 export default AdminReducer.reducer;

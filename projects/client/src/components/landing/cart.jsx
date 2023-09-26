@@ -117,7 +117,7 @@ export default function Cart() {
                         >
                           <CardBody>
                             <Box fontWeight={"bold"} mb={"24px"}>
-                              <Text>Click and Play</Text>
+                              <Text>{products.Store?.name}</Text>
                             </Box>
                             <Flex>
                               <Image

@@ -21,18 +21,18 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
-import { fetchStore, getProduct } from "../../redux/reducer/AdminReducer";
+import {
+  fetchStore,
+  getProduct,
+  stockUpdate,
+} from "../../redux/reducer/AdminReducer";
 const editProductSchema = Yup.object().shape({
-  newName: Yup.string().required("Name is required"),
-  product_id: Yup.string().required("Category is required"),
+  productId: Yup.string().required("product is required"),
+  quantity: Yup.number().required("quantity is required"),
 });
 
 export default function ModalUpdateStock({ isOpen, onClose, id }) {
   const { product, store } = useSelector((state) => state.AdminReducer);
-  console.log("update product", product);
-  console.log("update product", store);
-  const token = localStorage.getItem("token");
-  console.log("token", token);
 
   useEffect(() => {
     dispatch(getProduct());
@@ -42,12 +42,16 @@ export default function ModalUpdateStock({ isOpen, onClose, id }) {
   const toast = useToast();
   const formik = useFormik({
     initialValues: {
-      id: id,
-      product_id: "",
+      productId: "",
       quantity: "",
     },
     validationSchema: editProductSchema,
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      console.log("masuk update ", values);
+      dispatch(stockUpdate(values));
+      onClose();
+      formik.resetForm();
+    },
   });
   return (
     <>
@@ -62,15 +66,15 @@ export default function ModalUpdateStock({ isOpen, onClose, id }) {
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl
                     isInvalid={
-                      formik.touched.product_id && formik.errors.product_id
+                      formik.touched.productId && formik.errors.productId
                     }
                   >
                     <Select
-                      {...formik.getFieldProps("product_id")}
+                      {...formik.getFieldProps("productId")}
                       mt={5}
                       placeholder="Select Product"
-                      id="product_id"
-                      name="product_id"
+                      id="productId"
+                      name="productId"
                     >
                       {product.map((item) => {
                         return (

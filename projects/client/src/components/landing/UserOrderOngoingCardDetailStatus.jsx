@@ -1,10 +1,14 @@
-import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
-import { AiOutlineCheckCircle, AiOutlineClockCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import { Box, Button, ButtonGroup, Flex, Icon, Text } from "@chakra-ui/react";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineClockCircle,
+  AiOutlineCloudUpload,
+} from "react-icons/ai";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { BiPackage } from "react-icons/bi";
 import React, { useState } from "react";
 
-const UserOrderOngoingCardDetailOrder = ({ status }) => {
+const UserOrderOngoingCardDetailOrder = ({ status, transactionProducts }) => {
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
@@ -12,8 +16,9 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
     if (confirmed) console.log("masuk ke confirm order");
   };
 
-  const handleCancel = () => {
-    setConfirmed(false);
+  const handleCancel = (item) => {
+    // setConfirmed(false);
+    console.log("cancel", item.transaction_id);
   };
 
   const handleUpload = () => {
@@ -22,28 +27,58 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
 
   if (status === 0) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" h="10vh" mt={10}>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        h="10vh"
+        mt={10}
+      >
         <Icon as={AiOutlineClockCircle} boxSize={12} color="gray.500" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           Waiting for Payment
         </Text>
         <Text color="gray.600" mt={2}>
-          Please complete your payment to continue, and upload the Payment information
+          Please complete your payment to continue, and upload the Payment
+          information
         </Text>{" "}
-        <Button
-          variant="outline"
-          colorScheme="teal"
-          mt={4}
-          leftIcon={<Icon as={AiOutlineCloudUpload} />}
-          onClick={handleUpload}>
-          Upload
-        </Button>
+        <ButtonGroup>
+          <Button
+            variant="outline"
+            colorScheme="teal"
+            mt={4}
+            leftIcon={<Icon as={AiOutlineCloudUpload} />}
+            onClick={handleUpload}
+          >
+            Upload
+          </Button>
+          {transactionProducts.map((item) => {
+            console.log("ts_id", item.transaction_id);
+            return (
+              <Box key={item.id}>
+                <Button
+                  mt={4}
+                  colorScheme="red"
+                  onClick={() => handleCancel(item)}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            );
+          })}
+        </ButtonGroup>
       </Flex>
     );
   }
   if (status === 1) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" h="10vh" mt={10}>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        h="10vh"
+        mt={10}
+      >
         <Icon as={AiOutlineClockCircle} boxSize={12} color="gray.500" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           Awaiting Admin Confirmation
@@ -57,7 +92,13 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
 
   if (status === 2) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" h="10vh" mt={10}>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        h="10vh"
+        mt={10}
+      >
         <Icon as={BiPackage} boxSize={12} color="gray.500" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           Your Order is Being Processed
@@ -71,7 +112,13 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
 
   if (status === 3) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" h="10vh" mt={10}>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        h="10vh"
+        mt={10}
+      >
         <Icon as={LiaShippingFastSolid} boxSize={12} color="gray.500" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           Your Order is Being Shipped
@@ -85,7 +132,12 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
 
   if (status === 4) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" h="100%">
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        h="100%"
+      >
         <Icon as={AiOutlineCheckCircle} boxSize={12} color="green.400" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           {confirmed ? "Are You Sure?" : "Confirm Your Order"}
@@ -105,7 +157,12 @@ const UserOrderOngoingCardDetailOrder = ({ status }) => {
             </Button>
           </Flex>
         ) : (
-          <Button colorScheme="green" mt={4} leftIcon={<Icon as={AiOutlineCheckCircle} />} onClick={handleConfirm}>
+          <Button
+            colorScheme="green"
+            mt={4}
+            leftIcon={<Icon as={AiOutlineCheckCircle} />}
+            onClick={handleConfirm}
+          >
             Confirm Order
           </Button>
         )}
