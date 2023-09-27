@@ -208,7 +208,7 @@ export const destroyProduct = (product, Swal) => {
   };
 }
 
-export const stockUpdate = (values) => {
+export const stockUpdate = (values, Swal) => {
   return async(dispatch) => {
     const token = localStorage.getItem("token")
     console.log("update reducer ", values)
@@ -222,7 +222,11 @@ export const stockUpdate = (values) => {
         }
       }
       )
-      alert("Done")
+      Swal.fire({
+        icon: 'success',
+        title: 'Stock in your branch updated...',
+        text: 'Back in business',
+      })
     } catch (error) {
       console.log(error)
     }
@@ -230,7 +234,6 @@ export const stockUpdate = (values) => {
 }
 export const disableProduct = (values, Swal, toast) => {
   return async () => {
-    console.log("masuk")
     try {
       const id = values.id
       console.log("delete values", id)
@@ -242,6 +245,32 @@ export const disableProduct = (values, Swal, toast) => {
         icon: 'error',
         title: 'Product disabled...',
         text: 'Restore the product is stock already exist',
+      })
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Failed",
+        description: error?.response?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }
+}
+export const enableProduct = (values, Swal, toast) => {
+  return async () => {
+    try {
+      const id = values.id
+      console.log("enable values", id)
+      const data = await axios.patch(
+        `${URL_API}/admin/enable/${id}`,
+        {}
+      )
+      Swal.fire({
+        icon: 'success',
+        title: 'Product enable...',
+        text: 'Back to business',
       })
     } catch (error) {
       console.log(error)

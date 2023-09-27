@@ -101,7 +101,9 @@ const cartController = {
           {
             model: Store,
             attributes: [`name`]
-          }
+          },
+          {
+            model : product, attributes : [`product_img`]}
         ],
         attributes: {
           exclude: ["createdAt", "updatedAt"],

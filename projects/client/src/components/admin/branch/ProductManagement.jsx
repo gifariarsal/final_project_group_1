@@ -48,6 +48,7 @@ const ProductManagement = () => {
   const [orderBy, setOrderBy] = useState("name");
   const [category, setCategory] = useState("");
   const [name, setName] = useState("");
+  const [sortLabelText, setSortLabelText] = useState("Sort by price");
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const handleNext = () => {
@@ -74,11 +75,10 @@ const ProductManagement = () => {
   };
 
   useEffect(() => {
-    // dispatch(getProduct({}));
     fetchData();
     if (modalClosedTrigger) {
       fetchData();
-      setModalClosedTrigger(false); // Reset the trigger
+      setModalClosedTrigger(false);
     }
     // fetchData();
   }, [page, order, orderBy, orderByPrice, category, modalClosedTrigger, name]);
@@ -96,14 +96,30 @@ const ProductManagement = () => {
 
   const handleOrderByPrice = () => {
     setOrderByPrice(!orderByPrice);
+    if (orderByPrice) {
+      setSortLabelText("Sort by price"); // Change the label text when sorting by price
+    } else {
+      setSortLabelText("Sort by name"); // Change the label text when sorting by name
+    }
   };
   const restore = async (item) => {
     await dispatch(restoreProduct(item, Swal));
     await fetchData();
   };
   const handleDeleteProduct = async (item) => {
-    console.log("destroy client", item);
-    await dispatch(destroyProduct(item, Swal));
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      await dispatch(destroyProduct(item, Swal));
+      Swal.fire("Deleted!", "The product has been removed.", "success");
+    }
     await fetchData();
   };
   const deactive = async (item) => {
@@ -164,7 +180,7 @@ const ProductManagement = () => {
             _hover={{ bg: "brand.hover", color: "white" }}
             onClick={() => handleOrderByPrice()}
           >
-            Sort by price
+            {sortLabelText}
           </Button>
 
           <Divider mt={"10px"} />

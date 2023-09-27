@@ -2,7 +2,9 @@ const db = require("../../models");
 const { Sequelize, Op, where } = require("sequelize");
 const Admin = db.Admin;
 const Store = db.Store;
-const { Product, Category, ProductStore } = db;
+const productStore = db.ProductStore
+const stockHistory = db.Storestockhistory
+const { Product, Category } = db;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const KEY = process.env.KEY;
@@ -255,20 +257,33 @@ const adminController = {
       if (!store) {
         return res.status(404).json({ message: "Store not found for the user." });
       }
-      const existingProductStore = await ProductStore.findOne({
+      const existingProductStore = await productStore.findOne({
         where: { product_id: productId, store_id: store.id },
       });
+      console.log("existing product", existingProductStore)
+      const existingStoresHistory = await stockHistory.findOne({
+        where: { product_id: productId, store_id: store.id },
+      });
+      console.log("update sampai sini", existingStoresHistory)
       if (existingProductStore) {
         existingProductStore.quantity = quantity;
+        existingStoresHistory.quantity = quantity
         await existingProductStore.save();
+        await existingStoresHistory.save()
         return res.status(200).json({ message: "Update Success" });
       } else {
-        await ProductStore.create({
+        await productStore.create({
           product_id: productId,
           store_id: store.id,
           quantity: quantity,
           isactive: true,
         });
+        await stockHistory.create({
+          product_id: productId,
+          store_id: store.id,
+          quantity: quantity,
+          isactive: true,
+        })
         return res.status(200).json({ message: "Create Success" });
       }
     } catch (error) {
@@ -278,10 +293,10 @@ const adminController = {
   deActiveProductBranch : async (req, res) => {
     try {
       const {id} = req.params
-      const findProduct = await ProductStore.findOne({where : {id}})
+      const findProduct = await productStore.findOne({where : {id}})
       console.log("deActive product branch", findProduct)
       await db.sequelize.transaction(async(t) => {
-        await ProductStore.update({
+        await productStore.update({
           isactive : false
         }, {where : {id}}, {transaction : t})
       })
@@ -289,6 +304,23 @@ const adminController = {
     } catch (error) {
       return res.status(500).json({message : error.message})
     }
+  },
+  enableProductBranch:async(req,res) => {
+    try {
+      const {id} = req.params;
+      const findProduct = await productStore.findOne({where : {id}})
+      console.log("enable,", findProduct)
+      await db.sequelize.transaction(async(t) => {
+        await productStore.update({
+          isactive : true
+        }, {where : {id}}, {transaction : t})
+      })
+      return res.status(200).json({message : "Enable Success"})
+    } catch (error) {
+      
+    }
+
+
   },
   getStockBranch: async(req,res) => {
     try {
@@ -298,7 +330,7 @@ const adminController = {
       }
       console.log("store get ", store)
       console.log("admin store get", store.admin_id);
-      const findBranch = await ProductStore.findAll({
+      const findBranch = await productStore.findAll({
         where : {
           store_id : store.id
         },

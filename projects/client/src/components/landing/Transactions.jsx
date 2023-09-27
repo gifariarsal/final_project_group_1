@@ -20,11 +20,10 @@ export default function Transactions() {
 
   const checkout = () => {
     navigate("/checkout");
-  }
-    carts.map((cart) => {
-      return price += cart.total_price;
-    });
-  console.log("harga", price);
+  };
+  carts.map((cart) => {
+    return (price += cart.total_price);
+  });
   const cartLength = item.reduce((total, item) => total + item.quantity, 0);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -42,7 +41,15 @@ export default function Transactions() {
               <Divider mt={"20px"} bgColor={"black"} />
               <Text fontWeight={"bold"}>Total price : Rp. {price}</Text>
               <CardFooter mt={"24px"}>
-                <Button onClick={() => checkout()} w={"200px"} color={"white"} bg={"brand.main"} _hover={{ bg: "brand.hover" }} _active={{ bg: "brand.active" }} isDisabled={cartLength <= 0}>
+                <Button
+                  onClick={() => checkout()}
+                  w={"200px"}
+                  color={"white"}
+                  bg={"brand.main"}
+                  _hover={{ bg: "brand.hover" }}
+                  _active={{ bg: "brand.active" }}
+                  isDisabled={cartLength <= 0}
+                >
                   Checkout
                 </Button>
               </CardFooter>

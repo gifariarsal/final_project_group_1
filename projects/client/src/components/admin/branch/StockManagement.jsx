@@ -10,6 +10,7 @@ import {
   Image,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import ButtonUpdateStock from "../../components/ButtonUpdateStock";
 import { useEffect, useState } from "react";
@@ -18,10 +19,14 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
-import { disableProduct } from "../../../redux/reducer/AdminReducer";
+import {
+  disableProduct,
+  enableProduct,
+} from "../../../redux/reducer/AdminReducer";
 
 export default function StockManagement() {
   const PUBLIC_URL = "http://localhost:8000";
+  const toast = useToast();
   const [stock, setStock] = useState([]);
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
   const dispatch = useDispatch();
@@ -42,11 +47,12 @@ export default function StockManagement() {
   };
   const disable = async (item) => {
     console.log("disbale ", item);
-    await dispatch(disableProduct(item, Swal));
+    await dispatch(disableProduct(item, Swal, toast));
     await fetchData();
   };
   const restore = async (item) => {
-    // await dispatch(restoreProduct(item, Swal));
+    console.log("resote, ", item);
+    await dispatch(enableProduct(item, Swal, toast));
     await fetchData();
   };
   useEffect(() => {
@@ -69,7 +75,7 @@ export default function StockManagement() {
             const active = item.isactive;
             const newPrice = item.Product?.price - item.Product?.admin_discount;
             return (
-              <Box>
+              <Box key={item.id}>
                 <Card
                   key={item.id}
                   w={{ md: "600px", lg: "800px" }}
@@ -151,17 +157,6 @@ export default function StockManagement() {
                                     />
                                   }
                                 />
-                                {/* <IconButton
-                                  mt={"24px"}
-                                  color={"red"}
-                                  variant={""}
-                                  icon={
-                                    <FaTrashCan
-                                      size={"md"}
-                                      onClick={() => handleDeleteProduct(item)}
-                                    />
-                                  }
-                                /> */}
                               </Stack>
                             </Box>
                           )}

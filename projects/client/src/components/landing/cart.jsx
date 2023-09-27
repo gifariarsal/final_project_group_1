@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import Transactions from "./Transactions";
-import axios from "axios";
+import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import {
   addCart,
@@ -33,13 +33,16 @@ import {
   getItem,
 } from "../../redux/reducer/CartReducer";
 import { useNavigate } from "react-router-dom";
+import { FaShopify } from "react-icons/fa";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 export default function Cart() {
+  const PUBLIC_URL = "http://localhost:8000";
   const { login } = useSelector((state) => state.AuthReducer);
   const { cart, carts, item } = useSelector((state) => state.CartReducer);
-  const toast = useToast();
-  // const {total_harga}
+  const getImage = (image) => {
+    return `${PUBLIC_URL}/${image}`;
+  };
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,8 +61,26 @@ export default function Cart() {
   };
 
   const destroy = async (products) => {
-    await dispatch(deleteItemCart(products));
-    await dispatch(deleteItemFromCart(products));
+    console.log("delete");
+    // await dispatch(deleteItemCart(products));
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this item from your cart?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonColor: "#d33",
+      icon: "warning",
+      dangerMode: true,
+    });
+    if (result.isConfirmed) {
+      await dispatch(deleteItemFromCart(products));
+      await dispatch(deleteItemCart(products));
+      Swal.fire(
+        "Deleted!",
+        "The item has been removed from the cart.",
+        "success"
+      );
+    }
     await dispatch(getItem());
     await dispatch(getCart());
   };
@@ -89,12 +110,15 @@ export default function Cart() {
                   <Box ml={"100px"}>
                     <Text>You haven't shop today, click the button below</Text>
                     <Button
-                      bg={"brand.main"}
-                      _hover={{ bg: "brand.hover" }}
-                      color={"white"}
+                      // bg={"brand.main"}
+                      _hover={{ bg: "brand.hover", color: "white" }}
+                      color={"black"}
                       onClick={() => navigate("/")}
                       width={"800px"}
                       mt={"32px"}
+                      variant={""}
+                      borderRadius={"10px"}
+                      rightIcon={<FaShopify />}
                     >
                       See our products
                     </Button>
@@ -102,7 +126,7 @@ export default function Cart() {
                 ) : (
                   item.map((products) => {
                     return (
-                      <Box>
+                      <Box key={products.id}>
                         <Card
                           mt={"8"}
                           w={{
@@ -121,7 +145,7 @@ export default function Cart() {
                             </Box>
                             <Flex>
                               <Image
-                                src="https://cdn10.bigcommerce.com/s-f70ch/products/106/images/307/18__31743.1449827934.1280.1280.jpg?c=2"
+                                src={getImage(products.Product?.product_img)}
                                 w={"20%"}
                               />
                               <Box ml={"32px"}>

@@ -26,6 +26,7 @@ import {
   getProduct,
   stockUpdate,
 } from "../../redux/reducer/AdminReducer";
+
 const editProductSchema = Yup.object().shape({
   productId: Yup.string().required("product is required"),
   quantity: Yup.number().required("quantity is required"),
@@ -47,8 +48,7 @@ export default function ModalUpdateStock({ isOpen, onClose, id }) {
     },
     validationSchema: editProductSchema,
     onSubmit: (values) => {
-      console.log("masuk update ", values);
-      dispatch(stockUpdate(values));
+      dispatch(stockUpdate(values, Swal));
       onClose();
       formik.resetForm();
     },

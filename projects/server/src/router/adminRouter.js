@@ -14,5 +14,5 @@ router.delete("/product/:productId", adminController.deleteProduct)
 router.patch("/stock",verifyToken, adminController.updateStock)
 router.get("/product/branch",verifyToken, adminController.getStockBranch)
 router.patch("/delete/:id", adminController.deActiveProductBranch)
-
+router.patch("/enable/:id", adminController.enableProductBranch)
 module.exports = router;

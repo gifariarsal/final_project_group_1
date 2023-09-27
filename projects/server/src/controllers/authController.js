@@ -159,8 +159,8 @@ const authController = {
       console.log("dapat transactionnya", findTransaction)
       console.log("dapat cart transactionnya", findCart)
       await db.sequelize.transaction(async(t) => {
-        const response = await tims.destroy({where : {transaction_id:transaction_id} }, {transaction : t})
-        const result = await ts.destroy({where : {user_id : id}}, {transaction: t})
+        // const response = await tims.destroy({where : {transaction_id:transaction_id} }, {transaction : t})
+        const result = await ts.update({status : 5},{where : {user_id : id}}, {transaction: t})
         const responseCart = await Cart.update({total_price: 0},{where : {user_id: id}}, {transaction: t})
       })
       return res.status(200).json({message : "Success"})

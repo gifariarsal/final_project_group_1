@@ -22,6 +22,7 @@ export const CartReducer = createSlice({
     },
     addToCart: (state, action) => {
       const { id } = action.payload;
+      console.log("masuk", action.payload)
       const existCartItemIndex = state.cart.findIndex((item) => item.id === id);
 
       if (existCartItemIndex !== -1) {
@@ -54,10 +55,17 @@ export const CartReducer = createSlice({
       const existCart = state.cart.findIndex((item) => item.id === id);
       if (existCart !== -1) {
         console.log("sampe")
-        state.totalHarga -= action.payload.harga_produk * state.cart[existCart].quantity;
+        state.totalHarga -= action.payload.price * state.cart[existCart].quantity;
         state.cart.splice(existCart, 1);
       }
-    }
+    },
+    // deleteItemCart: (state, action) => {
+    //   const { id } = action.payload;
+    //   const existCart = state.cart.findIndex((item) => item.id === id);
+    //   state.totalHarga -=
+    //     action.payload.price * state.cart[existCart].quantity;
+    //   state.cart.splice(existCart, 1);
+    // },
   },
 });
 export const getItem = () => {
@@ -121,7 +129,6 @@ export const addCart = (products,store_id, Swal) => {
         showConfirmButton: false,
         timer: 1500
       })
-      // Swal.fire("Success!", "Product successfully added to cart", "success");
     } catch (error) {
       console.log(error);
     }
@@ -161,20 +168,6 @@ export const deleteItemFromCart = (products) => {
     const productId = dataProduct.product_id || dataProduct.id
     console.log("id delete", productId)
     const token = localStorage.getItem("token")
-    // Swal.fire({
-    //   title: 'Do you want to save the changes?',
-    //   showDenyButton: true,
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Save',
-    //   denyButtonText: `Don't save`,
-    // }).then((result) => {
-    //   /* Read more about isConfirmed, isDenied below */
-    //   if (result.isConfirmed) {
-    //     Swal.fire('Saved!', '', 'success')
-    //   } else if (result.isDenied) {
-    //     Swal.fire('Changes are not saved', '', 'info')
-    //   }
-    // })
     try {
       const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, 
       {
@@ -182,8 +175,6 @@ export const deleteItemFromCart = (products) => {
           Authorization : `Bearer ${token}`
         }
       })
-      alert("Uhhuy")
-      
     } catch (error) {
       console.log(error)
     }

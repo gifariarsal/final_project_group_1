@@ -181,15 +181,19 @@ export const userCancel = (item) => {
     console.log("user cancel reducer masuk ", item)
     console.log("id ts", item.transaction_id);
     const transaction_id = item.transaction_id
+    const token = localStorage.getItem("token")
     try {
-      const token = localStorage.getItem("token")
-      const response = await axios.delete(`${URL_API}/auth/transaction/${transaction_id}`,
+      const response = await axios.patch(`${URL_API}/auth/transaction/${transaction_id}`,
+      {},
       {
         headers : {
           Authorization : `Bearer ${token}`
         }
       })
-      alert("Cancel Done")
+      alert("DONE")
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000);
     } catch (error) {
       console.log(error)
     }

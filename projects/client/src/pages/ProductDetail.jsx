@@ -16,7 +16,12 @@ import ProductStock from "./ProductStock";
 import { store } from "../redux/store";
 import Notfound from "./Notfound";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { addCart, addToCart } from "../redux/reducer/CartReducer";
+import {
+  addCart,
+  addToCart,
+  getItem,
+  setChanges,
+} from "../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
@@ -62,6 +67,7 @@ const ProductDetail = () => {
     console.log("Store_id di kirim", store_id);
     await dispatch(addToCart(products));
     await dispatch(addCart(products, store_id, Swal));
+    await dispatch(getItem());
   };
 
   useEffect(() => {
