@@ -4,6 +4,10 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
   adminVoucher: [],
+  userVoucher: [],
+  voucherToUse: null,
+  deliveryVoucher: [],
+  deliveryVoucherToUse: null,
 };
 
 export const VoucherReducer = createSlice({
@@ -13,6 +17,18 @@ export const VoucherReducer = createSlice({
     setAdminVoucher: (state, action) => {
       state.adminVoucher = [...action.payload];
     },
+    setUserVoucher: (state, action) => {
+      state.userVoucher = [...action.payload];
+    },
+    setVoucherToUse: (state, action) => {
+      state.voucherToUse = {...action.payload};
+    },
+    setDeliveryVoucher: (state, action) => {
+      state.deliveryVoucher = [...action.payload];
+    },
+    setDeliveryVoucherToUse: (state, action) => {
+      state.deliveryVoucherToUse = {...action.payload};
+    }
   },
 });
 
@@ -55,6 +71,22 @@ export const getAdminVoucher = () => {
   };
 };
 
+export const getUserVoucher = () => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${URL_API}/voucher/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(setUserVoucher(response.data.vouchers));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const deleteVoucher = (id, toast) => {
   return async () => {
     try {
@@ -76,8 +108,24 @@ export const deleteVoucher = (id, toast) => {
       });
     }
   };
-}
+};
 
-export const { setAdminVoucher } = VoucherReducer.actions;
+export const getDeliveryVoucher = () => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${URL_API}/voucher/delivery`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(setDeliveryVoucher(response.data.vouchers));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const { setAdminVoucher, setUserVoucher, setVoucherToUse, setDeliveryVoucher, setDeliveryVoucherToUse } = VoucherReducer.actions;
 
 export default VoucherReducer.reducer;

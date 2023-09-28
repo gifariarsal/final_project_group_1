@@ -10,12 +10,13 @@ import {
   Button,
   Card,
   CardBody,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Logo from "../../assets/logo_main.png";
 import ConfirmBackToCart from "../../components/user/ConfirmBackToCart";
 import { useDispatch, useSelector } from "react-redux";
-import { getCart } from "../../redux/reducer/CartReducer";
+import { getCart, getItem } from "../../redux/reducer/CartReducer";
 import PlainFooter from "../../components/user/PlainFooter";
 import axios from "axios";
 import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
@@ -24,22 +25,31 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const Checkout = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const { user } = useSelector((state) => state.AuthReducer);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenVoucher, onOpen: onOpenVoucher, onClose: onCloseVoucher } = useDisclosure();
   const { defaultAddress } = useSelector((state) => state.AddressReducer);
   const { carts, item } = useSelector((state) => state.CartReducer);
   const { store_id } = useSelector((state) => state.ProductReducer);
+  const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
+  const [voucher_discount, setVoucherDiscount] = useState(0);
+  const [delivery_discount, setDeliveryDiscount] = useState(0);
   const nameExist = user.name ? user.name : user.username;
   let product_price = 0;
   let delivery_price = 4000;
-  let voucher_discount = 2000;
 
   carts.map((cart) => {
     return (product_price += cart.total_price);
   });
 
-  const total_price = product_price + delivery_price - voucher_discount;
+  const vouchers_discount = voucher_discount + delivery_discount;
+  const total_discount = vouchers_discount;
+  let total_price = product_price + delivery_price - total_discount;
+
+  if (total_price < 0) {
+    total_price = 0;
+  };
 
   const handleCheckout = async () => {
     try {
@@ -47,12 +57,13 @@ const Checkout = () => {
       await axios.post(
         `${URL_API}/transaction`,
         {
-          total_price: total_price,
+          total_price,
           delivery_price,
           address: defaultAddress.address,
           city_id: defaultAddress.city_id,
           store_id: store_id,
-          voucher_discount,
+          voucher_discount: vouchers_discount,
+          total_discount: total_discount,
           courier: "JNE",
         },
         {
@@ -61,16 +72,27 @@ const Checkout = () => {
           },
         }
       );
-      console.log("Success");
+      toast({
+        title: "Success",
+        description: "Checkout Success",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    dispatch(getCart());
     dispatch(getDefaultAddress(user.id));
-  }, []);
+    dispatch(getItem());
+    dispatch(getCart());
+    if (modalClosedTrigger) {
+      dispatch(getCart());
+      setModalClosedTrigger(false);
+    }
+  }, [dispatch, modalClosedTrigger]);
 
   return (
     <Box>
@@ -212,6 +234,16 @@ const Checkout = () => {
                     <Text> -Rp.{voucher_discount}</Text>
                   </Flex>
                 )}
+                {delivery_discount > 0 && (
+                  <Flex justifyContent={"space-between"} alignItems={"center"}>
+                    <Text>Delivery Discount:</Text>
+                    <Text> -Rp.{delivery_discount}</Text>
+                  </Flex>
+                )}
+                {/* <Flex justifyContent={"space-between"} alignItems={"center"}>
+                  <Text>Total Discount:</Text>
+                  <Text> -Rp.{total_discount}</Text>
+                </Flex> */}
                 <Divider my={4} bg={"black"} />
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Text fontWeight={"bold"}>Total Payment:</Text>
@@ -235,7 +267,7 @@ const Checkout = () => {
       </Box>
       <PlainFooter />
       <ConfirmBackToCart isOpen={isOpen} onClose={onClose} />
-      <TransactionVoucher isOpen={isOpenVoucher} onClose={onCloseVoucher} />
+      <TransactionVoucher product_price={product_price} delivery_price={delivery_price} setVoucherDiscount={setVoucherDiscount} setDeliveryDiscount={setDeliveryDiscount} setModalClosedTrigger={setModalClosedTrigger} isOpen={isOpenVoucher} onClose={onCloseVoucher} />
     </Box>
   );
 };

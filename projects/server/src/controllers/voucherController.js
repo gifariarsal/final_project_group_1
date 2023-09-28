@@ -1,12 +1,22 @@
 const db = require("../../models");
 const { Op } = require("sequelize");
 const Voucherdetail = db.Voucherdetail;
+const Uservoucher = db.Uservoucher;
+const User = db.User;
 
 const voucherController = {
   createDiscountVoucher: async (req, res) => {
     try {
-      const { name, product_id, description, nominal, percent, minimum_payment, type, expired } =
-        req.body;
+      const {
+        name,
+        product_id,
+        description,
+        nominal,
+        percent,
+        minimum_payment,
+        type,
+        expired,
+      } = req.body;
 
       const expirationDate = new Date(expired);
       const currentDate = new Date();
@@ -44,6 +54,24 @@ const voucherController = {
           },
           { transaction: t }
         );
+
+        const users = await User.findAll();
+
+        const userVouchers = users.map(async (user) => {
+          const userVoucher = await Uservoucher.create(
+            {
+              user_id: user.id,
+              voucherdetail_id: newVoucher.id,
+              transaction_id: null,
+              isused: false,
+            },
+            { transaction: t }
+          );
+          return userVoucher;
+        });
+
+        await Promise.all(userVouchers);
+
         return res.status(200).json({
           message: "Voucher created",
           data: newVoucher,
@@ -56,7 +84,6 @@ const voucherController = {
 
   getAdminVoucher: async (req, res) => {
     try {
-      const currentDate = new Date();
       const vouchers = await Voucherdetail.findAll({
         where: {
           isactive: true,
@@ -72,6 +99,34 @@ const voucherController = {
     }
   },
 
+  getUserVoucher: async (req, res) => {
+    try {
+      const { id } = req.user;
+      const vouchers = await Uservoucher.findAll({
+        where: {
+          isused: false,
+          user_id: id,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: Voucherdetail,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            where: {
+              isactive: true,
+            }
+          },
+        ],
+      });
+
+      return res.status(200).json({ message: "Success", vouchers });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
   deleteVoucher: async (req, res) => {
     try {
       const { id } = req.params;
@@ -81,8 +136,40 @@ const voucherController = {
           { where: { id } },
           { transaction: t }
         );
+
+        await Uservoucher.destroy(
+          { where: { voucherdetail_id: id } },
+          { transaction: t }
+        );
         return res.status(200).json({ message: "Voucher deleted" });
       });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  getFreeDeliveryVoucher: async (req, res) => {
+    try {
+      const { id } = req.user;
+      const vouchers = await Uservoucher.findAll({
+        where: {
+          isused: false,
+          user_id: id,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: Voucherdetail,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            where: {
+              type: "freedelivery",
+            },
+          },
+        ],
+      });
+      return res.status(200).json({ message: "Success", vouchers });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

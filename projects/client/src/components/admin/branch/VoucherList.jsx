@@ -35,10 +35,16 @@ const VoucherList = () => {
     return expiredDate < currentDate;
   };
 
+  const sortedAdminVoucherList = [...adminVoucherList].sort((a, b) => {
+    const dateA = new Date(a.expired);
+    const dateB = new Date(b.expired);
+    return dateB - dateA;
+  });
+
   return (
     <Box px={8} py={4}>
       <Flex gap={4} wrap={"wrap"}>
-        {adminVoucherList.map((voucher) => (
+        {sortedAdminVoucherList.map((voucher) => (
           <Box
             key={voucher.id}
             bg={"white"}
