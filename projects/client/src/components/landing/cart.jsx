@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import {
   addCart,
+  addQuantity,
   addToCart,
   deleteFromCart,
   deleteItem,
@@ -39,7 +40,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 export default function Cart() {
   const PUBLIC_URL = "http://localhost:8000";
   const { login } = useSelector((state) => state.AuthReducer);
-  const { cart, carts, item } = useSelector((state) => state.CartReducer);
+  const { item } = useSelector((state) => state.CartReducer);
   const getImage = (image) => {
     return `${PUBLIC_URL}/${image}`;
   };
@@ -47,8 +48,9 @@ export default function Cart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const inCart = async (products) => {
+    console.log("in", products);
     await dispatch(addToCart(products));
-    await dispatch(addCart(products));
+    await dispatch(addQuantity(products));
     await dispatch(getItem());
     await dispatch(getCart());
   };
@@ -61,8 +63,8 @@ export default function Cart() {
   };
 
   const destroy = async (products) => {
-    console.log("delete");
-    // await dispatch(deleteItemCart(products));
+    console.log("delete", products);
+    await dispatch(deleteItemCart(products));
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you want to delete this item from your cart?",

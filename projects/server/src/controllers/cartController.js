@@ -71,9 +71,13 @@ const cartController = {
     try {
       const { id } = req.user;
       const { productId } = req.params;
+      console.log("id delete ", productId)
       const checkCart = await cart.findOne({ where: { user_id: id } });
+      console.log("checkcart", checkCart)
       const checkProduct = await product.findOne({ where: { id: productId } });
+      console.log("check product", checkProduct)
       const checkItem = await items.findOne({ where: { product_id: checkProduct.id } });
+      console.log("check item", checkItem)
       const newPrice = checkItem.quantity * checkItem.price;
       const finalPrice = checkCart.total_price - newPrice;
       await db.sequelize.transaction(async (t) => {

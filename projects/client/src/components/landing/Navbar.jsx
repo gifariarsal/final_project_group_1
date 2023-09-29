@@ -24,9 +24,8 @@ import { getItem } from "../../redux/reducer/CartReducer";
 import { logoutAuth } from "../../redux/reducer/AuthReducer";
 
 const Navbar = () => {
-  const { item, carts, cart } = useSelector((state) => state.CartReducer);
+  const { item, cart } = useSelector((state) => state.CartReducer);
   const cartItem = item.reduce((total, item) => total + item.quantity, 0);
-  const cartItems = carts.reduce((total, item) => total + item.quantity, 0);
   const items = cart.reduce((total, item) => total + item.quantity, 0);
 
   const login = localStorage.getItem("token");
@@ -43,7 +42,7 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(getItem());
-  }, [carts, dispatch]);
+  }, []);
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (
@@ -134,17 +133,12 @@ const Navbar = () => {
                     bg="red"
                     color="white"
                     borderRadius="100%"
-                    width={`${
-                      (cartItem || cartItems || 0).toString().length * 10 + 8
-                    }px`}
+                    width={`${(cartItem || 0).toString().length * 10 + 8}px`}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Text fontSize={"xs"}>
-                      {cartItem || cartItems || 0}
-                      {/* {items || cartItem} */}
-                    </Text>
+                    <Text fontSize={"xs"}>{cartItem || 0}</Text>
                   </Box>
                 </Flex>
               </Link>

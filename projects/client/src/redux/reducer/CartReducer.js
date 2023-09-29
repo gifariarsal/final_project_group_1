@@ -103,8 +103,11 @@ export const getCart = () => {
 
 export const addCart = (products,store_id, Swal) => {
   return async (dispatch) => {
+    console.log("masuk ", products)
     const dataProduct = products.Product || products;
-    const discount = dataProduct.price - products.admin_discount
+    console.log("data ", dataProduct)
+    console.log("precs", products.price)
+    const discount = products.price - products.admin_discount
     console.log("harga baru setelah diskon ", discount)
     const total_price = discount;
     const productId = dataProduct.product_id || dataProduct.id;
@@ -129,6 +132,26 @@ export const addCart = (products,store_id, Swal) => {
         showConfirmButton: false,
         timer: 1500
       })
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+export const addQuantity = (products,store_id, Swal) => {
+  return async (dispatch) => {
+    const productId = products.product_id
+    const total_price = products.price
+    const token = localStorage.getItem("token");
+    try {
+      const result = await axios.patch(
+        `${URL_API}/cart/`,
+        { productId, total_price, store_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -162,10 +185,11 @@ export const deleteItemFromCart = (products) => {
   return async (dispatch) => {
     console.log("delete from",products)
     const dataProduct = products.Product || products
+    const item = products.product_id;
+    console.log("item", item)
     console.log("data delete", dataProduct)
     const total_price = dataProduct.price
-    console.log("price delete", total_price)
-    const productId = dataProduct.product_id || dataProduct.id
+    const productId = dataProduct.product_id || item
     console.log("id delete", productId)
     const token = localStorage.getItem("token")
     try {
