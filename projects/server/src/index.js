@@ -33,7 +33,7 @@ const {
   regionRouter,
   voucherRouter
 } = require("./router");
-// db.sequelize.sync({ alter: true });
+db.sequelize.sync({ alter: true });
 
 // ===========================
 // NOTE : Add your routes here

@@ -1,6 +1,14 @@
 const { Sequelize, Op } = require("sequelize");
 const db = require("../../models");
-const { Transaction, Product, Transactionitem, Cart, Cartitem, Voucherdetail, Uservoucher } = db;
+const {
+  Transaction,
+  Product,
+  Transactionitem,
+  Cart,
+  Cartitem,
+  Voucherdetail,
+  Uservoucher,
+} = db;
 
 const createFreeShippingVoucher = async (userId) => {
   try {
@@ -12,25 +20,38 @@ const createFreeShippingVoucher = async (userId) => {
         },
       },
     });
-    if (successfulTransactionsCount % 5 === 0) {
-      const sevenDaysFromNow = new Date();
-      sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-      const newVoucher = await Voucherdetail.create({
-        name: "Free Shipping Voucher",
-        description: "Get free shipping on your next purchase",
-        nominal: 0,
-        percent: 100,
-        type: "freedelivery",
-        expired: sevenDaysFromNow,
+    if (
+      successfulTransactionsCount % 5 === 0 &&
+      successfulTransactionsCount > 0
+    ) {
+      const existingVoucher = await Uservoucher.findOne({
+        where: {
+          user_id: userId,
+          isused: false,
+        },
+        include: Voucherdetail,
       });
 
-      await Uservoucher.create({
-        user_id: userId,
-        voucherdetail_id: newVoucher.id,
-        isused: false,
-      });
+      if (!existingVoucher) {
+        const sevenDaysFromNow = new Date();
+        sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+        const newVoucher = await Voucherdetail.create({
+          name: "Free Delivery Voucher",
+          description: "Free delivery voucher after your five successful transactions",
+          nominal: 0,
+          percent: 100,
+          type: "freedelivery",
+          expired: sevenDaysFromNow,
+        });
 
-      console.log("Free Shipping Voucher created for user:", userId);
+        await Uservoucher.create({
+          user_id: userId,
+          voucherdetail_id: newVoucher.id,
+          isused: false,
+        });
+
+        console.log("Free Shipping Voucher created for user:", userId);
+      }
     }
   } catch (error) {
     console.error("Failed to create Free Shipping Voucher:", error);
@@ -112,6 +133,8 @@ const transactionController = {
         city_id,
         store_id,
         voucher_discount,
+        voucher_id,
+        delivery_voucher_id,
         courier,
       } = req.body;
 
@@ -129,12 +152,21 @@ const transactionController = {
         total_price,
         delivery_price,
         total_discount,
+        voucher_discount,
         address,
         city_id,
         store_id,
         courier,
         status: 0,
       });
+
+      const voucherIds = [];
+      if (voucher_id) {
+        voucherIds.push(voucher_id);
+      }
+      if (delivery_voucher_id) {
+        voucherIds.push(delivery_voucher_id);
+      }
 
       for (const cartItem of cartItems) {
         const product = await Product.findByPk(cartItem.product_id);
@@ -144,10 +176,14 @@ const transactionController = {
           product_id: cartItem.product_id,
           quantity: cartItem.quantity,
           admin_discount: product.admin_discount,
-          voucher_discount,
           price: product.price,
         });
       }
+
+      await Uservoucher.update(
+        { isused: true, transaction_id: newTransaction.id },
+        { where: { id: voucherIds } }
+      );
 
       if (total_price >= 100000) {
         const sevenDaysFromNow = new Date();
@@ -166,7 +202,7 @@ const transactionController = {
           voucherdetail_id: newVoucher.id,
           isused: false,
         });
-      };
+      }
 
       await createFreeShippingVoucher(id);
       await Cartitem.destroy({ where: { cart_id: cart.id } });

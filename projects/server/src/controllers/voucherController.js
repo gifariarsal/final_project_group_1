@@ -22,13 +22,11 @@ const voucherController = {
       const currentDate = new Date();
 
       if (expirationDate <= currentDate) {
-        return res
-          .status(400)
-          .json({ message: "Expired date must be in the future" });
+        return res.status(400).json({ message: "Expired date must be in the future" });
       }
 
       const voucherExist = await Voucherdetail.findOne({
-        where: { name },
+        where: { name, isactive: true },
       });
 
       if (voucherExist) {
@@ -49,6 +47,7 @@ const voucherController = {
             description,
             nominal,
             percent,
+            minimum_payment,
             type,
             expired,
           },
@@ -90,6 +89,9 @@ const voucherController = {
           name: {
             [Op.notLike]: "Referral Voucher",
           },
+          type: {
+            [Op.notLike]: "freedelivery",
+          },
         },
         attributes: { exclude: ["createdAt", "updatedAt", "isactive"] },
       });
@@ -116,7 +118,10 @@ const voucherController = {
             },
             where: {
               isactive: true,
-            }
+              type: {
+                [Op.notLike]: "freedelivery",
+              },
+            },
           },
         ],
       });

@@ -16,6 +16,9 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  useToast,
+  FormHelperText,
+  Divider,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import {
@@ -26,11 +29,24 @@ import {
   setVoucherToUse,
 } from "../../redux/reducer/VoucherReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { getItem } from "../../redux/reducer/CartReducer";
 
-const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount, setDeliveryDiscount, setModalClosedTrigger, isOpen, onClose }) => {
+const TransactionVoucher = ({
+  product_price,
+  delivery_price,
+  setVoucherDiscount,
+  setDeliveryDiscount,
+  setModalClosedTrigger,
+  isOpen,
+  onClose,
+}) => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const userVoucher = useSelector((state) => state.VoucherReducer.userVoucher);
-  const deliveryVoucher = useSelector((state) => state.VoucherReducer.deliveryVoucher);
+  const deliveryVoucher = useSelector(
+    (state) => state.VoucherReducer.deliveryVoucher
+  );
+  const item = useSelector((state) => state.CartReducer.item);
   const [selectedVoucherData, setSelectedVoucherData] = useState(null);
   const [selectedDeliveryVoucher, setSelectedDeliveryVoucher] = useState([]);
 
@@ -38,6 +54,7 @@ const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount,
     dispatch(getAdminVoucher());
     dispatch(getUserVoucher());
     dispatch(getDeliveryVoucher());
+    dispatch(getItem());
   }, [dispatch]);
 
   const userVoucherData = () => {
@@ -54,7 +71,7 @@ const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount,
         {voucher.Voucherdetail.name}
       </option>
     ));
-  }
+  };
 
   const handleVoucherChange = (event) => {
     const selectedId = event.target.value;
@@ -84,6 +101,83 @@ const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount,
 
   const handleUseVoucherClick = () => {
     if (selectedVoucherData) {
+      if (selectedVoucherData.Voucherdetail.product_id) {
+        if (selectedDeliveryVoucher) {
+          dispatch(setDeliveryVoucherToUse(selectedDeliveryVoucher));
+        }
+        setDeliveryDiscount(
+          !selectedDeliveryVoucher
+            ? 0
+            : selectedDeliveryVoucher.Voucherdetail?.percent
+            ? (selectedDeliveryVoucher.Voucherdetail.percent * delivery_price) /
+              100
+            : 0
+        );
+
+        dispatch(setVoucherToUse(selectedVoucherData));
+
+        const isProductExist = item.find(
+          (product) =>
+            product.product_id === selectedVoucherData.Voucherdetail.product_id
+        );
+
+        if (selectedVoucherData?.Voucherdetail?.type === "discount") {
+          setVoucherDiscount(
+            selectedVoucherData.Voucherdetail.nominal
+              ? selectedVoucherData.Voucherdetail.nominal
+              : selectedVoucherData.Voucherdetail.percent
+              ? (selectedVoucherData.Voucherdetail.percent *
+                  isProductExist.price) /
+                100
+              : 0
+          );
+          setModalClosedTrigger(true);
+          onClose();
+          return;
+        }
+
+        if (selectedVoucherData?.Voucherdetail?.type === "buy1get1") {
+          if (isProductExist.quantity < 2) {
+            toast({
+              title: "Failed",
+              description: `Add more ${isProductExist.name} to your cart`,
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+            });
+            return;
+          }
+          setVoucherDiscount(isProductExist.price);
+          setModalClosedTrigger(true);
+          onClose();
+          return;
+        }
+
+        if (!isProductExist) {
+          toast({
+            title: "Failed",
+            description: "There is no match product in your cart",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
+      }
+
+      if (selectedVoucherData?.Voucherdetail?.minimum_payment > product_price) {
+        toast({
+          title: "Failed",
+          description:
+            "Minimum payment is Rp." +
+            selectedVoucherData.Voucherdetail.minimum_payment,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+
       dispatch(setVoucherToUse(selectedVoucherData));
     }
 
@@ -141,7 +235,8 @@ const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount,
                     {userVoucherData()}
                   </Select>
                 </FormControl>
-                <Box mt={4} color={"gray.500"}>
+                <Divider my={4} />
+                <Box color={"gray.500"}>
                   {selectedVoucherData ? (
                     <Text>{selectedVoucherData.Voucherdetail.description}</Text>
                   ) : (
@@ -151,17 +246,30 @@ const TransactionVoucher = ({ product_price, delivery_price, setVoucherDiscount,
               </TabPanel>
               <TabPanel>
                 <FormControl>
-                  <Select
-                    name="voucher_id"
-                    placeholder="Select Delivery Voucher"
-                    onChange={handleDeliveryVoucherChange}
+                  {deliveryVoucherData().length > 0 && (
+                    <Select
+                      name="voucher_id"
+                      placeholder="Select Delivery Voucher"
+                      onChange={handleDeliveryVoucherChange}
+                    >
+                      {deliveryVoucherData()}
+                    </Select>
+                  )}
+                  <FormHelperText
+                    fontSize={"sm"}
+                    color={"gray.500"}
+                    fontStyle={"italic"}
                   >
-                    {deliveryVoucherData()}
-                  </Select>
+                    *Get free delivery voucher after five successful
+                    transactions
+                  </FormHelperText>
                 </FormControl>
-                <Box mt={4} color={"gray.500"}>
+                <Divider my={4} />
+                <Box color={"gray.500"}>
                   {selectedDeliveryVoucher ? (
-                    <Text>{selectedDeliveryVoucher.Voucherdetail?.description}</Text>
+                    <Text>
+                      {selectedDeliveryVoucher.Voucherdetail?.description}
+                    </Text>
                   ) : (
                     <Text>Select a voucher to see the description.</Text>
                   )}

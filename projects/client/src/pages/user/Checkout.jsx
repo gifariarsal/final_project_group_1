@@ -21,17 +21,24 @@ import PlainFooter from "../../components/user/PlainFooter";
 import axios from "axios";
 import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
 import TransactionVoucher from "../../components/user/TransactionVoucher";
+import { useNavigate } from "react-router-dom";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const Checkout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toast = useToast();
   const { user } = useSelector((state) => state.AuthReducer);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenVoucher, onOpen: onOpenVoucher, onClose: onCloseVoucher } = useDisclosure();
+  const {
+    isOpen: isOpenVoucher,
+    onOpen: onOpenVoucher,
+    onClose: onCloseVoucher,
+  } = useDisclosure();
   const { defaultAddress } = useSelector((state) => state.AddressReducer);
   const { carts, item } = useSelector((state) => state.CartReducer);
   const { store_id } = useSelector((state) => state.ProductReducer);
+  const { voucherToUse, deliveryVoucherToUse } = useSelector((state) => state.VoucherReducer);
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
   const [voucher_discount, setVoucherDiscount] = useState(0);
   const [delivery_discount, setDeliveryDiscount] = useState(0);
@@ -39,17 +46,20 @@ const Checkout = () => {
   let product_price = 0;
   let delivery_price = 4000;
 
+  console.log("voucher", voucherToUse?.id);
+  console.log("delivery", deliveryVoucherToUse?.id);
+
   carts.map((cart) => {
     return (product_price += cart.total_price);
   });
 
   const vouchers_discount = voucher_discount + delivery_discount;
-  const total_discount = vouchers_discount;
-  let total_price = product_price + delivery_price - total_discount;
+  // const total_discount = vouchers_discount;
+  let total_price = product_price + delivery_price - vouchers_discount;
 
   if (total_price < 0) {
     total_price = 0;
-  };
+  }
 
   const handleCheckout = async () => {
     try {
@@ -57,13 +67,16 @@ const Checkout = () => {
       await axios.post(
         `${URL_API}/transaction`,
         {
+          name: nameExist,
           total_price,
           delivery_price,
           address: defaultAddress.address,
           city_id: defaultAddress.city_id,
           store_id: store_id,
           voucher_discount: vouchers_discount,
-          total_discount: total_discount,
+          voucher_id: voucherToUse?.id,
+          delivery_voucher_id: deliveryVoucherToUse?.id,
+          total_discount: vouchers_discount,
           courier: "JNE",
         },
         {
@@ -79,10 +92,11 @@ const Checkout = () => {
         duration: 3000,
         isClosable: true,
       });
+      navigate("/User-Order");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     dispatch(getDefaultAddress(user.id));
@@ -106,9 +120,9 @@ const Checkout = () => {
           borderColor={"#D7F0AA"}
           align={"center"}
         >
-          <Box w={"full"} my={"16px"} mx={{ base: "16px", lg: "100px" }}>
+          <Box w={"full"} my={"16px"} mx={{ base: "16px", md: "100px" }}>
             <Flex
-              justifyContent={{ base: "center", lg: "flex-start" }}
+              justifyContent={{ base: "center", md: "flex-start" }}
               align={"center"}
             >
               <div style={{ width: "184px" }}>
@@ -127,14 +141,18 @@ const Checkout = () => {
           </Box>
         </Flex>
       </Box>
-      <Box w={"full"} py={"16px"} px={{ base: "28px", lg: "100px" }}>
-        <Text fontSize={{ base: "2xl", lg: "4xl" }} fontWeight={"medium"}>
+      <Box
+        w={"full"}
+        py={"16px"}
+        px={{ base: "28px", md: "48px", lg: "100px" }}
+      >
+        <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight={"medium"}>
           Checkout
         </Text>
         <Divider />
         <Box w={"full"} py={4}>
-          <Flex gap={8} flexDir={{ base: "column", lg: "row" }}>
-            <Box w={{ base: "100%", lg: "70%" }}>
+          <Flex gap={8} flexDir={{ base: "column", md: "row" }}>
+            <Box w={{ base: "100%", md: "50%", lg: "70%" }}>
               <Box>
                 <Text fontWeight={"bold"} color={"brand.main"}>
                   Shipping Address
@@ -201,7 +219,7 @@ const Checkout = () => {
               </Box>
             </Box>
             <Box
-              w={{ base: "100%", lg: "30%" }}
+              w={{ base: "100%", md: "50%", lg: "30%" }}
               h={"fit-content"}
               pos={"sticky"}
               top={"20px"}
@@ -211,7 +229,19 @@ const Checkout = () => {
               boxShadow={"lg"}
             >
               <Box w={"full"} p={4}>
-                <Button onClick={onOpenVoucher} w={"full"}>Use Voucher</Button>
+                <Button
+                  onClick={onOpenVoucher}
+                  w={"full"}
+                  color={"brand.main"}
+                  bg={"white"}
+                  border={"1px"}
+                  borderColor={"brand.main"}
+                  rounded={"lg"}
+                  _hover={{ bg: "gray.100" }}
+                  _active={{ bg: "gray.300" }}
+                >
+                  Use Voucher
+                </Button>
               </Box>
               <Divider />
               <Box w={"full"} p={4}>
@@ -224,7 +254,7 @@ const Checkout = () => {
                 </Flex>
                 {delivery_price > 0 && (
                   <Flex justifyContent={"space-between"} alignItems={"center"}>
-                    <Text>Shipping fee:</Text>
+                    <Text>Delivery fee:</Text>
                     <Text> Rp.{delivery_price}</Text>
                   </Flex>
                 )}
@@ -240,14 +270,10 @@ const Checkout = () => {
                     <Text> -Rp.{delivery_discount}</Text>
                   </Flex>
                 )}
-                {/* <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Text>Total Discount:</Text>
-                  <Text> -Rp.{total_discount}</Text>
-                </Flex> */}
                 <Divider my={4} bg={"black"} />
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Text fontWeight={"bold"}>Total Payment:</Text>
-                  <Text fontWeight={"bold"}> Rp.{total_price}</Text>
+                  <Text fontWeight={"bold"}>Rp.{total_price}</Text>
                 </Flex>
                 <Button
                   onClick={handleCheckout}
@@ -267,7 +293,15 @@ const Checkout = () => {
       </Box>
       <PlainFooter />
       <ConfirmBackToCart isOpen={isOpen} onClose={onClose} />
-      <TransactionVoucher product_price={product_price} delivery_price={delivery_price} setVoucherDiscount={setVoucherDiscount} setDeliveryDiscount={setDeliveryDiscount} setModalClosedTrigger={setModalClosedTrigger} isOpen={isOpenVoucher} onClose={onCloseVoucher} />
+      <TransactionVoucher
+        product_price={product_price}
+        delivery_price={delivery_price}
+        setVoucherDiscount={setVoucherDiscount}
+        setDeliveryDiscount={setDeliveryDiscount}
+        setModalClosedTrigger={setModalClosedTrigger}
+        isOpen={isOpenVoucher}
+        onClose={onCloseVoucher}
+      />
     </Box>
   );
 };
