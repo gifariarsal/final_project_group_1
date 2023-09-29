@@ -3,6 +3,7 @@ const db = require("../../models");
 const {
   Transaction,
   Product,
+  ProductStore,
   Transactionitem,
   Cart,
   Cartitem,
@@ -170,6 +171,20 @@ const transactionController = {
 
       for (const cartItem of cartItems) {
         const product = await Product.findByPk(cartItem.product_id);
+
+        const productStore = await ProductStore.findOne({
+          where: {
+            product_id: cartItem.product_id,
+            store_id: store_id,
+          },
+        })
+
+        await productStore.update({
+          quantity: productStore.quantity - cartItem.quantity
+        });
+        await productStore.save();
+
+        console.log("product store", productStore);
 
         await Transactionitem.create({
           transaction_id: newTransaction.id,
