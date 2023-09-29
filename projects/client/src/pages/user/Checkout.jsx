@@ -10,6 +10,7 @@ import {
   Button,
   Card,
   CardBody,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Logo from "../../assets/logo_main.png";
@@ -21,27 +22,49 @@ import axios from "axios";
 import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
 import DeliveryDetail from "../../components/components/DeliveryDetail";
 import ItemCart from "../../components/components/ItemCart";
+import TransactionVoucher from "../../components/user/TransactionVoucher";
+import { useNavigate } from "react-router-dom";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const Checkout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
   const { user } = useSelector((state) => state.AuthReducer);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenVoucher,
+    onOpen: onOpenVoucher,
+    onClose: onCloseVoucher,
+  } = useDisclosure();
   const { defaultAddress } = useSelector((state) => state.AddressReducer);
   const { carts, item } = useSelector((state) => state.CartReducer);
-  const { store_id, storeCityId } = useSelector((state) => state.ProductReducer);
-  const [deliveryDetail, setDeliveryDetail] = useState("");
+const { store_id, storeCityId } = useSelector((state) => state.ProductReducer);
+const [deliveryDetail, setDeliveryDetail] = useState("");
+const { voucherToUse, deliveryVoucherToUse } = useSelector((state) => state.VoucherReducer);
+  const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
+  const [voucher_discount, setVoucherDiscount] = useState(0);
+  const [delivery_discount, setDeliveryDiscount] = useState(0);
   const nameExist = user.name ? user.name : user.username;
   const [totalWeight, setTotalWeight] = useState(0);
   const [deliveryPrice, setDeliveryprice] = useState(0);
   let product_price = 0;
-  let voucher_discount = 2000;
+  let delivery_price = 4000;
+
+  console.log("voucher", voucherToUse?.id);
+  console.log("delivery", deliveryVoucherToUse?.id);
 
   carts.map((cart) => {
     return (product_price += cart.total_price);
   });
 
-  const total_price = product_price + deliveryPrice - voucher_discount;
+  const vouchers_discount = voucher_discount + delivery_discount;
+  // const total_discount = vouchers_discount;
+  let total_price = product_price + delivery_price - vouchers_discount;
+
+  if (total_price < 0) {
+    total_price = 0;
+  }
 
   const handleCheckout = async () => {
     try {
@@ -49,12 +72,16 @@ const Checkout = () => {
       await axios.post(
         `${URL_API}/transaction`,
         {
-          total_price: total_price,
+          name: nameExist,
+          total_price,
           delivery_price: deliveryPrice,
           address: defaultAddress.address,
           city_id: defaultAddress.city_id,
           store_id: store_id,
-          voucher_discount,
+          voucher_discount: vouchers_discount,
+          voucher_id: voucherToUse?.id,
+          delivery_voucher_id: deliveryVoucherToUse?.id,
+          total_discount: vouchers_discount,
           courier: deliveryDetail,
         },
         {
@@ -63,17 +90,28 @@ const Checkout = () => {
           },
         }
       );
-      console.log("Success");
+      toast({
+        title: "Success",
+        description: "Checkout Success",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/User-Order");
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    dispatch(getCart());
-    dispatch(getItem());
     dispatch(getDefaultAddress(user.id));
-  }, []);
+    dispatch(getItem());
+    dispatch(getCart());
+    if (modalClosedTrigger) {
+      dispatch(getCart());
+      setModalClosedTrigger(false);
+    }
+  }, [dispatch, modalClosedTrigger]);
 
   console.log("default", defaultAddress);
   console.log("store_id", store_id);
@@ -89,9 +127,13 @@ const Checkout = () => {
           borderBottom={1}
           borderStyle={"solid"}
           borderColor={"#D7F0AA"}
-          align={"center"}>
-          <Box w={"full"} my={"16px"} mx={{ base: "16px", lg: "100px" }}>
-            <Flex justifyContent={{ base: "center", lg: "flex-start" }} align={"center"}>
+          align={"center"}
+        >
+          <Box w={"full"} my={"16px"} mx={{ base: "16px", md: "100px" }}>
+            <Flex
+              justifyContent={{ base: "center", md: "flex-start" }}
+              align={"center"}
+            >
               <div style={{ width: "184px" }}>
                 <Image
                   onClick={onOpen}
@@ -108,14 +150,18 @@ const Checkout = () => {
           </Box>
         </Flex>
       </Box>
-      <Box w={"full"} py={"16px"} px={{ base: "28px", lg: "100px" }}>
-        <Text fontSize={{ base: "2xl", lg: "4xl" }} fontWeight={"medium"}>
+      <Box
+        w={"full"}
+        py={"16px"}
+        px={{ base: "28px", md: "48px", lg: "100px" }}
+      >
+        <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight={"medium"}>
           Checkout
         </Text>
         <Divider />
         <Box w={"full"} py={4}>
-          <Flex gap={8} flexDir={{ base: "column", lg: "row" }}>
-            <Box w={{ base: "100%", lg: "70%" }}>
+          <Flex gap={8} flexDir={{ base: "column", md: "row" }}>
+            <Box w={{ base: "100%", md: "50%", lg: "70%" }}>
               <Box>
                 <Text fontWeight={"bold"} color={"brand.main"}>
                   Shipping Address
@@ -188,7 +234,7 @@ const Checkout = () => {
               </Box>
             </Box>
             <Box
-              w={{ base: "100%", lg: "30%" }}
+              w={{ base: "100%", md: "50%", lg: "30%" }}
               h={"fit-content"}
               pos={"sticky"}
               top={"20px"}
@@ -197,7 +243,19 @@ const Checkout = () => {
               borderColor={"gray.200"}
               boxShadow={"lg"}>
               <Box w={"full"} p={4}>
-                <Select placeholder="Save more with discount"></Select>
+                <Button
+                  onClick={onOpenVoucher}
+                  w={"full"}
+                  color={"brand.main"}
+                  bg={"white"}
+                  border={"1px"}
+                  borderColor={"brand.main"}
+                  rounded={"lg"}
+                  _hover={{ bg: "gray.100" }}
+                  _active={{ bg: "gray.300" }}
+                >
+                  Use Voucher
+                </Button>
               </Box>
               <Divider />
               <Box w={"full"} p={4}>
@@ -220,10 +278,16 @@ const Checkout = () => {
                     <Text> -Rp.{voucher_discount}</Text>
                   </Flex>
                 )}
+                {delivery_discount > 0 && (
+                  <Flex justifyContent={"space-between"} alignItems={"center"}>
+                    <Text>Delivery Discount:</Text>
+                    <Text> -Rp.{delivery_discount}</Text>
+                  </Flex>
+                )}
                 <Divider my={4} bg={"black"} />
                 <Flex justifyContent={"space-between"} alignItems={"center"}>
                   <Text fontWeight={"bold"}>Total Payment:</Text>
-                  <Text fontWeight={"bold"}> Rp.{total_price}</Text>
+                  <Text fontWeight={"bold"}>Rp.{total_price}</Text>
                 </Flex>
                 <Button
                   onClick={handleCheckout}
@@ -242,6 +306,15 @@ const Checkout = () => {
       </Box>
       <PlainFooter />
       <ConfirmBackToCart isOpen={isOpen} onClose={onClose} />
+      <TransactionVoucher
+        product_price={product_price}
+        delivery_price={delivery_price}
+        setVoucherDiscount={setVoucherDiscount}
+        setDeliveryDiscount={setDeliveryDiscount}
+        setModalClosedTrigger={setModalClosedTrigger}
+        isOpen={isOpenVoucher}
+        onClose={onCloseVoucher}
+      />
     </Box>
   );
 };
