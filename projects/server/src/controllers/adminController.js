@@ -351,7 +351,7 @@ const adminController = {
       return res.status(500).json({message : error.message})
     }
   },
-  getUserTransaction : async(req, res) => {
+  getUsers : async(req, res) => {
     try {
       const {id} = req.params
       const checkUser = await user.findAll({
@@ -361,6 +361,16 @@ const adminController = {
       })
       console.log("checkUser ", checkUser)
       return res.status(200).json({message : "Success", data : checkUser})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  },
+  getUserTransaction : async(req, res) => {
+    try {
+      const {id} = req.params
+      const checkTrans = await trans.findOne({where : {user_id : id, status : 0}})
+      console.log("checkUser ", checkTrans)
+      return res.status(200).json({message : "Success", data : checkTrans})
     } catch (error) {
       return res.status(500).json({message : error.message})
     }

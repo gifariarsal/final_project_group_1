@@ -15,6 +15,8 @@ router.patch("/stock",verifyToken, adminController.updateStock)
 router.get("/product/branch",verifyToken, adminController.getStockBranch)
 router.patch("/delete/:id", adminController.deActiveProductBranch)
 router.patch("/enable/:id", adminController.enableProductBranch)
-router.get("/branch/transaction", adminController.getUserTransaction)
+router.get("/branch/transaction", adminController.getUsers)
+router.get("/branch/user/transaction/:id", adminController.getUserTransaction)
+
 
 module.exports = router;
