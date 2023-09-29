@@ -4,6 +4,8 @@ const Admin = db.Admin;
 const Store = db.Store;
 const productStore = db.ProductStore
 const stockHistory = db.Storestockhistory
+const trans = db.Transaction;
+const user = db.User;
 const { Product, Category } = db;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -339,12 +341,26 @@ const adminController = {
         },
         include: [
           {
-            model: Product, // Include the Product model
-            attributes: ['name', 'product_img', 'price', 'admin_discount'] // Specify the attributes you want to retrieve
+            model: Product,
+            attributes: ['name', 'product_img', 'price', 'admin_discount']
           },
         ],
       })
       return res.status(200).json({message : "Success", data : findBranch})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  },
+  getUserTransaction : async(req, res) => {
+    try {
+      const {id} = req.params
+      const checkUser = await user.findAll({
+        attributes : {
+          exclude : ['createdAt', 'updatedAt']
+        }
+      })
+      console.log("checkUser ", checkUser)
+      return res.status(200).json({message : "Success", data : checkUser})
     } catch (error) {
       return res.status(500).json({message : error.message})
     }
