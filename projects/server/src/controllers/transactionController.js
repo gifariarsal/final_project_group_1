@@ -48,7 +48,7 @@ const transactionController = {
   },
   getFinishedTransaction: async (req, res) => {
     try {
-      const { page = 1, limit = 3, order = "ASC", orderBy = "name", startDate, endDate } = req.query;
+      const { page = 1, limit = 3, order = "ASC", orderBy = "id", startDate, endDate } = req.query;
 
       let filter = {};
       if (startDate) filter.createdAt = { [Op.gte]: new Date(startDate) };
@@ -102,16 +102,7 @@ const transactionController = {
 
       const cartItems = await Cartitem.findAll({ where: { cart_id: cart.id } });
 
-      const {
-        name,
-        total_price,
-        delivery_price,
-        address,
-        city_id,
-        store_id,
-        voucher_discount,
-        courier,
-      } = req.body;
+      const { name, total_price, delivery_price, address, city_id, store_id, voucher_discount, courier } = req.body;
 
       let total_discount = 0;
       for (const cartItem of cartItems) {
@@ -152,13 +143,32 @@ const transactionController = {
 
       await Cartitem.destroy({ where: { cart_id: cart.id } });
 
-      return res
-        .status(200)
-        .json({ message: "Checkout successful", transaction: newTransaction });
+      return res.status(200).json({ message: "Checkout successful", transaction: newTransaction });
     } catch (error) {
       return res.status(500).json({ message: "Failed", error: error.message });
     }
-  }
+  },
+  uploadProduct: async (req, res) => {
+    const { id } = req.user;
+    console.log(1);
+    try {
+      const { id_transaction } = req.body;
+      console.log(id_transaction);
+      const findTransaction = await Transaction.findOne({ where: { id: id_transaction, user_id: id, status: 0 } });
+      if (!findTransaction) return res.status(404).json({ message: "Transaction not found" });
+      const image = req.file.path;
+      await db.sequelize.transaction(async (t) => {
+        const data = await Transaction.update(
+          { transaction_img: image, status: 1 },
+          { where: { id: id_transaction } },
+          { transaction: t }
+        );
+        return res.status(200).json({ message: "Success", data });
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Failed", error: error.message });
+    }
+  },
 };
 
 module.exports = transactionController;
