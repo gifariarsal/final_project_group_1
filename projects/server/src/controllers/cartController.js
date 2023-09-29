@@ -10,10 +10,11 @@ const cartController = {
       const { id } = req.user;
       const { total_price, cartId, productId , store_id } = req.body;
       const checkCart = await cart.findOne({ where: { user_id: id } });
+      console.log("check cart", checkCart)
       const checkProduct = await product.findOne({ where: { id: productId } });
       const newPrice = checkProduct.price - checkProduct.admin_discount;
       const totalPrice = (checkCart.total_price += newPrice);
-      const checkItem = await items.findOne({ where: { product_id: checkProduct.id } });
+      const checkItem = await items.findOne({ where: { product_id: checkProduct.id, cart_id: checkCart.id }  });
       await db.sequelize.transaction(async (t) => {
         const result = await cart.update({ total_price: totalPrice }, { where: { user_id: id } }, { transaction: t });
         if (checkItem) {
