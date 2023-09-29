@@ -122,11 +122,12 @@ const cartController = {
   },
   getCart: async (req, res) => {
     try {
-      const findCart = await cart.findAll({
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
-      });
+      // const findCart = await cart.findAll({
+      //   attributes: {
+      //     exclude: ["createdAt", "updatedAt"],
+      //   },
+      // });
+      const findCart = await cart.findOne({where : {user_id : req.user.id}})
       return res.status(200).json({ message: "Success", data: findCart });
     } catch (error) {
       return res.status(500).json({ error: error.message });

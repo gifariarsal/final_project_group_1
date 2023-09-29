@@ -7,7 +7,7 @@ const initialState = {
   cart: [],
   item: [],
   totalHarga: 0,
-  carts: [],
+  carts: null,
 };
 
 export const CartReducer = createSlice({
@@ -18,7 +18,7 @@ export const CartReducer = createSlice({
       state.item = [...action.payload];
     },
     setCarts: (state, action) => {
-      state.carts = [...action.payload];
+      state.carts = action.payload
     },
     addToCart: (state, action) => {
       const { id } = action.payload;
@@ -93,7 +93,8 @@ export const getCart = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("total price", response);
+      console.log("get cart", response);
+      console.log("get cart", response.data.data.total_price);
       dispatch(setCarts(response.data?.data));
     } catch (error) {
       console.log(error);
