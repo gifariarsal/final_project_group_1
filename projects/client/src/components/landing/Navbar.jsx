@@ -2,7 +2,8 @@ import {
   Avatar,
   Box,
   Button,
-  ButtonGroup,
+  Center,
+  Divider,
   Flex,
   Image,
   Menu,
@@ -18,10 +19,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo_main.png";
-import { HiOutlineSearch, HiOutlineShoppingCart } from "react-icons/hi";
+import { HiOutlineShoppingCart } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { getItem } from "../../redux/reducer/CartReducer";
 import { logoutAuth } from "../../redux/reducer/AuthReducer";
+import getImage from "../getImage/getImage";
 
 const Navbar = () => {
   const { item, cart } = useSelector((state) => state.CartReducer);
@@ -110,15 +112,9 @@ const Navbar = () => {
               </Link>
             </Flex>
           </Box>
+          <Box></Box>
           <Box w={"50%"} m={"16px 100px"}>
             <Flex justifyContent={"flex-end"} align={"center"} gap={4}>
-              <Link to={"/search"}>
-                <HiOutlineSearch
-                  fontSize={24}
-                  cursor={"pointer"}
-                  color={"gray.800"}
-                />
-              </Link>
               <Link to={"/cart"} ml={4}>
                 <Flex alignItems={"center"} position="relative">
                   <HiOutlineShoppingCart
@@ -142,8 +138,8 @@ const Navbar = () => {
                   </Box>
                 </Flex>
               </Link>
-              {login ? (
-                <Flex alignItems={"center"} ml={10}>
+              <Flex alignItems={"center"} ml={8}>
+                {login ? (
                   <Menu>
                     <MenuButton
                       as={Button}
@@ -155,7 +151,10 @@ const Navbar = () => {
                       <Avatar
                         size={"sm"}
                         name={user.username}
-                        src={"/profile"}
+                        src={getImage(user.profileimg)}
+                        style={{
+                          boxShadow: "0 0 0 1px white, 0 0 0 2px #59981A",
+                        }}
                       />
                     </MenuButton>
                     <MenuList>
@@ -164,9 +163,6 @@ const Navbar = () => {
                       </Link>
                       <Link to={"/address"}>
                         <MenuItem>Manage Address</MenuItem>
-                      </Link>
-                      <Link to={"/change-password"}>
-                        <MenuItem>Change Password</MenuItem>
                       </Link>
                       <Link to={"/User-Order"}>
                         <MenuItem>Order List</MenuItem>
@@ -179,53 +175,77 @@ const Navbar = () => {
                       </Link>
                     </MenuList>
                   </Menu>
-                </Flex>
-              ) : (
-                <Box ml={10}>
-                  <Stack direction={"row"} spacing={6} ml={4}>
-                    <Button
-                      as={"a"}
-                      display={"inline-flex"}
-                      fontSize={"sm"}
-                      fontWeight={700}
-                      color={"brand.main"}
-                      bg={"white"}
-                      border={"1px"}
-                      borderColor={"brand.main"}
-                      rounded={"lg"}
-                      onClick={() => {
-                        navigate("/signin");
-                      }}
-                      _hover={{
-                        bg: "gray.100",
-                      }}
+                ) : (
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      rounded={"full"}
+                      variant={"link"}
+                      cursor={"pointer"}
+                      minW={0}
                     >
-                      {" "}
-                      Log In
-                    </Button>
-                    <Button
-                      as={"a"}
-                      display={"inline-flex"}
-                      fontSize={"sm"}
-                      fontWeight={700}
-                      color={"white"}
-                      bg={"brand.main"}
-                      rounded={"lg"}
-                      _hover={{
-                        bg: "#457811",
-                      }}
-                      _active={{
-                        bg: "#2D5406",
-                      }}
-                      onClick={() => {
-                        navigate("/register");
-                      }}
-                    >
-                      Register
-                    </Button>
-                  </Stack>
-                </Box>
-              )}
+                      <Avatar size={"sm"} />
+                    </MenuButton>
+                    <MenuList>
+                      <Box
+                        display={"flex"}
+                        flexDir={"column"}
+                        px={4}
+                        py={2}
+                        gap={4}
+                      >
+                        <Center>
+                          <Text fontWeight={"medium"} color={"brand.main"}>
+                            Welcome to GrocerEasy
+                          </Text>
+                        </Center>
+                        <Divider />
+                        <Button
+                          as={"a"}
+                          fontSize={"sm"}
+                          fontWeight={700}
+                          color={"brand.main"}
+                          bg={"white"}
+                          border={"1px"}
+                          borderColor={"brand.main"}
+                          rounded={"lg"}
+                          onClick={() => {
+                            navigate("/signin");
+                          }}
+                          _hover={{
+                            bg: "gray.100",
+                          }}
+                          _active={{
+                            bg: "gray.200",
+                          }}
+                        >
+                          {" "}
+                          Sign In
+                        </Button>
+                        <Button
+                          as={"a"}
+                          fontSize={"sm"}
+                          fontWeight={700}
+                          color={"white"}
+                          bg={"brand.main"}
+                          rounded={"lg"}
+                          _hover={{
+                            bg: "brand.hover",
+                          }}
+                          _active={{
+                            bg: "brand.active",
+                          }}
+                          onClick={() => {
+                            navigate("/register");
+                          }}
+                        >
+                          Register
+                        </Button>
+                      </Box>
+                    </MenuList>
+                  </Menu>
+                )}
+              </Flex>
             </Flex>
           </Box>
         </Flex>

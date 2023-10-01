@@ -11,9 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.Admin, { foreignKey: "admin_id" });
       this.hasMany(models.ProductStore, { foreignKey: "store_id" });
-      this.hasMany(models.Cartitem, {foreignKey: "store_id"})
+      this.hasMany(models.Transaction, { foreignKey: "store_id" });
+      this.hasMany(models.Cartitem, { foreignKey: "store_id" });
     }
-  } 
+  }
   Store.init(
     {
       name: DataTypes.STRING,

@@ -18,7 +18,7 @@ const DeleteCategoryModal = ({ isOpen, onClose, id }) => {
       <ModalContent>
         <ModalHeader>
           <Text fontSize={"xl"} fontWeight={700}>
-            Delete Admin
+            Delete Category
           </Text>
         </ModalHeader>
         <ModalCloseButton />

@@ -10,6 +10,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      `https://api.rajaongkir.com/`,
       // process.env.WHITELISTED_DOMAIN &&
       //   process.env.WHITELISTED_DOMAIN.split(","),
     ],
@@ -31,6 +32,7 @@ const {
   transactionRouter,
   addressRouter,
   regionRouter,
+  voucherRouter
 } = require("./router");
 // db.sequelize.sync({ alter: true });
 
@@ -47,7 +49,8 @@ app.use("/api/category", categoryRouter);
 app.use("/api/transaction", transactionRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/region", regionRouter);
-app.use("/api/transaction", transactionRouter);
+// app.use("/api/transaction", transactionRouter);
+app.use("/api/voucher", voucherRouter);
 app.use("/public", express.static(path.resolve(__dirname, "../public")));
 
 app.get("/api", (req, res) => {

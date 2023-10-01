@@ -19,10 +19,7 @@ import {
 import React, { useEffect, useState } from "react";
 import UserOrderOngoingCardDetailOrder from "./UserOrderOngoingCardDetailStatus";
 
-const UserOrderOngoingCardDetails = ({
-  transactionDetail,
-  transactionProducts,
-}) => {
+const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts, setDetail }) => {
   const orderStatusArray = [
     { status: "Awaiting Payment", color: "red" },
     { status: "Waiting for Payment Confirmation", color: "orange" },
@@ -68,6 +65,8 @@ const UserOrderOngoingCardDetails = ({
         <UserOrderOngoingCardDetailOrder
           status={transactionDetail.status}
           transactionProducts={transactionProducts}
+          id={transactionDetail.id}
+          setDetail={setDetail}
         />
       </Stack>
     );

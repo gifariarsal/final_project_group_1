@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
@@ -48,10 +48,10 @@ export const CartReducer = createSlice({
         }
       }
     },
-    deleteItemCart : (state, action) => {
-      console.log("dele", action.payload)
-      const {id} = action.payload
-      console.log("isi del",id)
+    deleteItemCart: (state, action) => {
+      console.log("dele", action.payload);
+      const { id } = action.payload;
+      console.log("isi del", id);
       const existCart = state.cart.findIndex((item) => item.id === id);
       if (existCart !== -1) {
         console.log("sampe")
@@ -128,9 +128,9 @@ export const addCart = (products,store_id, Swal) => {
         }
       );
       Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Product successfully added to cart',
+        position: "top-end",
+        icon: "success",
+        title: "Product successfully added to cart",
         showConfirmButton: false,
         timer: 1500
       })
@@ -162,9 +162,9 @@ export const addQuantity = (products,store_id, Swal) => {
 
 export const deleteItem = (products) => {
   return async (dispatch) => {
-    console.log("del ", products)
-    console.log("del ", products.id)
-    console.log("del id ", products.product_id)
+    console.log("del ", products);
+    console.log("del ", products.id);
+    console.log("del id ", products.product_id);
     const token = localStorage.getItem("token");
     const total_price = products.price;
     try {
@@ -202,10 +202,10 @@ export const deleteItemFromCart = (products) => {
         }
       })
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-}
+  };
+};
 
 export const { addToCart, deleteFromCart, setItem, setCarts, deleteItemCart } = CartReducer.actions;
 export default CartReducer.reducer;

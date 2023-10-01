@@ -1,7 +1,14 @@
 const db = require("../../models")
 const user = db.User
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
-
+const transporter = require("../helpers/transporter");
+const handlebars = require("handlebars");
+const fs = require("fs").promises;
+const path = require("path");
+require("dotenv").config({
+  path: path.resolve("../.env"),
+});
 
 const profileController = {
     patchChangeName : async (req, res) => {
@@ -54,7 +61,7 @@ const profileController = {
             return res.status(500).json({message : "Failed", error : error.message})
         }
     },
-    patchChangePassword : async (req, res) => { 
+    patchChangePassword : async (req, res) => {
         try {
             const {id} = req.user
             const {currentPassword, newPassword, confirmPassword} = req.body
@@ -66,6 +73,87 @@ const profileController = {
             })
         } catch (error) {
             return res.status(500).json({message : "Failed", error: error.message})
+        }
+    },
+
+    forgotPassword: async (req, res) => {
+        try {
+            const { email } = req.body
+            const checkEmail = await user.findOne({ where: { email } })
+            if (!checkEmail) {
+                return res.status(404).json({message : "Email Not Found"})
+            }
+
+            let payload = {
+                id: checkEmail.id,
+                email: checkEmail.email,
+                username: checkEmail.username,
+            };
+
+            const username = checkEmail.username;
+            const userEmail = checkEmail.email;
+            const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1h" });
+            const redirect = `http://localhost:3000/reset-password/${token}`;
+
+            const data = await fs.readFile(path.resolve(__dirname, "../emails/resetPassword.html"), "utf-8");
+
+            const tempCompile = handlebars.compile(data);
+            const tempResult = tempCompile({ username, userEmail, redirect });
+            await transporter.sendMail({
+              to: email,
+              subject: "Reset Password",
+              html: tempResult,
+            });
+            return res.status(200).json({ message: "Request accepted. Check your email to reset your password", token: token });
+        } catch (error) {
+            return res.status(500).json({message : "Failed to send request", error: error.message})
+        }
+    },
+
+    resetPassword: async (req, res) => {
+        try {
+            const { id, email } = req.user;
+            const { newPassword, confirmPassword } = req.body;
+            const checkUserData = await user.findOne({ where: { id } });
+            if (!checkUserData) { return res.status(404).json({ message: "User not found" }); }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+            await db.sequelize.transaction(async (t) => {
+                await user.update(
+                  { password: hashedPassword },
+                  { where: { id }, transaction: t }
+                );
+
+                return res.status(200).json({ message: "Password has been reset" });
+            });
+        } catch (error) {
+            return res.status(500).json({ message: "Failed to reset your password", error: error.message });
+        }
+    },
+
+    changeProfilePicture: async (req, res) => {
+        try {
+            const { id } = req.user;
+            const oldAvatar = await user.findOne({ where: { id } });
+
+            if (oldAvatar.profileimg) {
+              fs.unlink(oldAvatar.profileimg, (err) => {
+                if (err) return res.status(500).json({ error: err.message });
+              });
+            }
+
+            await db.sequelize.transaction(async (t) => {
+              await user.update(
+                { profileimg: req.file.path },
+                { where: { id } },
+                { transaction: t }
+              );
+              res.status(200).json({ message: "Avatar changed successfully" });
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Failed to change avatar", error: error.message });
         }
     }
 }
