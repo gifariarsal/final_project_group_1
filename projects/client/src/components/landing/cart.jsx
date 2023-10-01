@@ -54,6 +54,7 @@ export default function Cart() {
     console.log("in", products);
     await dispatch(addToCart(products));
     await dispatch(addQuantity(products));
+    console.log("store depan ", products.store_id);
     await dispatch(getItem(store_id));
     await dispatch(getCart());
   };

@@ -67,7 +67,7 @@ const ProductDetail = () => {
     console.log("Store_id di kirim", store_id);
     await dispatch(addToCart(products));
     await dispatch(addCart(products, store_id, Swal));
-    await dispatch(getItem());
+    await dispatch(getItem(store_id));
   };
 
   useEffect(() => {
