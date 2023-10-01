@@ -43,7 +43,7 @@ export default function UserProfile() {
           <Box m={"16px auto"} w={"850px"}>
             <Box>
               <Avatar
-                size="xl"
+                size={{ base: "xl", md: "2xl" }}
                 name={user.username}
                 src={getImage(user.profileimg)}
                 onMouseEnter={() => setIsHovered(true)}
