@@ -14,12 +14,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function Transactions() {
   const { carts, item } = useSelector((state) => state.CartReducer);
+  const { store_id } = useSelector((state) => state.ProductReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getCart());
-  }, []);
+  }, [store_id, item]);
 
   const checkout = () => {
     navigate("/checkout");

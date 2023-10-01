@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../../assets/logo_main.png";
 import ConfirmBackToCart from "../../components/user/ConfirmBackToCart";
 import { useDispatch, useSelector } from "react-redux";
-import { getCart } from "../../redux/reducer/CartReducer";
+import { getCart, getItem } from "../../redux/reducer/CartReducer";
 import PlainFooter from "../../components/user/PlainFooter";
 import axios from "axios";
 import { getDefaultAddress } from "../../redux/reducer/AddressReducer";
@@ -32,10 +32,7 @@ const Checkout = () => {
   let product_price = 0;
   let delivery_price = 4000;
   let voucher_discount = 2000;
-
-  carts.map((cart) => {
-    return (product_price += cart.total_price);
-  });
+  product_price = carts.total_price;
 
   const total_price = product_price + delivery_price - voucher_discount;
 
@@ -63,12 +60,13 @@ const Checkout = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     dispatch(getCart());
     dispatch(getDefaultAddress(user.id));
-  }, []);
+    dispatch(getItem(store_id));
+  }, [store_id]);
 
   return (
     <Box>

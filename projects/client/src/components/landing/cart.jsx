@@ -35,12 +35,15 @@ import {
 } from "../../redux/reducer/CartReducer";
 import { useNavigate } from "react-router-dom";
 import { FaShopify } from "react-icons/fa";
+import ProductReducer from "../../redux/reducer/ProductReducer";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 export default function Cart() {
   const PUBLIC_URL = "http://localhost:8000";
   const { login } = useSelector((state) => state.AuthReducer);
   const { item } = useSelector((state) => state.CartReducer);
+  const { store_id } = useSelector((state) => state.ProductReducer);
+  console.log("streoe id", store_id);
   const getImage = (image) => {
     return `${PUBLIC_URL}/${image}`;
   };
@@ -51,14 +54,14 @@ export default function Cart() {
     console.log("in", products);
     await dispatch(addToCart(products));
     await dispatch(addQuantity(products));
-    await dispatch(getItem());
+    await dispatch(getItem(store_id));
     await dispatch(getCart());
   };
 
   const outCart = async (products) => {
     await dispatch(deleteFromCart(products));
     await dispatch(deleteItem(products));
-    await dispatch(getItem());
+    await dispatch(getItem(store_id));
     await dispatch(getCart());
   };
 
@@ -83,13 +86,14 @@ export default function Cart() {
         "success"
       );
     }
-    await dispatch(getItem());
+    await dispatch(getItem(store_id));
     await dispatch(getCart());
   };
 
   useEffect(() => {
-    dispatch(getItem());
-  }, []);
+    dispatch(getItem(store_id));
+    dispatch(getCart());
+  }, [store_id]);
   return (
     <>
       <Navbar />

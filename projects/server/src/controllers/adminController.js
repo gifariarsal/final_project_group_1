@@ -367,10 +367,17 @@ const adminController = {
   },
   getUserTransaction : async(req, res) => {
     try {
-      const {id} = req.params
-      const checkTrans = await trans.findOne({where : {user_id : id, status : 0}})
+      const {user_id} = req.params
+      const checkTrans = await trans.findOne({where : {user_id : user_id, status : 0}})
       console.log("checkUser ", checkTrans)
       return res.status(200).json({message : "Success", data : checkTrans})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  },
+  cancelUserTransaction : async (req, res) => {
+    try {
+      // const 
     } catch (error) {
       return res.status(500).json({message : error.message})
     }

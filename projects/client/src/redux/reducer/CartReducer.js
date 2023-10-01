@@ -68,11 +68,12 @@ export const CartReducer = createSlice({
     // },
   },
 });
-export const getItem = () => {
+export const getItem = (store_id) => {
   return async (dispatch) => {
     const token = localStorage.getItem("token");
+    console.log("cart store_id", store_id)
     try {
-      const fetchData = await axios.get(`${URL_API}/cart/item`, {
+      const fetchData = await axios.get(`${URL_API}/cart/item/${store_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
