@@ -35,6 +35,7 @@ import { HiMenu } from "react-icons/hi";
 
 const Navbar = () => {
   const { item, cart } = useSelector((state) => state.CartReducer);
+  const { store_id } = useSelector((state) => state.ProductReducer);
   const cartItem = item.reduce((total, item) => total + item.quantity, 0);
   const items = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -46,16 +47,13 @@ const Navbar = () => {
   const [isMobile] = useMediaQuery("(max-width: 768px)");
 
   const { user } = useSelector((state) => state.AuthReducer);
-  const { store_id } = useSelector(
-    (state) => state.ProductReducer
-  );
   function onKlik() {
     dispatch(logoutAuth(toast));
   }
 
   useEffect(() => {
     dispatch(getItem(store_id));
-  }, []);
+  }, [store_id]);
 
   return (
     <header>

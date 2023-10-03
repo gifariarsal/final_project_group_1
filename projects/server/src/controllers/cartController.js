@@ -115,7 +115,6 @@ const cartController = {
         include : [
           {
             model: Store,
-            attributes: [`name`]
           },
           {
             model : product}
@@ -153,8 +152,6 @@ const cartController = {
   getRajaOngkir: async (req, res) => {
     const { storeCityId, city_id, totalWeight, deliveryDetail } = req.body;
     try {
-      console.log("dataaa => ", storeCityId, city_id, totalWeight, deliveryDetail);
-      console.log("waiittt")
       const { data } = await axios.post(
         `${APIRO}`,
         {

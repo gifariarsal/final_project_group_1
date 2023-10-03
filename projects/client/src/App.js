@@ -33,8 +33,6 @@ import ResetPassword from "./pages/user/ResetPassword";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
-  const { location, lon, lat } = useSelector((state) => state.AuthReducer);
-  const { userAddress, defaultAddress } = useSelector((state) => state.AddressReducer);
   const { user } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
 
@@ -43,6 +41,7 @@ function App() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { longitude, latitude } = position.coords;
+          console.log(longitude, latitude);
           dispatch(setUserLocation(latitude, longitude));
           dispatch(getStore_id({ lat: latitude, lon: longitude }));
         },
@@ -55,34 +54,17 @@ function App() {
     }
   };
 
-  const defaultUserAddress = async () => {
-    const defaultAddress = userAddress.find((address) => address.isdefault);
-
-    if (!defaultAddress) {
-      return;
+  useEffect(() => {
+    if (user) {
+      dispatch(getDefaultAddress());
+    } else {
+      fetchLocation();
     }
-
-    const { latitude, longitude } = defaultAddress;
-
-    // await dispatch(setPrimaryAddress(address_id, toast));
-    await dispatch(setUserLocation(latitude, longitude));
-    await dispatch(getAddress(user.id));
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchLocation();
-    if (user) {
-      console.log("1");
-      dispatch(getDefaultAddress());
-      // dispatch(getAddress(user.id));
-    //   if (userAddress.length > 0) {
-    //     console.log("2");
-    //     defaultUserAddress();
-    //   } else if (userAddress.length < 1) fetchLocation();
-    // } else {
-    }
-
-  }, [user]);
+  }, []);
 
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
