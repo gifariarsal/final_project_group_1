@@ -47,6 +47,7 @@ const ProductDetail = () => {
     }
   };
 
+  console.log("setok", stock.quantity);
   const getProductDetail = async () => {
     try {
       let apiUrl = `${URL_API}/product/detail?id=${id}`;
@@ -135,21 +136,39 @@ const ProductDetail = () => {
                 <Text>
                   Stock {stock.Store?.name}: {stock?.quantity}
                 </Text>
-                <Tooltip
-                  label="Please login first!"
-                  bg={"brand.main"}
-                  aria-label="A tooltip"
-                >
-                  <Button
-                    variant={"outline"}
-                    colorScheme="teal"
-                    leftIcon={<HiOutlineShoppingCart />}
-                    onClick={() => inCart(product, store_id)}
-                    isDisabled={login === false}
+                {login ? (
+                  <Tooltip
+                    label={stock.quantity < 10 ? "Low stock" : "Add to cart!"}
+                    bg={"brand.main"}
+                    aria-label="A tooltip"
                   >
-                    Add Cart
-                  </Button>
-                </Tooltip>
+                    <Button
+                      variant={"outline"}
+                      colorScheme="teal"
+                      leftIcon={<HiOutlineShoppingCart />}
+                      onClick={() => inCart(product, store_id)}
+                      isDisabled={login === false}
+                    >
+                      {stock.quantity < 10 ? "Low stock" : "Add Cart"}
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    label="Please login first!"
+                    bg={"brand.main"}
+                    aria-label="A tooltip"
+                  >
+                    <Button
+                      variant={"outline"}
+                      colorScheme="teal"
+                      leftIcon={<HiOutlineShoppingCart />}
+                      onClick={() => inCart(product, store_id)}
+                      isDisabled={login === false}
+                    >
+                      Add Cart
+                    </Button>
+                  </Tooltip>
+                )}
               </>
             )}
             {!store_id && (
