@@ -118,12 +118,11 @@ const cartController = {
             attributes: [`name`]
           },
           {
-            model : product, attributes : [`product_img`]}
+            model : product}
         ],
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
-        include: [...includeProduct],
         where: { cart_id: findCart.id, store_id : store_id },
       });
       console.log("item", findCartsItems);

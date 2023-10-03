@@ -38,8 +38,6 @@ function App() {
   const { user } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
 
-  console.log(defaultAddress);
-
   const fetchLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -72,17 +70,19 @@ function App() {
   };
 
   useEffect(() => {
+    fetchLocation();
     if (user) {
+      console.log("1");
       dispatch(getDefaultAddress());
-      dispatch(getAddress(user.id));
+      // dispatch(getAddress(user.id));
+    //   if (userAddress.length > 0) {
+    //     console.log("2");
+    //     defaultUserAddress();
+    //   } else if (userAddress.length < 1) fetchLocation();
+    // } else {
     }
-    if (userAddress.length > 0) {
-      defaultUserAddress();
-    }
-    if (userAddress.length < 1) fetchLocation();
-  }, [user]);
 
-  console.log(userAddress);
+  }, [user]);
 
   const defaultRoutes = () => {
     if (role === "" || role === 3) {
