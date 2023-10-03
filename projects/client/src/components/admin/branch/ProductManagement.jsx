@@ -18,7 +18,15 @@ import {
   InputLeftElement,
   Select,
   Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -41,6 +49,8 @@ import { destroyProduct } from "../../../redux/reducer/AdminReducer";
 import { BiSearchAlt } from "react-icons/bi";
 import ChangeProductPicture from "../../components/ChangeProductPicture";
 import ButtonChangeProductPicture from "../../components/ButtonChangeProductPicture";
+import ProductPicture from "./ProductPicture";
+import ButtonViewProductPicture from "../../components/ButtonViewProductPicture";
 
 const ProductManagement = () => {
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
@@ -70,7 +80,7 @@ const ProductManagement = () => {
   const fetchData = async () => {
     const orderByParam = orderByPrice ? "price" : orderBy; // Use 'price' if orderByPrice is true, otherwise use orderBy
     const respon = await axios.get(
-      `http://localhost:8000/api/admin/product?name=${name}&limit=5&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
+      `http://localhost:8000/api/admin/product?name=${name}&limit=10&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
     );
     // console.log("isi", respon.data);
     // console.log("total", respon.data.totalPage);
@@ -131,7 +141,6 @@ const ProductManagement = () => {
     await fetchData();
   };
 
-  
   return (
     <Box>
       <Stack>
@@ -186,69 +195,38 @@ const ProductManagement = () => {
           </Button>
 
           <Divider mt={"10px"} />
-          {product.map((item) => {
-            const active = item.isactive;
-            const newPrice = item.price - item.admin_discount;
-            return (
-              <Box key={item.id}>
-                <Card
-                  key={item.id}
-                  ml={{ base: "32px", lg: "48px" }}
-                  // w={isLargerThanMD ? "800px" : "400px"}
-                  w={{ base: "680px", lg: "800px" }}
-                  mt={"20px"}
-                  boxShadow={"lg"}
-                  border={"2px"}
-                  borderColor={item.isactive ? "gray.100" : "red"} // Add conditional styling
-                >
-                  <CardBody>
-                    <Flex>
-                      <ButtonChangeProductPicture
-                        item={item}
-                        setModalClosedTrigger={setModalClosedTrigger}
-                      />
-                      <Box ml={"20px"}>
-                        <Heading
-                          color={item.isactive ? "green" : "red"}
-                          textDecoration={item.isactive ? "" : "line-through"}
-                        >
-                          {item.isactive ? (
-                            <>{item.Category?.name}</>
-                          ) : (
-                            "Disable"
-                          )}
-                        </Heading>
-                        <Text>{item.name}</Text>
-                        <Flex gap={2} fontSize={"12px"}>
-                          <Text
-                            textDecoration={item.isactive ? "" : "line-through"}
-                            fontWeight={"bold"}
-                          >
-                            Rp. {item.price}
-                          </Text>
-                          <Text
-                            textAlign={"center"}
-                            fontWeight={"bold"}
-                            textDecoration={"line-through"}
-                            color={"#9b9b9b"}
-                          >
-                            {item.admin_discount > 0
-                              ? `Rp. ${item.admin_discount}`
-                              : ""}
-                          </Text>
-                        </Flex>
-                        <Text
-                          textDecoration={item.isactive ? "" : "line-through"}
-                          fontSize="2xl"
-                        >
-                          {item.isactive ? <>Rp. {newPrice}</> : "Disable"}
-                        </Text>
-                        <Text>{item.description}</Text>
-                      </Box>
 
-                      {/* </Stack> */}
-                      <Box right={10} top={2} position={"absolute"}>
-                        <Stack>
+          <TableContainer mt={"10px"}>
+            <Table variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Category</Th>
+                  <Th>Name</Th>
+                  <Th>Price</Th>
+                  <Th>Admin Discount</Th>
+                  <Th>Product IMG</Th>
+                  <Th>Status</Th>
+                  <Th>Action</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {product.map(
+                  (item) => (
+                    <Tr
+                      key={item.id}
+                      border={item.isactive ? "" : "2px"}
+                      borderColor={item.isactive ? "" : "red"}
+                    >
+                      <Td>{item.Category?.name}</Td>
+                      <Td>{item.name}</Td>
+                      <Td>{item.price}</Td>
+                      <Td>{item.admin_discount}</Td>
+                      <Td>
+                        <ButtonViewProductPicture item={item} />
+                      </Td>
+                      <Td>{item.isactive ? "Enable" : "Disable"}</Td>
+                      <Td>
+                        <Flex>
                           <ButtonEditProduct
                             setModalClosedTrigger={setModalClosedTrigger}
                             id={item.id}
@@ -271,41 +249,42 @@ const ProductManagement = () => {
                             //   }
                             // />
                             <Box>
-                              <Stack>
+                              <Flex>
                                 <IconButton
                                   color={"green"}
                                   variant={""}
-                                  mt={"10px"}
+                                  // mt={"10px"}
                                   icon={
                                     <FaCheck
-                                      size={"sm"}
+                                      // size={"sm"}
                                       onClick={() => restore(item)}
                                     />
                                   }
                                 />
                                 <IconButton
-                                  mt={"22px"}
+                                  // mt={"22px"}
                                   color={"red"}
                                   variant={""}
                                   icon={
                                     <FaTrashCan
-                                      size={"sm"}
                                       onClick={() => handleDeleteProduct(item)}
                                     />
                                   }
                                 />
-                              </Stack>
+                              </Flex>
                             </Box>
                           )}
-                        </Stack>
-                      </Box>
-                    </Flex>
-                  </CardBody>
-                  {/* <Button>Change Product Picture</Button> */}
-                </Card>
-              </Box>
-            );
-          })}
+                        </Flex>
+                      </Td>
+                    </Tr>
+                  )
+                  // const active = item.isactive;
+                  // const newPrice = item.price - item.admin_discount;
+                )}
+              </Tbody>
+              <Tfoot></Tfoot>
+            </Table>
+          </TableContainer>
           <Box ml={{ base: "8em", lg: "10em" }} mt={"20px"}>
             <Button
               variant={"ghost"}

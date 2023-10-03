@@ -183,6 +183,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                       placeholder="Discount (optional)"
                       id="admin_discount"
                       name="admin_discount"
+                      aria-label="Admin"
                       type="text"
                       value={formik.values.admin_discount}
                       onChange={formik.handleChange}

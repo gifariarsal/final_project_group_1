@@ -14,7 +14,7 @@ export default function ButtonEditProduct({ id, setModalClosedTrigger, item }) {
         <IconButton
           color={"blackAlpha.800"}
           variant={""}
-          icon={<BiSolidEdit size={"md"} />}
+          icon={<BiSolidEdit />}
           onClick={onOpen}
         />
         <ModalEditProduct
