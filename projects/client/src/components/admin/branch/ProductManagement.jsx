@@ -1,4 +1,6 @@
 import {
+  Avatar,
+  AvatarBadge,
   Box,
   Button,
   ButtonGroup,
@@ -17,6 +19,7 @@ import {
   Select,
   Stack,
   Text,
+  useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -29,16 +32,17 @@ import {
   updateProduct,
 } from "../../../redux/reducer/ProductReducer";
 import ButtonAddProduct from "../../components/ButtonAddProduct";
-import { IoTrashOutline } from "react-icons/io5";
+import { IoPencil, IoTrashOutline } from "react-icons/io5";
 import ButtonEditProduct from "../../components/ButtonEditProduct";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck, FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import { destroyProduct } from "../../../redux/reducer/AdminReducer";
 import { BiSearchAlt } from "react-icons/bi";
+import ChangeProductPicture from "../../components/ChangeProductPicture";
+import ButtonChangeProductPicture from "../../components/ButtonChangeProductPicture";
 
 const ProductManagement = () => {
-  const PUBLIC_URL = "http://localhost:8000";
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
   const [product, setProduct] = useState([]);
   const [page, setPage] = useState(1);
@@ -68,8 +72,8 @@ const ProductManagement = () => {
     const respon = await axios.get(
       `http://localhost:8000/api/admin/product?name=${name}&limit=5&page=${page}&order=${order}&orderBy=${orderByParam}&category=${category}`
     );
-    console.log("isi", respon.data);
-    console.log("total", respon.data.totalPage);
+    // console.log("isi", respon.data);
+    // console.log("total", respon.data.totalPage);
     setProduct(respon.data.data);
     setTotalPage(respon.data.totalPage);
   };
@@ -127,9 +131,7 @@ const ProductManagement = () => {
     await fetchData();
   };
 
-  const getImage = (image) => {
-    return `${PUBLIC_URL}/${image}`;
-  };
+  
   return (
     <Box>
       <Stack>
@@ -201,19 +203,20 @@ const ProductManagement = () => {
                 >
                   <CardBody>
                     <Flex>
-                      <Image
-                        src={getImage(item.product_img)}
-                        alt="sayur"
-                        w={"200px"}
-                        h={"200px"}
-                        borderRadius="lg"
+                      <ButtonChangeProductPicture
+                        item={item}
+                        setModalClosedTrigger={setModalClosedTrigger}
                       />
-                      <Stack mt="6" spacing="3">
+                      <Box ml={"20px"}>
                         <Heading
                           color={item.isactive ? "green" : "red"}
                           textDecoration={item.isactive ? "" : "line-through"}
                         >
-                          {item.Category?.name}
+                          {item.isactive ? (
+                            <>{item.Category?.name}</>
+                          ) : (
+                            "Disable"
+                          )}
                         </Heading>
                         <Text>{item.name}</Text>
                         <Flex gap={2} fontSize={"12px"}>
@@ -234,54 +237,59 @@ const ProductManagement = () => {
                               : ""}
                           </Text>
                         </Flex>
-
                         <Text
                           textDecoration={item.isactive ? "" : "line-through"}
                           fontSize="2xl"
                         >
-                          Rp.{newPrice}
+                          {item.isactive ? <>Rp. {newPrice}</> : "Disable"}
                         </Text>
                         <Text>{item.description}</Text>
-                      </Stack>
-                      <Box right={10} top={50} position={"absolute"}>
+                      </Box>
+
+                      {/* </Stack> */}
+                      <Box right={10} top={2} position={"absolute"}>
                         <Stack>
                           <ButtonEditProduct
                             setModalClosedTrigger={setModalClosedTrigger}
                             id={item.id}
+                            item={item}
                           />
                           {item.isactive ? (
-                            <IconButton
-                              color={"red"}
-                              mt={"12px"}
-                              variant={""}
-                              icon={
-                                <RxCross1
-                                  size={"md"}
-                                  onClick={() => deactive(item)}
-                                />
-                              }
-                            />
+                            <Button variant={""} onClick={() => deactive(item)}>
+                              Disable
+                            </Button>
                           ) : (
+                            // <IconButton
+                            //   color={"red"}
+                            //   mt={"12px"}
+                            //   variant={""}
+                            //   icon={
+                            //     <RxCross1
+                            //       size={"sm"}
+                            //       onClick={() => deactive(item)}
+                            //     />
+                            //   }
+                            // />
                             <Box>
                               <Stack>
                                 <IconButton
                                   color={"green"}
                                   variant={""}
-                                  mt={"12px"}
+                                  mt={"10px"}
                                   icon={
                                     <FaCheck
-                                      size={"md"}
+                                      size={"sm"}
                                       onClick={() => restore(item)}
                                     />
                                   }
                                 />
                                 <IconButton
-                                  mt={"24px"}
+                                  mt={"22px"}
                                   color={"red"}
                                   variant={""}
                                   icon={
                                     <FaTrashCan
-                                      size={"md"}
+                                      size={"sm"}
                                       onClick={() => handleDeleteProduct(item)}
                                     />
                                   }
@@ -293,6 +301,7 @@ const ProductManagement = () => {
                       </Box>
                     </Flex>
                   </CardBody>
+                  {/* <Button>Change Product Picture</Button> */}
                 </Card>
               </Box>
             );

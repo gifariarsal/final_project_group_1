@@ -2,7 +2,7 @@ import { Box, IconButton, useDisclosure } from "@chakra-ui/react";
 import { BiSolidEdit } from "react-icons/bi";
 import ModalEditProduct from "./ModalEditProduct";
 
-export default function ButtonEditProduct({ id, setModalClosedTrigger }) {
+export default function ButtonEditProduct({ id, setModalClosedTrigger, item }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleModalClose = () => {
     setModalClosedTrigger(true); // Set the trigger when the modal is closed
@@ -22,6 +22,7 @@ export default function ButtonEditProduct({ id, setModalClosedTrigger }) {
           onOpen={onOpen}
           onClose={handleModalClose}
           id={id}
+          item={item}
         />
       </Box>
     </>

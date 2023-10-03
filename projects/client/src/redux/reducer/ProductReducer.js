@@ -171,22 +171,18 @@ export const addProduct = (values, productImg, Swal, toast) => {
   };
 };
 
-export const updateProduct = (values, productImg, toast, Swal) => {
+export const updateProduct = (values, toast, Swal) => {
   return async () => {
     const id = values.id;
+    console.log("edit ", values)
+    const {newName, categoryId, price, admin_discount, description} = values
     try {
-      const formData = new FormData();
-      formData.append("newName", values.newName);
-      formData.append("category_id", values.categoryId);
-      formData.append("price", values.price);
-      formData.append("admin_discount", values.admin_discount);
-      formData.append("description", values.description);
-      formData.append("product_img", productImg);
-      const data = await axios.patch(`${URL_API}/product/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const data = await axios.patch(`${URL_API}/product/${id}`, { 
+        newName : newName, 
+        category_id : categoryId, 
+        price : price,
+        admin_discount : admin_discount,
+        description : description });
       Swal.fire({
         position: "top-end",
         icon: "success",
