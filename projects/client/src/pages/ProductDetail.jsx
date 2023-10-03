@@ -6,6 +6,7 @@ import {
   Heading,
   Image,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -134,15 +135,21 @@ const ProductDetail = () => {
                 <Text>
                   Stock {stock.Store?.name}: {stock?.quantity}
                 </Text>
-                <Button
-                  variant={"outline"}
-                  colorScheme="teal"
-                  leftIcon={<HiOutlineShoppingCart />}
-                  onClick={() => inCart(product, store_id)}
-                  isDisabled={login === false}
+                <Tooltip
+                  label="Please login first!"
+                  bg={"brand.main"}
+                  aria-label="A tooltip"
                 >
-                  Add Cart
-                </Button>
+                  <Button
+                    variant={"outline"}
+                    colorScheme="teal"
+                    leftIcon={<HiOutlineShoppingCart />}
+                    onClick={() => inCart(product, store_id)}
+                    isDisabled={login === false}
+                  >
+                    Add Cart
+                  </Button>
+                </Tooltip>
               </>
             )}
             {!store_id && (

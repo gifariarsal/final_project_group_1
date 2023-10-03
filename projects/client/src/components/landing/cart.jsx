@@ -111,7 +111,7 @@ export default function Cart() {
               <Text>Cart</Text>
             </Box>
             <Divider colorScheme="blackAlpha"></Divider>
-            <Flex>
+            <Flex flexDir={{ base: "column", lg: "row" }}>
               <Box>
                 {item.length === 0 ? (
                   <Box ml={"100px"}>
@@ -137,9 +137,7 @@ export default function Cart() {
                         <Card
                           mt={"8"}
                           w={{
-                            base: "300px",
-                            sm: "400px",
-                            md: "500px",
+                            base: "600px",
                             lg: "800px",
                           }}
                           ml={"100px"}
