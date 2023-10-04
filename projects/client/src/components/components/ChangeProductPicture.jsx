@@ -22,7 +22,7 @@ const ChangeProductPicture = ({ isOpen, onClose, id }) => {
   const [productPicture, setProductPicture] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [error, setError] = useState("");
-  console.log("id change", id);
+
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -85,6 +85,9 @@ const ChangeProductPicture = ({ isOpen, onClose, id }) => {
         isClosable: true,
       });
       onClose();
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 1000);
     } catch (error) {
       console.log("Error uploading profile photo:", error);
       toast({

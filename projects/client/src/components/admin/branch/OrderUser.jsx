@@ -26,16 +26,6 @@ const OrderUser = () => {
   const [allTransaction, setAllTransaction] = useState([]);
   const dispatch = useDispatch();
 
-  // const getUser = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8000/api/admin/branch/user`
-  //     );
-  //     setUser(response.data.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const getAllTransaction = async () => {
     try {
       const response = await axios.get(
@@ -132,13 +122,16 @@ const OrderUser = () => {
                 </Td>
                 <Td>
                   {item.status === 0 ? (
-                    <Button
-                      variant={""}
-                      _hover={{ bg: "red", color: "white" }}
-                      onClick={() => handleCancel(item)}
-                    >
-                      Cancel
-                    </Button>
+                    <Box>
+                      <Button
+                        variant={""}
+                        _hover={{ bg: "red", color: "white" }}
+                        onClick={() => handleCancel(item)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button>Send</Button>
+                    </Box>
                   ) : (
                     ""
                   )}

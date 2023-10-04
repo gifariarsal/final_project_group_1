@@ -146,6 +146,7 @@ export const addProduct = (values, productImg, Swal, toast) => {
       formData.append("admin_discount", values.admin_discount);
       formData.append("description", values.description);
       formData.append("product_img", productImg);
+      formData.append("weight", values.weigth);
       const data = await axios.post(`${URL_API}/product`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

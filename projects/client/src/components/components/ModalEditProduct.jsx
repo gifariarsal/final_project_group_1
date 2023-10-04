@@ -54,7 +54,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
     initialValues: {
       id: id,
       newName: item.name || "",
-      categoryId: item.Category?.name || "",
+      categoryId: "",
       price: item.price || "",
       admin_discount: item.admin_discount || "",
       description: item.description || "",
@@ -121,6 +121,12 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                         );
                       })}
                     </Select>
+                      {formik.touched.categoryId &&
+                        formik.errors.categoryId && (
+                          <FormErrorMessage>
+                            {formik.errors.categoryId}
+                          </FormErrorMessage>
+                        )}
                   </FormControl>
                   <FormControl
                     isInvalid={formik.touched.price && formik.errors.price}

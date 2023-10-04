@@ -16,6 +16,8 @@ export default function ButtonEditProduct({ id, setModalClosedTrigger, item }) {
           variant={""}
           icon={<BiSolidEdit />}
           onClick={onOpen}
+          borderRadius={"40px"}
+          _hover={{ bg: "gray.400", border: "1px", borderRadius: "40px" }}
         />
         <ModalEditProduct
           isOpen={isOpen}

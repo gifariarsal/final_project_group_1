@@ -204,6 +204,7 @@ const ProductManagement = () => {
                   <Th>Name</Th>
                   <Th>Price</Th>
                   <Th>Admin Discount</Th>
+                  <Th>Weight</Th>
                   <Th>Product IMG</Th>
                   <Th>Status</Th>
                   <Th>Action</Th>
@@ -221,8 +222,15 @@ const ProductManagement = () => {
                       <Td>{item.name}</Td>
                       <Td>{item.price}</Td>
                       <Td>{item.admin_discount}</Td>
+                      <Td>{item.weight} Kg</Td>
                       <Td>
-                        <ButtonViewProductPicture item={item} />
+                        <Flex>
+                          <ButtonChangeProductPicture
+                            item={item}
+                            setModalClosedTrigger={setModalClosedTrigger}
+                          />
+                          <ButtonViewProductPicture item={item} />
+                        </Flex>
                       </Td>
                       <Td>{item.isactive ? "Enable" : "Disable"}</Td>
                       <Td>

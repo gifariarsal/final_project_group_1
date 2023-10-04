@@ -194,7 +194,7 @@ const productController = {
   },
   createProduct: async (req, res) => {
     try {
-      const { name, category_id, price, admin_discount, description } = req.body;
+      const { name, category_id, price, admin_discount, description,weight } = req.body;
       if (!req.file) {
         return res.status(400).json({ message: "Product image is required" });
       }
@@ -213,6 +213,7 @@ const productController = {
             product_img: req.file.path,
             isactive: true,
             description,
+            weight
           },
           { transaction: t }
         );

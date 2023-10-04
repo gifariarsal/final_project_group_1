@@ -2,6 +2,7 @@ import {
   Avatar,
   AvatarBadge,
   Box,
+  Button,
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -28,7 +29,7 @@ export default function ButtonChangeProductPicture({
   return (
     <>
       <Box>
-        <Avatar
+        {/* <Avatar
           size={{ base: "xl", lg: "2xl" }}
           // name={user.username}
           src={getImage(item.product_img)}
@@ -37,19 +38,35 @@ export default function ButtonChangeProductPicture({
           style={{
             cursor: "pointer",
           }}
+        > */}
+
+        <Button
+          variant={""}
+          borderRadius={"30px"}
+          _hover={{ bg: "gray.300", borderRadius: "30px" }}
+          onClick={onOpen}
         >
-          {isHovered && (
-            <AvatarBadge
-              onClick={onOpen}
-              as={IconButton}
-              size="lg"
-              bottom="5px"
-              colorScheme="gray"
-              aria-label="Edit Image"
-              icon={<IoPencil />}
-            />
-          )}
-        </Avatar>
+          Change
+        </Button>
+        {/* <IconButton
+          onClick={onOpen}
+          variant={""}
+          borderRadius={"30px"}
+          _hover={{ bg: "gray.300", borderRadius: "30px" }}
+          icon={<IoPencil />}
+        /> */}
+        {/* {isHovered && (
+          <AvatarBadge
+            onClick={onOpen}
+            as={IconButton}
+            size="lg"
+            bottom="5px"
+            colorScheme="gray"
+            aria-label="Edit Image"
+            icon={<IoPencil />}
+          />
+        )} */}
+        {/* </Avatar> */}
         <ChangeProductPicture
           isOpen={isOpen}
           onOpen={onOpen}
