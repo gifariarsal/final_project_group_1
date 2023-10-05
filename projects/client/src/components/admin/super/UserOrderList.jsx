@@ -19,6 +19,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useMediaQuery,
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -45,13 +46,12 @@ const UserOrderList = () => {
   const [endDate, setEndDate] = useState("");
   const [orderBy, setOrderBy] = useState("");
   const [order, setOrder] = useState("desc");
+  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
   const handleOrderDetail = (orderId) => {
     setOrderId(orderId);
     onOpen();
   };
-
-  console.log(allUserOrder);
 
   useEffect(() => {
     dispatch(getAllUserOrder({ index, startDate, endDate, orderBy, order }));
@@ -104,6 +104,7 @@ const UserOrderList = () => {
           <AccordionPanel pb={4}>
             <Flex alignItems="center" gap={2}>
               <Select
+                size={{ base: "sm", md: "md" }}
                 placeholder="Select Order"
                 value={orderBy}
                 onChange={(e) => setOrderBy(e.target.value)}
@@ -112,6 +113,7 @@ const UserOrderList = () => {
                 <option value={"status"}>Status</option>
               </Select>
               <Button
+                size={{ base: "sm", md: "md" }}
                 bg={"brand.main"}
                 color="white"
                 _hover={{ bg: "brand.hover" }}
@@ -137,15 +139,34 @@ const UserOrderList = () => {
           <AccordionPanel pb={4}>
             <Flex alignItems="flex-end" gap={2}>
               <Box>
-                <FormLabel htmlFor="startDate">Start Date</FormLabel>
-                <Input type="date" id="startDate" />
+                <FormLabel
+                  fontSize={{ base: "sm", md: "md" }}
+                  htmlFor="startDate"
+                >
+                  Start Date
+                </FormLabel>
+                <Input
+                  size={{ base: "sm", md: "md" }}
+                  type="date"
+                  id="startDate"
+                />
               </Box>
               <Box>
-                <FormLabel htmlFor="endDate">End Date</FormLabel>
-                <Input type="date" id="endDate" />
+                <FormLabel
+                  fontSize={{ base: "sm", md: "md" }}
+                  htmlFor="endDate"
+                >
+                  End Date
+                </FormLabel>
+                <Input
+                  size={{ base: "sm", md: "md" }}
+                  type="date"
+                  id="endDate"
+                />
               </Box>
               <Box gap={2}>
                 <Button
+                  size={{ base: "sm", md: "md" }}
                   bg={"brand.main"}
                   color="white"
                   _hover={{ bg: "brand.hover" }}
@@ -154,7 +175,12 @@ const UserOrderList = () => {
                 >
                   Filter
                 </Button>
-                <Button ml={2} colorScheme="red" onClick={handleClearDate}>
+                <Button
+                  size={{ base: "sm", md: "md" }}
+                  ml={2}
+                  colorScheme="red"
+                  onClick={handleClearDate}
+                >
                   Clear
                 </Button>
               </Box>
@@ -167,9 +193,9 @@ const UserOrderList = () => {
           <Thead>
             <Tr>
               <Th>Invoice ID</Th>
-              <Th>User</Th>
+              {isLargerThan768 && <Th>User</Th>}
               <Th>Date</Th>
-              <Th>Status</Th>
+              {isLargerThan768 && <Th>Status</Th>}
               <Th>Detail</Th>
             </Tr>
           </Thead>
@@ -180,11 +206,13 @@ const UserOrderList = () => {
                   {order.user_id}
                   {order.id}
                 </Td>
-                <Td>{order.name}</Td>
+                {isLargerThan768 && <Td>{order.name}</Td>}
                 <Td>{dateFormatter(order.createdAt)}</Td>
-                <Td color={orderStatus[order.status].color}>
-                  {orderStatus[order.status].status}
-                </Td>
+                {isLargerThan768 && (
+                  <Td color={orderStatus[order.status].color}>
+                    {orderStatus[order.status].status}
+                  </Td>
+                )}{" "}
                 <Td>
                   <Button
                     onClick={() => handleOrderDetail(order.id)}

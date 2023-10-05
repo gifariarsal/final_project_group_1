@@ -14,7 +14,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserTransactionItem, setOrderItem } from "../../../redux/reducer/UserOrderReducer";
+import {
+  getUserTransactionItem,
+  setOrderItem,
+} from "../../../redux/reducer/UserOrderReducer";
 import orderStatus from "../../../utils/orderStatus";
 import dateFormatter from "../../../utils/dateFormatter";
 import getImage from "../../../utils/getImage";
@@ -29,7 +32,7 @@ const UserOrderDetail = ({ isOpen, onClose, orderId }) => {
   const handleClose = () => {
     onClose();
     dispatch(setOrderItem(""));
-  }
+  };
 
   useEffect(() => {
     dispatch(getUserTransactionItem(orderId));
@@ -43,18 +46,35 @@ const UserOrderDetail = ({ isOpen, onClose, orderId }) => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <Box w={"full"} flexDir={"column"} display={"flex"} justifyContent={"center"} alignItems={"center"} py={8}>
-              <Icon as={MdOutlineRemoveShoppingCart} boxSize={16} color={"gray.400"} />
-              <Text mt={4} fontSize={"lg"} fontWeight={"bold"}>Order not found</Text>
+            <Box
+              w={"full"}
+              flexDir={"column"}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              py={8}
+            >
+              <Icon
+                as={MdOutlineRemoveShoppingCart}
+                boxSize={16}
+                color={"gray.400"}
+              />
+              <Text mt={4} fontSize={"lg"} fontWeight={"bold"}>
+                Order not found
+              </Text>
             </Box>
           </ModalBody>
         </ModalContent>
       </Modal>
-    )
+    );
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size={"2xl"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      size={{ base: "md", md: "2xl" }}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -65,47 +85,64 @@ const UserOrderDetail = ({ isOpen, onClose, orderId }) => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex justifyContent={"space-between"} alignItems={"center"} mb={2}>
-            <Text fontWeight="bold">{orderItem.Store?.name}</Text>
-            <Text
-              fontWeight="bold"
-              color={orderStatus[orderItem?.status]?.color}
+          <Box display={"flex"} flexDir={"column"} gap={4}>
+            <Box
+              w={"full"}
+              display={"flex"}
+              flexDir={{ base: "column", md: "row" }}
+              justifyContent={{ base: "flex-end", md: "space-between" }}
+              alignItems={{ md: "center" }}
             >
-              {orderStatus[orderItem?.status]?.status}
-            </Text>
-          </Flex>
-          <Text>Date: {dateFormatter(orderItem.createdAt)}</Text>
-          <Text>User: {orderItem.name}</Text>
-          <Text>Address: {orderItem.address}</Text>
-          <Text>Product Price: {priceFormatter(orderItem.total_price)}</Text>
-          <Text>
-            Delivery Price: {priceFormatter(orderItem.delivery_price)}
-          </Text>
-          <Text>Discount: {priceFormatter(orderItem.total_discount)}</Text>
-          <Text fontWeight="bold" mt={4}>
-            Products:
-          </Text>
-          {orderItem.Transactionitems?.map((transactionItem, index) => (
-            <Box key={transactionItem.id}>
-              <Box display={"flex"} alignItems={"center"} gap={4}>
-                {transactionItem.Product.product_img && (
-                  <Image
-                    src={getImage(transactionItem.Product.product_img)}
-                    alt={transactionItem.Product.name}
-                    style={{ maxWidth: "100px", maxHeight: "100px" }}
-                  />
-                )}
-                <Box>
-                  <Text>{transactionItem.Product.name}</Text>
-                  <Text>Qty: {transactionItem.quantity}</Text>
-                  <Text>{priceFormatter(transactionItem.Product.price)}</Text>
-                </Box>
-              </Box>
-              {index < orderItem.Transactionitems.length - 1 && (
-                <Divider my={2} />
-              )}
+              <Text fontWeight="bold">{orderItem.Store?.name}</Text>
+              <Text>{dateFormatter(orderItem.createdAt)}</Text>
+              <Text
+                fontWeight="bold"
+                color={orderStatus[orderItem?.status]?.color}
+              >
+                {orderStatus[orderItem?.status]?.status}
+              </Text>
             </Box>
-          ))}
+            <Box>
+              <Text fontWeight="bold">User Data:</Text>
+              <Text>{orderItem.name}</Text>
+              <Text>{orderItem.User?.phone}</Text>
+              <Text>{orderItem.address}</Text>
+            </Box>
+            <Box>
+              <Text fontWeight="bold">Price Data:</Text>
+              <Text>Total Price: {priceFormatter(orderItem.total_price)}</Text>
+              <Text>
+                Delivery Price: {priceFormatter(orderItem.delivery_price)}
+              </Text>
+              <Text>Discount: {priceFormatter(orderItem.total_discount)}</Text>
+            </Box>
+            <Box>
+              <Text fontWeight="bold">Product Data:</Text>
+              {orderItem.Transactionitems?.map((transactionItem, index) => (
+                <Box key={transactionItem.id}>
+                  <Box display={"flex"} alignItems={"center"} gap={4}>
+                    {transactionItem.Product.product_img && (
+                      <Image
+                        src={getImage(transactionItem.Product.product_img)}
+                        alt={transactionItem.Product.name}
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    )}
+                    <Box>
+                      <Text>{transactionItem.Product.name}</Text>
+                      <Text>Qty: {transactionItem.quantity}</Text>
+                      <Text>
+                        {priceFormatter(transactionItem.Product.price)}
+                      </Text>
+                    </Box>
+                  </Box>
+                  {index < orderItem.Transactionitems.length - 1 && (
+                    <Divider my={2} />
+                  )}
+                </Box>
+              ))}
+            </Box>
+          </Box>
         </ModalBody>
       </ModalContent>
     </Modal>

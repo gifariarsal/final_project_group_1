@@ -1,6 +1,6 @@
 const { Sequelize, Op } = require("sequelize");
 const db = require("../../models");
-const { Transaction, Product, Transactionitem, Store } = db;
+const { Transaction, Product, Transactionitem, Store, User } = db;
 
 const setPagination = (limit, page) => {
   const offset = (page - 1) * +limit;
@@ -78,7 +78,8 @@ const userOrderController = {
                 "admin_discount",
                 "price",
                 "createdAt",
-                "updatedAt"],
+                "updatedAt",
+              ],
             },
             include: [
               {
@@ -98,6 +99,11 @@ const userOrderController = {
           {
             model: Store,
             attributes: ["id", "name"],
+          },
+          {
+            model: User,
+            attributes: ["id", "phone"],
+            where: { id: Sequelize.col("Transaction.user_id") },
           },
         ],
       });
