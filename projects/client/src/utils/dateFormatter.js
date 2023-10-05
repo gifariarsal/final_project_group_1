@@ -1,4 +1,4 @@
-const changeDate = (createdAt) => {
+const dateFormatter = (createdAt) => {
   const monthNames = [
     "January",
     "February",
@@ -26,4 +26,4 @@ const changeDate = (createdAt) => {
   return `${date}-${monthName}-${year}, ${formattedHours}:${formattedMinutes} ${ampm}`;
 };
 
-export default changeDate;
+export default dateFormatter;

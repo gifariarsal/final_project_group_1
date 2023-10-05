@@ -4,7 +4,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
     allUserOrder: [],
-    orderItem: [],
+    orderItem: "",
     page: 1,
 }
 
@@ -16,7 +16,7 @@ export const UserOrderReducer = createSlice({
             state.allUserOrder = [...action.payload];
         },
         setOrderItem: (state, action) => {
-            state.orderItem = [...action.payload];
+            state.orderItem = action.payload;
         },
         setPage: (state, action) => {
             state.page = action.payload;
@@ -35,7 +35,6 @@ export const getAllUserOrder = ({ index = 1, startDate, endDate, orderBy, order 
             const { data } = await axios.get(`${URL_API}/order/${query}`);
             dispatch(setPage(data.totalPage));
             dispatch(setUserOrder(data.data));
-            dispatch(setOrderItem(data.data[0]?.id));
         } catch (error) {
             console.log(error);
         }
@@ -46,7 +45,7 @@ export const getUserTransactionItem = (id) => {
     return async (dispatch) => {
         try {
             const { data } = await axios.get(`${URL_API}/order/${id}`);
-            dispatch(setOrderItem(data.data));
+            await dispatch(setOrderItem(data.data));
         } catch (error) {
             console.log(error);
         }

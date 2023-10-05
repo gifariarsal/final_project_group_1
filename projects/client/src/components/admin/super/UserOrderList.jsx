@@ -1,4 +1,9 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Flex,
@@ -14,125 +19,149 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { getAllUserOrder } from "../../../redux/reducer/UserOrderReducer";
-import changeDate from "../../dateFormatter/dateFormatter";
+import {
+  getAllUserOrder,
+  getUserTransactionItem,
+} from "../../../redux/reducer/UserOrderReducer";
+import dateFormatter from "../../../utils/dateFormatter";
 import UserOrderDetail from "./UserOrderDetail";
 import { Pagination } from "../../components/Pagination";
+import orderStatus from "../../../utils/orderStatus";
 
 const UserOrderList = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { page } = useSelector((state) => state.UserOrderReducer);
   const { allUserOrder } = useSelector((state) => state.UserOrderReducer);
-  const [detail, setDetail] = useState(false);
+  const [orderId, setOrderId] = useState(null);
   const [index, setIndex] = useState(1);
-  const [transactionDetail, setTransactionDetail] = useState({});
-  const [transactionProducts, setTransactionProducts] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [orderBy, setOrderBy] = useState("");
   const [order, setOrder] = useState("desc");
-  const [products, setProducts] = useState();
 
-  const orderStatusArray = [
-    { status: "Awaiting Payment", color: "red" },
-    { status: "Waiting for Payment Confirmation", color: "orange" },
-    { status: "Processing", color: "orange" },
-    { status: "Shipped", color: "green" },
-    { status: "Confirm Your Order", color: "green" },
-    { status: "Canceled", color: "red" },
-    { status: "Finished", color: "Green" },
-  ];
-
-  const handleClearStartDate = () => {
-    setStartDate("");
-  };
-  const handleClearEndDate = () => {
-    setEndDate("");
-  };
-
-  const handleOrderDetail = () => {
+  const handleOrderDetail = (orderId) => {
+    setOrderId(orderId);
     onOpen();
-  }
+  };
 
   console.log(allUserOrder);
 
   useEffect(() => {
     dispatch(getAllUserOrder({ index, startDate, endDate, orderBy, order }));
-  }, [index, startDate, endDate, orderBy, order, detail]);
+  }, [index, startDate, endDate, orderBy, order]);
+
+  const handleFilterClick = () => {
+    const startDateValue = document.getElementById("startDate").value;
+    const endDateValue = document.getElementById("endDate").value;
+
+    if (startDateValue && endDateValue && startDateValue > endDateValue) {
+      toast({
+        title: "Error",
+        description: "End Date cannot be earlier than Start Date",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    dispatch(
+      getAllUserOrder({
+        index,
+        startDate: startDateValue,
+        endDate: endDateValue,
+        orderBy,
+        order,
+      })
+    );
+  };
+
+  const handleClearDate = () => {
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    dispatch(
+      getAllUserOrder({ index, startDate: "", endDate: "", orderBy, order })
+    );
+  };
+
   return (
     <>
-      <Flex px={8} py={4} gap={4}>
-        <Box>
-          <FormLabel htmlFor="startDate">Start Date</FormLabel>
-          <Flex alignItems="center">
-            <Input
-              type="date"
-              mb={4}
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            {startDate && (
-              <Button
-                ml={2}
-                colorScheme="red"
-                size="sm"
-                onClick={handleClearStartDate}
+      <Accordion allowToggle mb={8}>
+        <AccordionItem>
+          <AccordionButton _expanded={{ bg: "#E5F2CE" }}>
+            <Box as="span" flex="1" textAlign="left">
+              <Text fontWeight={"medium"}>Sort</Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <Flex alignItems="center" gap={2}>
+              <Select
+                placeholder="Select Order"
+                value={orderBy}
+                onChange={(e) => setOrderBy(e.target.value)}
               >
-                Clear
-              </Button>
-            )}
-          </Flex>
-        </Box>
-        <Box>
-          <FormLabel htmlFor="endDate">End Date</FormLabel>
-          <Flex alignItems="center">
-            <Input
-              type="date"
-              mb={4}
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            {endDate && (
+                <option value={"id"}>Invoice ID</option>
+                <option value={"status"}>Status</option>
+              </Select>
               <Button
-                ml={2}
-                colorScheme="red"
-                size="sm"
-                onClick={handleClearEndDate}
+                bg={"brand.main"}
+                color="white"
+                _hover={{ bg: "brand.hover" }}
+                _active={{ bg: "brand.active" }}
+                onClick={(e) => {
+                  setOrder(order === "asc" ? "desc" : "asc");
+                  setIndex(1);
+                }}
               >
-                Clear
+                {order === "asc" ? "ASC" : "DESC"}
               </Button>
-            )}
-          </Flex>
-        </Box>
-        <Box>
-          <FormLabel htmlFor="orderBy">Order By</FormLabel>
-          <Flex alignItems="center" gap={2}>
-            <Select
-              placeholder="Select Order"
-              value={orderBy}
-              onChange={(e) => setOrderBy(e.target.value)}
-            >
-              <option value={"id"}>Invoice ID</option>
-              <option value={"status"}>Status</option>
-            </Select>
-            <Button
-              colorScheme="green"
-              onClick={(e) => {
-                setOrder(order === "asc" ? "desc" : "asc");
-                setIndex(1);
-              }}
-            >
-              {order === "asc" ? "ASC" : "DESC"}
-            </Button>
-          </Flex>
-        </Box>
-      </Flex>
+            </Flex>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <AccordionButton _expanded={{ bg: "#E5F2CE" }}>
+            <Box as="span" flex="1" textAlign="left">
+              <Text fontWeight={"medium"}>Filter</Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <Flex alignItems="flex-end" gap={2}>
+              <Box>
+                <FormLabel htmlFor="startDate">Start Date</FormLabel>
+                <Input type="date" id="startDate" />
+              </Box>
+              <Box>
+                <FormLabel htmlFor="endDate">End Date</FormLabel>
+                <Input type="date" id="endDate" />
+              </Box>
+              <Box gap={2}>
+                <Button
+                  bg={"brand.main"}
+                  color="white"
+                  _hover={{ bg: "brand.hover" }}
+                  _active={{ bg: "brand.active" }}
+                  onClick={handleFilterClick}
+                >
+                  Filter
+                </Button>
+                <Button ml={2} colorScheme="red" onClick={handleClearDate}>
+                  Clear
+                </Button>
+              </Box>
+            </Flex>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
       <Box w={"full"} minH={"100vh"}>
         <Table variant="simple" colorScheme="green">
           <Thead>
@@ -152,12 +181,15 @@ const UserOrderList = () => {
                   {order.id}
                 </Td>
                 <Td>{order.name}</Td>
-                <Td>{changeDate(order.createdAt)}</Td>
-                <Td color={orderStatusArray[order.status].color}>
-                  {orderStatusArray[order.status].status}
+                <Td>{dateFormatter(order.createdAt)}</Td>
+                <Td color={orderStatus[order.status].color}>
+                  {orderStatus[order.status].status}
                 </Td>
                 <Td>
-                  <Button onClick={handleOrderDetail} size={"sm"}>
+                  <Button
+                    onClick={() => handleOrderDetail(order.id)}
+                    size={"sm"}
+                  >
                     Detail
                   </Button>
                 </Td>
@@ -168,7 +200,7 @@ const UserOrderList = () => {
         {page > 1 && (
           <Pagination page={page} index={index} setIndex={setIndex} />
         )}
-        <UserOrderDetail isOpen={isOpen} onClose={onClose} />
+        <UserOrderDetail isOpen={isOpen} onClose={onClose} orderId={orderId} />
       </Box>
     </>
   );

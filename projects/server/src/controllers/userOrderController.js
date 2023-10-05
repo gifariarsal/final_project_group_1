@@ -1,6 +1,6 @@
 const { Sequelize, Op } = require("sequelize");
 const db = require("../../models");
-const { Transaction, Product, Transactionitem } = db;
+const { Transaction, Product, Transactionitem, Store } = db;
 
 const setPagination = (limit, page) => {
   const offset = (page - 1) * +limit;
@@ -55,11 +55,58 @@ const userOrderController = {
   getUserTransactionItem: async (req, res) => {
     try {
       const { id } = req.params;
-      const Item = await Transactionitem.findAll({
-        where: { transaction_id: id },
-        include: Product,
+
+      const transactionData = await Transaction.findOne({
+        where: { id },
+        attributes: {
+          exclude: [
+            "voucher_discount",
+            "city_id",
+            "store_id",
+            "payment_method",
+            "updatedAt",
+          ],
+        },
+        include: [
+          {
+            model: Transactionitem,
+            where: { transaction_id: id },
+            attributes: {
+              exclude: [
+                "product_id",
+                "transaction_id",
+                "admin_discount",
+                "price",
+                "createdAt",
+                "updatedAt"],
+            },
+            include: [
+              {
+                model: Product,
+                attributes: {
+                  exclude: [
+                    "category_id",
+                    "store_id",
+                    "isactive",
+                    "createdAt",
+                    "updatedAt",
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            model: Store,
+            attributes: ["id", "name"],
+          },
+        ],
       });
-      res.status(200).json({ message: "Get Transaction Success", data: Item });
+
+      if (!transactionData) {
+        return res.status(404).json({ message: "Transaction not found" });
+      }
+
+      return res.status(200).json({ message: "Get Transaction Success", data: transactionData });
     } catch (error) {
       return res.status(500).json({ message: "Get Transaction Item Failed", error: error.message });
     }
