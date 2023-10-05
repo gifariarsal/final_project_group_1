@@ -458,13 +458,6 @@ const adminController = {
       console.log("dapatt dong", findTransaction)
       const findTsItem = await Transactionitem.findAll({where : {transaction_id : findTransaction.id}})
       console.log("transaction item => ", findTsItem)
-      // let quantityRestore = 0
-      // for (const item of findTsItem) {
-      //   const product_idA = item.product_id;
-      //   const quantityA = item.quantity;
-      //   console.log("Productnya => id", product_idA)
-      //   quantityRestore += product_idA
-      // }
       let product_idSold;
       let quantitySold;
       let quantityFinal = 0;
@@ -472,53 +465,81 @@ const adminController = {
       for (const item of findTsItem) {
         product_idSold = item.product_id;
         quantitySold = item.quantity;
-        
         console.log("product ID:", product_idSold);
         console.log("quantity:", quantitySold);
-        // const productIds = findTsItem.map(item => item.product_id);
-        // console.log("transaction item product_ids => ", productIds);
-        // const quantityPro = findTsItem.map(item => item.quantity);
-        // console.log("transaction item quantity => ", quantityPro);
         const findProducs = await productStore.findOne({where : {product_id : product_idSold}})
       console.log("inimii quantity nya =>", findProducs)
       console.log("inimii productnya =>", findProducs.product_id)
       console.log("inimii quantitunya =>", findProducs.quantity)
       quantityFinal = findProducs.quantity + quantitySold
       console.log("nahhh", quantityFinal);
-      // const findItem = await productStore.findOne({where : {product_id :findTsItem.product_id}})
       await db.sequelize.transaction(async(t) => {
         const result = await trans.update({status : 5},{where : {id : transaction_id}}, {transaction :t})
         const responsCart = await cart.update({total_price : 0}, {where : {user_id: transaction_id}}, {transaction: t})
         const restoreProduct = await productStore.update({quantity : quantityFinal}, {where : {product_id : findProducs.product_id}})
       })
       }
-      
-      // Di luar perulangan, variabel product_id dan quantity akan berisi data dari iterasi terakhir
-      // console.log("Product ID terakhir:", product_idA);
-      // console.log("Quantity terakhir:", quantity);
-
-      // const findProducs = await productStore.findAll({where : {product_id : product_idA}})
-      // console.log("inimii quantity nya =>", findProducs)
-      // console.log("inimii quantitunya =>", findProducs.product_id)
-      // let quantityFinal =  findProducs.quantity + quantityPro[0]
-      // console.log("hasilnya =>", quantityFinal)
-      // const findItem = await productStore.findOne({where : {product_id :findTsItem.product_id}})
-      // console.log("2")
-      // console.log("adakahh => ?", findItem)
-      // await db.sequelize.transaction(async(t) => {
-      //   const result = await trans.update({status : 5},{where : {id : transaction_id}}, {transaction :t})
-      //   const responsCart = await cart.update({total_price : 0}, {where : {user_id: transaction_id}}, {transaction: t})
-      //   const restoreProduct = await productStore.update({quantity : quantityFinal}, {where : {product_id : findProducs.product_id}})
-      // })
       return res.status(200).json({message : "Success"})
     } catch (error) {
       return res.status(500).json({message : error.message})
     }
-  }
-
-    
+  },
+  confirmUserOrder : async(req, res) => {
+    try {
+      const {transaction_id} = req.params
+      const findTransaction = await trans.findOne({where : {id : transaction_id}})
+      console.log("dapatt lagi dong", findTransaction)
+      await db.sequelize.transaction(async(t) => {
+        const result = await trans.update({status : 2},{where : {id : transaction_id}}, {transaction :t})
+      })
+      return res.status(200).json({message : "AMAN"})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  },
+  // sendUserOrder :async(req, res) => {
+  //   try {
+  //     const {transaction_id} = req.params
+  //     const findTransaction = await trans.findOne({where : {id : transaction_id}})
+  //     console.log("dapatt lagi dong", findTransaction)
+  //     await db.sequelize.transaction(async(t) => {
+  //       const result = await trans.update({status : 3},{where : {id : transaction_id}}, {transaction :t})
+  //     })
+  //     return res.status(200).json({message : "AMAN dahh"})
+  //   } catch (error) {
+  //     return res.status(500).json({message : error.message})
+  //   }
+  // },
   
-
+  
+  sendUserOrder: async (req, res) => {
+    try {
+      const { transaction_id } = req.params;
+      const findTransaction = await trans.findOne({ where: { id: transaction_id } });
+      console.log("Got it", findTransaction);
+  
+      await db.sequelize.transaction(async (t) => {
+        const result = await trans.update({ status: 3 }, { where: { id: transaction_id } }, { transaction: t });
+      });
+  
+      setTimeout(() => {
+        updateStatus(transaction_id);
+      }, 1 * 24 * 60 * 60 * 1000); // 2 days in milliseconds
+  
+      return res.status(200).json({ message: "Status updated to 3" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
+const updateStatus = async (transaction_id) => {
+  console.log("Updating status to 4");
+  await db.sequelize.transaction(async (t) => {
+    const result = await trans.update({ status: 4 }, { where: { id: transaction_id } }, { transaction: t });
+  });
+  console.log(`Status updated to 4 for transaction ${transaction_id}`);
+};
+const twoDaysInMilliseconds = 2 * 24 * 60 * 60 * 1000;
+// setTimeout(updateStatus, twoDaysInMilliseconds);
 
 module.exports = adminController;

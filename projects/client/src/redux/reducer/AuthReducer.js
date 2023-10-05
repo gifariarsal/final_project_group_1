@@ -184,19 +184,24 @@ export const userCancel = (item) => {
     console.log("inimi", transaction_id)
     const token = localStorage.getItem("token")
     try { 
-      const response = await axios.patch(`${URL_API}/auth/transaction/${transaction_id}`,
-      {},
-      {
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
-      })
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000);
+      const response = await axios.patch(`${URL_API}/admin/branch/cancel/${transaction_id}`)
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000);
     } catch (error) {
       console.log(error)
     }
+    // try { 
+    //   const response = await axios.patch(`${URL_API}/auth/transaction/${transaction_id}`,
+    //   {},
+    //   {
+    //     headers : {
+    //       Authorization : `Bearer ${token}`
+    //     }
+    //   })
+    // } catch (error) {
+    //   console.log(error)
+    // }
   }
 }
 

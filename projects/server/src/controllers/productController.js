@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const db = require("../../models");
 const { check } = require("express-validator");
 const { Product, Category, Store, ProductStore } = db;
+const cartItem = db.Cartitem
 const fs = require("fs").promises;
 const path = require("path");
 
@@ -313,6 +314,21 @@ const productController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getItemDetail : async(req, res) => {
+    try {
+      const {id} = req.params
+      const cekItem = await cartItem.findOne({where : {product_id : id}})
+      console.log("adaa", cekItem)
+      const cekProduct = await ProductStore.findOne({where : {product_id : id}})
+      console.log("cek ", cekProduct)
+      return res.status(200).json({message : "Successsss", Item : cekItem, ProductBranch : cekProduct})
+    } catch (error) {
+      return res.status(500).json({message : error.message})
+    }
+  },
+
+
+
 };
 
 module.exports = productController;

@@ -26,6 +26,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { userCancel } from "../../redux/reducer/AuthReducer";
 import Swal from "sweetalert2";
+import { branchUserCancel } from "../../redux/reducer/AdminReducer";
 
 const UserOrderOngoingCardDetailOrder = ({
   status,
@@ -39,7 +40,6 @@ const UserOrderOngoingCardDetailOrder = ({
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
-  console.log("idnya", id);
   function previewImage() {
     const [file] = document.getElementById("upload-payment").files;
 
@@ -91,6 +91,7 @@ const UserOrderOngoingCardDetailOrder = ({
     });
     if (result.isConfirmed) {
       await dispatch(userCancel(item));
+      // await dispatch(branchUserCancel(item));
       Swal.fire("Cancel!", "The product has been canceled.", "success");
     }
   };
