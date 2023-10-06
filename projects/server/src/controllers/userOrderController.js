@@ -17,6 +17,7 @@ const userOrderController = {
         orderBy = "id",
         startDate,
         endDate,
+        storeId,
       } = req.query;
       let filter = {};
       if (startDate) filter.createdAt = { [Op.gte]: new Date(startDate) };
@@ -32,6 +33,10 @@ const userOrderController = {
           },
         };
       }
+      if (storeId) {
+        filter.store_id = storeId;
+      }
+
       const pagination = setPagination(limit, page);
       const totalTransaction = await Transaction.count({
         where: {
@@ -63,7 +68,6 @@ const userOrderController = {
             "voucher_discount",
             "city_id",
             "store_id",
-            "payment_method",
             "updatedAt",
           ],
         },
@@ -115,6 +119,22 @@ const userOrderController = {
       return res.status(200).json({ message: "Get Transaction Success", data: transactionData });
     } catch (error) {
       return res.status(500).json({ message: "Get Transaction Item Failed", error: error.message });
+    }
+  },
+
+  getStoreData: async (req, res) => {
+    try {
+        const stores = await Store.findAll({
+          where: {
+            isActive: true,
+          },
+          attributes: {
+            exclude: ["isactive", "createdAt", "updatedAt"],
+          },
+        });
+        return res.status(200).json({ message: "Get Store Data Successful", stores });
+    } catch (error) {
+        return res.status(500).json({ message: "Get Store Data Failed", error: error.message });
     }
   },
 };

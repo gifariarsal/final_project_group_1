@@ -24,15 +24,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AiOutlineShoppingCart } from "react-icons/ai";
 import {
   getAllUserOrder,
-  getUserTransactionItem,
+  getStoreData,
 } from "../../../redux/reducer/UserOrderReducer";
 import dateFormatter from "../../../utils/dateFormatter";
 import UserOrderDetail from "./UserOrderDetail";
-import { Pagination } from "../../components/Pagination";
 import orderStatus from "../../../utils/orderStatus";
+import { OrderPagination } from "./OrderPagination";
 
 const UserOrderList = () => {
   const dispatch = useDispatch();
@@ -40,12 +39,14 @@ const UserOrderList = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { page } = useSelector((state) => state.UserOrderReducer);
   const { allUserOrder } = useSelector((state) => state.UserOrderReducer);
+  const { storeData } = useSelector((state) => state.UserOrderReducer);
   const [orderId, setOrderId] = useState(null);
   const [index, setIndex] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [orderBy, setOrderBy] = useState("");
   const [order, setOrder] = useState("desc");
+  const [storeId, setStoreId] = useState("");
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
   const handleOrderDetail = (orderId) => {
@@ -54,12 +55,19 @@ const UserOrderList = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllUserOrder({ index, startDate, endDate, orderBy, order }));
+    dispatch(getStoreData());
+  }, [])
+
+  useEffect(() => {
+    dispatch(getAllUserOrder({ index, startDate, endDate, orderBy, order, }));
   }, [index, startDate, endDate, orderBy, order]);
 
   const handleFilterClick = () => {
     const startDateValue = document.getElementById("startDate").value;
     const endDateValue = document.getElementById("endDate").value;
+
+    setStartDate(startDateValue);
+    setEndDate(endDateValue);
 
     if (startDateValue && endDateValue && startDateValue > endDateValue) {
       toast({
@@ -72,22 +80,24 @@ const UserOrderList = () => {
       return;
     }
 
-    dispatch(
-      getAllUserOrder({
-        index,
-        startDate: startDateValue,
-        endDate: endDateValue,
-        orderBy,
-        order,
-      })
-    );
+    const filter = {
+      index,
+      startDate,
+      endDate,
+      orderBy,
+      order,
+      storeId
+    };
+
+    dispatch(getAllUserOrder(filter));
   };
 
   const handleClearDate = () => {
     document.getElementById("startDate").value = "";
     document.getElementById("endDate").value = "";
+    setStoreId("");
     dispatch(
-      getAllUserOrder({ index, startDate: "", endDate: "", orderBy, order })
+      getAllUserOrder({ index, startDate: "", endDate: "", orderBy, order, storeId: "" })
     );
   };
 
@@ -137,7 +147,7 @@ const UserOrderList = () => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4}>
-            <Flex alignItems="flex-end" gap={2}>
+            <Flex wrap={"wrap"} alignItems="flex-end" gap={2}>
               <Box>
                 <FormLabel
                   fontSize={{ base: "sm", md: "md" }}
@@ -163,6 +173,24 @@ const UserOrderList = () => {
                   type="date"
                   id="endDate"
                 />
+              </Box>
+              <Box>
+                <FormLabel fontSize={{ base: "sm", md: "md" }} htmlFor="store">
+                  Store
+                </FormLabel>
+                <Select
+                  size={{ base: "sm", md: "md" }}
+                  placeholder="All Store"
+                  value={storeId}
+                  onChange={(e) => setStoreId(e.target.value)}
+                  id="store"
+                >
+                  {storeData.map((store) => (
+                    <option key={store.id} value={store.id}>
+                      {store.name}
+                    </option>
+                  ))}
+                </Select>
               </Box>
               <Box gap={2}>
                 <Button
@@ -212,7 +240,7 @@ const UserOrderList = () => {
                   <Td color={orderStatus[order.status].color}>
                     {orderStatus[order.status].status}
                   </Td>
-                )}{" "}
+                )}
                 <Td>
                   <Button
                     onClick={() => handleOrderDetail(order.id)}
@@ -226,9 +254,14 @@ const UserOrderList = () => {
           </Tbody>
         </Table>
         {page > 1 && (
-          <Pagination page={page} index={index} setIndex={setIndex} />
+          <OrderPagination page={page} index={index} setIndex={setIndex} />
         )}
-        <UserOrderDetail isOpen={isOpen} onClose={onClose} orderId={orderId} />
+        <UserOrderDetail
+          isOpen={isOpen}
+          onClose={onClose}
+          orderId={orderId}
+          storeId={storeId}
+        />
       </Box>
     </>
   );

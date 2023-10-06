@@ -15,8 +15,8 @@ import {
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clearOrderItem,
   getUserTransactionItem,
-  setOrderItem,
 } from "../../../redux/reducer/UserOrderReducer";
 import orderStatus from "../../../utils/orderStatus";
 import dateFormatter from "../../../utils/dateFormatter";
@@ -24,20 +24,18 @@ import getImage from "../../../utils/getImage";
 import priceFormatter from "../../../utils/priceFormatter";
 import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 
-const UserOrderDetail = ({ isOpen, onClose, orderId }) => {
+const UserOrderDetail = ({ isOpen, onClose, orderId, storeId }) => {
   const dispatch = useDispatch();
   const { orderItem } = useSelector((state) => state.UserOrderReducer);
-  console.log(orderId);
 
   const handleClose = () => {
     onClose();
-    dispatch(setOrderItem(""));
+    dispatch(clearOrderItem());
   };
 
   useEffect(() => {
     dispatch(getUserTransactionItem(orderId));
-  }, [orderId]);
-  console.log(orderItem);
+  }, [orderId, storeId]);
 
   if (!orderItem) {
     return (
