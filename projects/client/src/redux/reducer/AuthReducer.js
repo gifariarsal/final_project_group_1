@@ -43,6 +43,7 @@ export const AuthReducer = createSlice({
     logoutSuccess: (state) => {
       // state.user = initialState.user;
       state.login = false;
+      state.user = {};
       setTimeout(() => {
         document.location.href = "/";
       }, 1000);
@@ -110,8 +111,8 @@ export const loginAuth = (values, setLoading, toast, navigate) => {
       // dispatch(setUser())
       const token = respon.data.token;
       localStorage.setItem("token", token);
-      dispatch(setUser(respon.data.Account));
-      dispatch(loginSuccess());
+      await dispatch(setUser(respon.data.Account));
+      await dispatch(loginSuccess());
       toast({
         title: "Login Success",
         status: "success",
@@ -177,28 +178,33 @@ export const setUserLocation = (latitude, longitude) => {
   };
 };
 export const userCancel = (item) => {
-  return async(dispatch) => {
-    console.log("user cancel reducer masuk ", item)
+  return async (dispatch) => {
+    console.log("user cancel reducer masuk ", item);
     console.log("id ts", item);
     const transaction_id = item
     console.log("inimi", transaction_id)
-    const token = localStorage.getItem("token")
     try { 
-      const response = await axios.patch(`${URL_API}/auth/transaction/${transaction_id}`,
-      {},
-      {
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
-      })
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000);
+      const response = await axios.patch(`${URL_API}/admin/branch/cancel/${transaction_id}`)
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000);
     } catch (error) {
       console.log(error)
     }
   }
 }
+export const userConfirm = (item) => {
+  return async(dispatch) => {
+    console.log("user confirm reducer masuk", item)
+    const transaction_id = item
+    console.log("cocok ?", transaction_id)
+    try {
+      const response = await axios.patch(`${URL_API}/auth/transaction/confirm/${transaction_id}`)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 
 export const { loginSuccess, logoutSuccess, setUser, setLocation, setLonLat } = AuthReducer.actions;
 
