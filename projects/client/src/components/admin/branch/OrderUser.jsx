@@ -157,7 +157,7 @@ const OrderUser = () => {
                 </Td>
 
                 <Td fontSize={"12px"}>{item.total_price}</Td>
-                <Td>{item.courier}</Td>
+                <Td textTransform={"uppercase"}>{item.courier}</Td>
                 <Td textColor={item.status === 5 ? "red" : "green"}>
                   {item.status === 0
                     ? "Waiting Payment"
@@ -171,6 +171,8 @@ const OrderUser = () => {
                     ? "Order Shipped"
                     : item.status === 4
                     ? "Order Arrived"
+                    : item.status === 6
+                    ? "Order Confirm"
                     : null}
                 </Td>
                 <Td>

@@ -117,9 +117,9 @@ export default function Cart() {
     await dispatch(getItem(store_id));
     await dispatch(getCart());
   };
-  const apakah = () => {
+  const dapat = async () => {
     if (item && item.length > 0) {
-      item.forEach((items) => {
+      await item.forEach((items) => {
         if (items.Product) {
           console.log("haha", items.Product.id);
           getItemDetails(items.Product.id);
@@ -129,12 +129,15 @@ export default function Cart() {
   };
 
   useEffect(() => {
-    console.log("Item in useEffect:", item);
-    apakah();
     dispatch(getItem(store_id));
+    // dapat();
     dispatch(getCart());
-    setAsli(!true);
   }, [store_id]);
+  console.log("Item in useEffect:", item);
+
+  useEffect(() => {
+    dapat();
+  }, [item]);
   return (
     <>
       <Navbar />
@@ -225,7 +228,7 @@ export default function Cart() {
                                     icon={<AiOutlinePlusCircle />}
                                     onClick={() => inCart(products)}
                                     isDisabled={
-                                      products.quantity ===
+                                      products.quantity >=
                                       branchProduct.quantity
                                     }
                                   ></IconButton>

@@ -213,11 +213,7 @@ const ProductManagement = () => {
               <Tbody>
                 {product.map(
                   (item) => (
-                    <Tr
-                      key={item.id}
-                      border={item.isactive ? "" : "2px"}
-                      borderColor={item.isactive ? "" : "red"}
-                    >
+                    <Tr key={item.id}>
                       <Td>{item.Category?.name}</Td>
                       <Td>{item.name}</Td>
                       <Td>{item.price}</Td>
@@ -232,7 +228,9 @@ const ProductManagement = () => {
                           <ButtonViewProductPicture item={item} />
                         </Flex>
                       </Td>
-                      <Td>{item.isactive ? "Enable" : "Disable"}</Td>
+                      <Td textColor={item.isactive ? "black" : "red"}>
+                        {item.isactive ? "Enable" : "Disable"}
+                      </Td>
                       <Td>
                         <Flex>
                           <ButtonEditProduct

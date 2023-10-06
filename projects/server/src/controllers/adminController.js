@@ -445,7 +445,7 @@ const adminController = {
           },
         ],
       })
-      console.log("all", transAll)
+      // console.log("all", transAll)
       return res.status(200).json({message : "Succeswes", data : transAll})
     } catch (error) {
       return res.status(500).json({message : error.message})
@@ -455,9 +455,9 @@ const adminController = {
     try {
       const {transaction_id} = req.params
       const findTransaction = await trans.findOne({where : {id : transaction_id}})
-      console.log("dapatt dong", findTransaction)
+      // console.log("dapatt dong", findTransaction)
       const findTsItem = await Transactionitem.findAll({where : {transaction_id : findTransaction.id}})
-      console.log("transaction item => ", findTsItem)
+      // console.log("transaction item => ", findTsItem)
       let product_idSold;
       let quantitySold;
       let quantityFinal = 0;
@@ -465,12 +465,12 @@ const adminController = {
       for (const item of findTsItem) {
         product_idSold = item.product_id;
         quantitySold = item.quantity;
-        console.log("product ID:", product_idSold);
-        console.log("quantity:", quantitySold);
+        // console.log("product ID:", product_idSold);
+        // console.log("quantity:", quantitySold);
         const findProducs = await productStore.findOne({where : {product_id : product_idSold}})
-      console.log("inimii quantity nya =>", findProducs)
-      console.log("inimii productnya =>", findProducs.product_id)
-      console.log("inimii quantitunya =>", findProducs.quantity)
+      // console.log("inimii quantity nya =>", findProducs)
+      // console.log("inimii productnya =>", findProducs.product_id)
+      // console.log("inimii quantitunya =>", findProducs.quantity)
       quantityFinal = findProducs.quantity + quantitySold
       console.log("nahhh", quantityFinal);
       await db.sequelize.transaction(async(t) => {
@@ -488,7 +488,7 @@ const adminController = {
     try {
       const {transaction_id} = req.params
       const findTransaction = await trans.findOne({where : {id : transaction_id}})
-      console.log("dapatt lagi dong", findTransaction)
+      // console.log("dapatt lagi dong", findTransaction)
       await db.sequelize.transaction(async(t) => {
         const result = await trans.update({status : 2},{where : {id : transaction_id}}, {transaction :t})
       })
@@ -517,14 +517,20 @@ const adminController = {
       const { transaction_id } = req.params;
       const findTransaction = await trans.findOne({ where: { id: transaction_id } });
       console.log("Got it", findTransaction);
-  
+      
       await db.sequelize.transaction(async (t) => {
         const result = await trans.update({ status: 3 }, { where: { id: transaction_id } }, { transaction: t });
+        const twoDaysFromNow = new Date();
+        twoDaysFromNow.setDate(twoDaysFromNow.getDate() + (findTransaction.duration || 2));
+        await trans.update({expiredIn : twoDaysFromNow},{where : {id : transaction_id}}, {transaction : t})
       });
-  
-      setTimeout(() => {
-        updateStatus(transaction_id);
-      }, 1 * 24 * 60 * 60 * 1000); // 2 days in milliseconds
+      
+      // setTimeout(() => {
+      //   updateStatus(transaction_id);
+      // }, 1 * 24 * 60 * 60 * 1000); // 2 days in milliseconds
+      // setTimeout(() => {
+      //   updateStatus(transaction_id);
+      // }, 2 * 60 * 1000); // 2 menit tester
   
       return res.status(200).json({ message: "Status updated to 3" });
     } catch (error) {
@@ -533,13 +539,11 @@ const adminController = {
   },
 };
 const updateStatus = async (transaction_id) => {
-  console.log("Updating status to 4");
+  console.log("masuk update status 4");
   await db.sequelize.transaction(async (t) => {
     const result = await trans.update({ status: 4 }, { where: { id: transaction_id } }, { transaction: t });
   });
-  console.log(`Status updated to 4 for transaction ${transaction_id}`);
+  // console.log(`Status updated to 4 for transaction ${transaction_id}`);
 };
-const twoDaysInMilliseconds = 2 * 24 * 60 * 60 * 1000;
-// setTimeout(updateStatus, twoDaysInMilliseconds);
 
 module.exports = adminController;
