@@ -137,6 +137,56 @@ const userOrderController = {
         return res.status(500).json({ message: "Get Store Data Failed", error: error.message });
     }
   },
+
+  getBranchUserTransaction: async (req, res) => {
+    try {
+      const {
+        page = 1,
+        limit = 10,
+        order = "DESC",
+        orderBy = "id",
+        startDate,
+        endDate,
+      } = req.query;
+
+      const { id } = req.params;
+
+      let filter = {};
+      if (startDate) filter.createdAt = { [Op.gte]: new Date(startDate) };
+      if (endDate)
+        filter.createdAt = { [Op.lte]: new Date(endDate).setHours(23, 59, 59) };
+      if (startDate && endDate) {
+        filter = {
+          createdAt: {
+            [Op.between]: [
+              new Date(startDate),
+              new Date(endDate).setHours(23, 59, 59),
+            ],
+          },
+        };
+      }
+
+      const pagination = setPagination(limit, page);
+      const totalTransaction = await Transaction.count({
+        where: {
+          ...filter,
+          store_id: id,
+        },
+      });
+      const totalPage = Math.ceil(totalTransaction / +limit);
+      const transaction = await Transaction.findAll({
+        where: {
+          ...filter,
+          store_id: id,
+        },
+        ...pagination,
+        order: [[orderBy, order]],
+      });
+      return res.status(200).json({ message: "Success", totalPage, data: transaction });
+    } catch (error) {
+      return res.status(500).json({ message: "Get Transaction Data Failed", error: error.message });
+    }
+  }
 };
 
 module.exports = userOrderController;

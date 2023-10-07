@@ -4,6 +4,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const initialState = {
     allUserOrder: [],
+    branchUserOrder: [],
     orderItem: "",
     storeData: [],
     page: 1,
@@ -15,6 +16,9 @@ export const UserOrderReducer = createSlice({
     reducers: {
         setUserOrder: (state, action) => {
             state.allUserOrder = [...action.payload];
+        },
+        setBranchUserOrder: (state, action) => {
+            state.branchUserOrder = [...action.payload];
         },
         setOrderItem: (state, action) => {
             state.orderItem = action.payload;
@@ -37,7 +41,6 @@ export const getAllUserOrder = ({ index = 1, startDate, endDate, orderBy, order,
         if (order) query += `&order=${order}`;
         if (storeId) query += `&storeId=${storeId}`;
         try {
-            console.log("isi query", query);
             const { data } = await axios.get(`${URL_API}/order/${query}`);
             dispatch(setPage(data.totalPage));
             dispatch(setUserOrder(data.data));
@@ -57,6 +60,23 @@ export const getUserTransactionItem = (id) => {
         }
     };
 };
+
+export const getBranchUserOrder = ({ index = 1, startDate, endDate, orderBy, order, store_id }) => {
+    return async (dispatch) => {
+        let query = `?page=${index}`;
+        if (startDate) query += `&startDate=${startDate}`;
+        if (endDate) query += `&endDate=${endDate}`;
+        if (orderBy) query += `&orderBy=${orderBy}`;
+        if (order) query += `&order=${order}`;
+        try {
+            const { data } = await axios.get(`${URL_API}/order/branch/${store_id}/${query}`);
+            dispatch(setPage(data.totalPage));
+            dispatch(setBranchUserOrder(data.data));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
 
 export const clearOrderItem = () => {
     return async (dispatch) => {
@@ -79,6 +99,6 @@ export const getStoreData = () => {
     };
 }
 
-export const { setUserOrder, setOrderItem, setStoreData, setPage } = UserOrderReducer.actions;
+export const { setUserOrder, setBranchUserOrder, setOrderItem, setStoreData, setPage } = UserOrderReducer.actions;
 
 export default UserOrderReducer.reducer;

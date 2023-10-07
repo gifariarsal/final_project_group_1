@@ -4,6 +4,7 @@ const userOrderController = require("../controllers/userOrderController");
 
 router.get("/", userOrderController.getAllUserTransaction);
 router.get("/store", userOrderController.getStoreData);
+router.get("/branch/:id", userOrderController.getBranchUserTransaction)
 router.get("/:id", userOrderController.getUserTransactionItem);
 
 module.exports = router;
