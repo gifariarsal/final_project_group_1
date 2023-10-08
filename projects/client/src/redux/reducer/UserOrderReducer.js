@@ -7,6 +7,7 @@ const initialState = {
     branchUserOrder: [],
     orderItem: "",
     storeData: [],
+    dailyOrderData: {},
     page: 1,
 }
 
@@ -25,6 +26,9 @@ export const UserOrderReducer = createSlice({
         },
         setStoreData: (state, action) => {
             state.storeData = [...action.payload];
+        },
+        setDailyOrderData: (state, action) => {
+            state.dailyOrderData = {...action.payload};
         },
         setPage: (state, action) => {
             state.page = action.payload;
@@ -99,6 +103,17 @@ export const getStoreData = () => {
     };
 }
 
-export const { setUserOrder, setBranchUserOrder, setOrderItem, setStoreData, setPage } = UserOrderReducer.actions;
+export const getDailyOrderData = () => {
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get(`${URL_API}/order/daily`);
+            await dispatch(setDailyOrderData(data.data));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+}
+
+export const { setUserOrder, setBranchUserOrder, setOrderItem, setStoreData, setDailyOrderData, setPage } = UserOrderReducer.actions;
 
 export default UserOrderReducer.reducer;

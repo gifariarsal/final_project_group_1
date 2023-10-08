@@ -180,7 +180,7 @@ const BranchUserOrderList = () => {
               <Tr>
                 <Th>Invoice ID</Th>
                 {isLargerThan768 && <Th>User</Th>}
-                {isLargerThan768 && <Th>Date</Th>}
+                <Th>Date</Th>
                 <Th>Status</Th>
                 <Th>Detail</Th>
               </Tr>

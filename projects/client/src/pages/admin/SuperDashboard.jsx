@@ -5,6 +5,7 @@ import {
   IoCartOutline,
   IoGridOutline,
   IoBarChartOutline,
+  IoHomeOutline,
 } from "react-icons/io5";
 import NavbarAdmin from "../../components/admin/NavbarAdmin";
 import MenuDashboard from "../../components/admin/MenuDashboard";
@@ -12,11 +13,14 @@ import AdminManagement from "../../components/admin/super/AdminManagement";
 import Transaction from "../../components/admin/super/Transaction";
 import StockHistory from "../../components/admin/super/StockHistory";
 import SalesReport from "../../components/admin/super/SalesReport";
+import HomeDashboard from "../../components/admin/super/HomeDashboard";
 
 const SuperDashboard = () => {
-  const [activePage, setActivePage] = useState("admin");
+  const [activePage, setActivePage] = useState("home");
   const renderPage = () => {
     switch (activePage) {
+      case "home":
+        return <HomeDashboard />;
       case "admin":
         return <AdminManagement />;
       case "transaction":
@@ -45,6 +49,11 @@ const SuperDashboard = () => {
             direction={{ base: "row", md: "column" }}
             w={"full"}
           >
+            <MenuDashboard
+              onClick={() => setActivePage("home")}
+              icon={IoHomeOutline}
+              name="Home"
+            />
             <MenuDashboard
               onClick={() => setActivePage("admin")}
               icon={IoPersonOutline}

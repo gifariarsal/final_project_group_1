@@ -8,6 +8,7 @@ import {
   IoBarChartOutline,
   IoGridOutline,
   IoBagCheckOutline,
+  IoHomeOutline,
 } from "react-icons/io5";
 import MenuDashboard from "../../components/admin/MenuDashboard";
 import UserTransaction from "../../components/admin/branch/UserTransaction";
@@ -18,11 +19,14 @@ import BranchSalesReport from "../../components/admin/branch/BranchSalesReport";
 import NavbarAdmin from "../../components/admin/NavbarAdmin";
 import StockManagement from "../../components/admin/branch/StockManagement";
 import OrderUser from "../../components/admin/branch/OrderUser";
+import HomeBranchDashboard from "../../components/admin/branch/HomeBranchDashboard";
 
 const BranchDashboard = () => {
   const [activePage, setActivePage] = useState("transaction");
   const renderPage = () => {
     switch (activePage) {
+      case "home":
+        return <HomeBranchDashboard />
       case "transaction":
         return <UserTransaction />;
       case "product":
@@ -57,6 +61,11 @@ const BranchDashboard = () => {
             direction={{ base: "row", md: "column" }}
             w={"full"}
           >
+            <MenuDashboard
+              onClick={() => setActivePage("home")}
+              icon={IoHomeOutline}
+              name="Home"
+            />
             <MenuDashboard
               onClick={() => setActivePage("transaction")}
               icon={IoCartOutline}
