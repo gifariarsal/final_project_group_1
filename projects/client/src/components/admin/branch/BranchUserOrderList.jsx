@@ -183,6 +183,7 @@ const BranchUserOrderList = () => {
                 <Th>Date</Th>
                 <Th>Status</Th>
                 <Th>Detail</Th>
+                <Th>Action</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -205,6 +206,7 @@ const BranchUserOrderList = () => {
                       Detail
                     </Button>
                   </Td>
+                  <Td><Button>Action</Button></Td>
                 </Tr>
               ))}
             </Tbody>

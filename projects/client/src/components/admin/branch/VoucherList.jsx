@@ -13,11 +13,6 @@ import { IoTrashOutline } from "react-icons/io5";
 import DeleteVoucherModal from "./DeleteVoucherModal";
 import dateFormatter from "../../../utils/dateFormatter";
 
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
 const VoucherList = () => {
   const dispatch = useDispatch();
   const [voucherId, setVoucherId] = useState(null);
