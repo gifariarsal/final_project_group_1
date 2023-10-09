@@ -26,7 +26,7 @@ const BranchDashboard = () => {
   const renderPage = () => {
     switch (activePage) {
       case "home":
-        return <HomeBranchDashboard />
+        return <HomeBranchDashboard />;
       case "transaction":
         return <UserTransaction />;
       case "product":
@@ -50,7 +50,9 @@ const BranchDashboard = () => {
       <NavbarAdmin title="Branch Admin Dashboard" />
       <Flex flexDir={{ base: "column", md: "row" }}>
         <Box
-          w={{ base: "100%", md: "400px" }}
+          pos={"fixed"}
+          zIndex={10}
+          w={{ base: "100%", md: "260px" }}
           bg={"brand.main"}
           color="white"
           minH={{ md: "100vh" }}
@@ -103,7 +105,7 @@ const BranchDashboard = () => {
             />
           </Stack>
         </Box>
-        <Box w={"full"} mt={{ base: "0px", md: "60px" }}>
+        <Box w={"full"} ml={{ md: "260px" }} mt={{ base: "116px", md: "60px" }}>
           {renderPage()}
         </Box>
       </Flex>

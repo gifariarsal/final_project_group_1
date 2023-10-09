@@ -38,7 +38,9 @@ const SuperDashboard = () => {
       <NavbarAdmin title="Admin Dashboard" />
       <Flex flexDir={{ base: "column", md: "row" }}>
         <Box
-          w={{ base: "100%", md: "400px" }}
+          pos={"fixed"}
+          zIndex={10}
+          w={{ base: "100%", md: "250px" }}
           bg={"brand.main"}
           color="white"
           minH={{ md: "100vh" }}
@@ -76,7 +78,7 @@ const SuperDashboard = () => {
             />
           </Stack>
         </Box>
-        <Box w={"full"} mt={{ base: "0px", md: "60px" }}>
+        <Box w={"full"} ml={{ md: "250px" }} mt={{ base: "116px", md: "60px" }}>
           {renderPage()}
         </Box>
       </Flex>
