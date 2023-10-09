@@ -273,6 +273,78 @@ const userOrderController = {
       });
     }
   },
+
+  getBranchDailySales: async (req, res) => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      sevenDaysAgo.setHours(0, 0, 0, 0);
+
+      const { id } = req.params;
+
+      const activeStore = await Store.findOne({
+        where: {
+          id: id,
+          isactive: true,
+        },
+        attributes: ["id", "name"],
+      });
+
+      if (!activeStore) {
+        return res.status(404).json({
+          success: false,
+          message: "Store not found or inactive.",
+        });
+      }
+
+      const storeName = activeStore.name;
+
+      const results = await Transaction.findAll({
+        attributes: [
+          [Sequelize.fn("DATE", Sequelize.col("updatedAt")), "day"],
+          [Sequelize.fn("SUM", Sequelize.col("total_price")), "total_sales"],
+          "store_id",
+        ],
+        where: {
+          status: 6,
+          updatedAt: {
+            [Op.between]: [sevenDaysAgo, today],
+          },
+          store_id: id,
+        },
+        group: [Sequelize.fn("DATE", Sequelize.col("updatedAt")), "store_id"],
+      });
+
+      const datesInRange = [];
+      const groupedData = {};
+
+      for (let i = 7; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(today.getDate() - i);
+        date.setHours(0, 0, 0, 0);
+        const formattedDate = date.toISOString().split("T")[0];
+        datesInRange.push(formattedDate);
+        groupedData[formattedDate] = {
+          [storeName]: 0,
+        };
+      }
+
+      for (const result of results) {
+        const formattedDate = result.dataValues.day;
+        groupedData[formattedDate][storeName] = result.dataValues.total_sales;
+      }
+
+      return res.status(200).json({ success: true, data: groupedData });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Get Branch Daily Sales Data Failed",
+        error: error.message,
+      });
+    }
+  },
 };
 
 module.exports = userOrderController;

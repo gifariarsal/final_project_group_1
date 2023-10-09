@@ -72,8 +72,11 @@ const ChartSuper = () => {
 
   return (
     <Flex direction="column" align="center" justify="center" p={4}>
+      <Text mb={2} fontSize="xl" fontWeight="bold">
+        Daily Sales of All Branch
+      </Text>
       <Box
-      p={4}
+        p={4}
         w="80%"
         h="400px"
         borderWidth="1px"
@@ -83,9 +86,6 @@ const ChartSuper = () => {
       >
         <canvas id="myChart" width="400" height="200"></canvas>
       </Box>
-      <Text mt={4} fontSize="xl" fontWeight="bold">
-        Daily Sales of All Branch
-      </Text>
     </Flex>
   );
 };

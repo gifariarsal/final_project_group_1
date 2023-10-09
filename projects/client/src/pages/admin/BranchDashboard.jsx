@@ -22,7 +22,7 @@ import OrderUser from "../../components/admin/branch/OrderUser";
 import HomeBranchDashboard from "../../components/admin/branch/HomeBranchDashboard";
 
 const BranchDashboard = () => {
-  const [activePage, setActivePage] = useState("transaction");
+  const [activePage, setActivePage] = useState("home");
   const renderPage = () => {
     switch (activePage) {
       case "home":
