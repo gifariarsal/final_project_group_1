@@ -44,7 +44,7 @@ const ChartBranch = () => {
               data: Object.values(branchDailyOrderData).map((item) =>
                 parseInt(item[branchName], 10)
               ),
-              backgroundColor: "rgb(75, 192, 192)",
+              backgroundColor: "#2ecc71",
               borderWidth: 1,
             },
           ],
@@ -85,8 +85,8 @@ const ChartBranch = () => {
       </Text>
       <Box
         p={4}
-        w="80%"
-        h="400px"
+        w={{ base: "95%", lg: "80%" }}
+        h={{ lg: "400px" }}
         borderWidth="1px"
         borderRadius="lg"
         overflow="hidden"

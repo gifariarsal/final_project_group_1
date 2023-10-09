@@ -76,7 +76,7 @@ const SuperDashboard = () => {
             />
           </Stack>
         </Box>
-        <Box w={"full"} mt={{ base: "20px", md: "60px" }}>
+        <Box w={"full"} mt={{ base: "0px", md: "60px" }}>
           {renderPage()}
         </Box>
       </Flex>

@@ -77,14 +77,14 @@ const ChartSuper = () => {
       </Text>
       <Box
         p={4}
-        w="80%"
-        h="400px"
+        w={{ base: "95%", lg: "80%" }}
+        h={{ lg: "400px" }}
         borderWidth="1px"
         borderRadius="lg"
         overflow="hidden"
         boxShadow="lg"
       >
-        <canvas id="myChart" width="400" height="200"></canvas>
+        <canvas id="myChart"></canvas>
       </Box>
     </Flex>
   );
