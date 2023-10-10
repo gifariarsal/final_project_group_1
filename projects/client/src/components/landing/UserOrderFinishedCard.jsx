@@ -65,7 +65,6 @@ const UserOrderFinishedCard = ({ item, setDetail, setTransactionDetail, setTrans
   useEffect(() => {
     getProduct();
   }, []);
-  console.log(item);
 
   return (
     <Flex
