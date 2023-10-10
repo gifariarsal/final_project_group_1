@@ -17,11 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clearOrderItem,
   getUserTransactionItem,
-} from "../../../redux/reducer/UserOrderReducer";
-import orderStatus from "../../../utils/orderStatus";
-import dateFormatter from "../../../utils/dateFormatter";
-import getImage from "../../../utils/getImage";
-import priceFormatter from "../../../utils/priceFormatter";
+} from "../../redux/reducer/UserOrderReducer";
+import orderStatus from "../../utils/orderStatus";
+import dateFormatter from "../../utils/dateFormatter";
+import getImage from "../../utils/getImage";
+import priceFormatter from "../../utils/priceFormatter";
 import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 
 const UserOrderDetail = ({ isOpen, onClose, orderId, storeId }) => {
@@ -106,6 +106,19 @@ const UserOrderDetail = ({ isOpen, onClose, orderId, storeId }) => {
               <Text>{orderItem.User?.phone}</Text>
               <Text>{orderItem.address}</Text>
             </Box>
+            <Box>
+              <Text fontWeight="bold">Payment Receipt:</Text>
+              {orderItem?.transaction_img ? (
+                <Image
+                  src={getImage(orderItem?.transaction_img)}
+                  alt={`Receipt #${orderItem.user_id}${orderItem.id}`}
+                  style={{ maxWidth: "100px", maxHeight: "100px" }}
+                />
+              ) : (
+                <Text fontStyle={"italic"} color={"gray.500"}>{orderItem.name} has not uploaded the receipt</Text>
+              )}
+            </Box>
+
             <Box>
               <Text fontWeight="bold">Price Data:</Text>
               <Text>Total Price: {priceFormatter(orderItem.total_price)}</Text>
