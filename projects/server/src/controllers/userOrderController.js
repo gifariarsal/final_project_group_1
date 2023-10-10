@@ -51,9 +51,13 @@ const userOrderController = {
         ...pagination,
         order: [[orderBy, order]],
       });
-      return res.status(200).json({ message: "Success", totalPage, data: transaction });
+      return res
+        .status(200)
+        .json({ message: "Success", totalPage, data: transaction });
     } catch (error) {
-      return res.status(500).json({ message: "Get Transaction Failed", error: error.message });
+      return res
+        .status(500)
+        .json({ message: "Get Transaction Failed", error: error.message });
     }
   },
 
@@ -111,9 +115,13 @@ const userOrderController = {
         return res.status(404).json({ message: "Transaction not found" });
       }
 
-      return res.status(200).json({ message: "Get Transaction Success", data: transactionData });
+      return res
+        .status(200)
+        .json({ message: "Get Transaction Success", data: transactionData });
     } catch (error) {
-      return res.status(500).json({ message: "Get Transaction Item Failed", error: error.message });
+      return res
+        .status(500)
+        .json({ message: "Get Transaction Item Failed", error: error.message });
     }
   },
 
