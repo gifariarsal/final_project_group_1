@@ -60,7 +60,7 @@ const adminController = {
         name: checkLogin.name,
         email: checkLogin.email,
         role: checkLogin.role_id,
-        store_id: checkLogin.store_id,
+        store_id: checkBranch.id,
       };
 
       const token = jwt.sign(payload, process.env.JWT_KEY, {

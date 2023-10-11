@@ -1,8 +1,9 @@
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Center, Skeleton, Stack } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Center, Skeleton, Stack, Icon, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BranchSalesReportProductDetail from "./BranchSalesReportProductDetail";
 import { Pagination } from "../../components/Pagination";
+import { AiOutlineInbox } from "react-icons/ai";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const BranchSalesReportProduct = ({ id, orderState, endDateState, startDateState }) => {
@@ -33,9 +34,30 @@ const BranchSalesReportProduct = ({ id, orderState, endDateState, startDateState
 
   useEffect(() => {
     fetchData();
-  }, [endDate, startDate, order, index]);
+  }, [id, endDate, startDate, order, index]);
 
-  console.log(data);
+  if (data === null || data.length === 0) {
+    return (
+      <Box
+        width={{ base: "90%", sm: "70%", md: "50%" }}
+        mx="auto"
+        mt={4}
+        padding={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+        borderRadius="8px"
+        border="2px dashed #ccc"
+        textAlign="center">
+        <Box mb={4}>
+          <Icon as={AiOutlineInbox} boxSize={8} />
+        </Box>
+        <Text fontSize={{ base: "lg", sm: "xl", md: "2xl" }} fontWeight="bold" mb={2}>
+          Sorry, there are no product yet.
+        </Text>
+        <Text fontSize={{ base: "md", sm: "lg", md: "xl" }} color="gray.600">
+          It looks like you didn't have any product.
+        </Text>
+      </Box>
+    );
+  }
 
   return (
     <Stack>

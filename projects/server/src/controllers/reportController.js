@@ -1,7 +1,7 @@
 const { Sequelize, where } = require("sequelize");
 const db = require("../../models");
 const Op = Sequelize.Op;
-const { sequelize, Transaction, Product, ProductStore, Transactionitem, User, Category } = db;
+const { sequelize, Transaction, Product, ProductStore, Transactionitem, User, Category, Store } = db;
 
 const includeCategory = [{ model: Category, attributes: { exclude: ["createdAt", "updatedAt"] } }];
 const includeProduct = [
@@ -191,6 +191,15 @@ const reportController = {
       res.status(200).json({ message: "Success", totalPage, data: totalTransactions });
     } catch (error) {
       res.status(500).json({ message: "Failed", error: error.message });
+    }
+  },
+  getStoreBranchId: async (req, res) => {
+    try {
+      const { store_id } = req.user;
+      const data = await Store.findOne({ where: { id: store_id } });
+      return res.status(200).json({ message: "Success", data: data });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 };

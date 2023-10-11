@@ -30,9 +30,7 @@ const BranchSalesReportUser = ({ id, orderState, startDateState, endDateState })
 
   useEffect(() => {
     fetchUsers();
-  }, [order, startDate, endDate]);
-
-  console.log(order);
+  }, [id, order, startDate, endDate]);
 
   if (users.length === 0) {
     return (

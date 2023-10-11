@@ -41,7 +41,6 @@ const BranchSalesReportProductDetail = ({ product, store_id, orderState, endDate
       console.log(error);
     }
   };
-  console.log(productDetail);
   useEffect(() => {
     fetchProduct();
   }, [product, endDate, startDate, order]);

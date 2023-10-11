@@ -1,7 +1,8 @@
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Center, Skeleton, Stack, Badge } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Center, Skeleton, Stack, Badge, Icon, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pagination } from "../../components/Pagination";
+import { AiOutlineInbox } from "react-icons/ai";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
 const BranchSalesReportTransaction = ({ id, orderState, endDateState, startDateState }) => {
@@ -67,7 +68,30 @@ const BranchSalesReportTransaction = ({ id, orderState, endDateState, startDateS
 
   useEffect(() => {
     fetchData();
-  }, [order, endDate, startDate, index]);
+  }, [id, order, endDate, startDate, index]);
+
+  if (transaction === null || transaction.length === 0) {
+    return (
+      <Box
+        width={{ base: "90%", sm: "70%", md: "50%" }}
+        mx="auto"
+        mt={4}
+        padding={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+        borderRadius="8px"
+        border="2px dashed #ccc"
+        textAlign="center">
+        <Box mb={4}>
+          <Icon as={AiOutlineInbox} boxSize={8} />
+        </Box>
+        <Text fontSize={{ base: "lg", sm: "xl", md: "2xl" }} fontWeight="bold" mb={2}>
+          Sorry, there are no transactions yet.
+        </Text>
+        <Text fontSize={{ base: "md", sm: "lg", md: "xl" }} color="gray.600">
+          It looks like your user haven't made any transactions.
+        </Text>
+      </Box>
+    );
+  }
 
   return (
     <Stack>

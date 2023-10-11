@@ -64,7 +64,7 @@ const storeController = {
           exclude: ["createdAt", "updatedAt"],
         },
       });
-      return res.status(200).json({ message: "Success", data: data });
+      return res.status(200).json({ message: "Success Store", data: data });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
