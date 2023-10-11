@@ -87,6 +87,7 @@ const UserOrderOngoingCard = ({ item, setDetail, setTransactionDetail, setTransa
         <Text color={orderStatusArray[item.status].color} fontWeight={"bold"} mt={4}>
           {orderStatusArray[item.status].status}
         </Text>
+        {item.message && <Text>Message: {item.message}</Text>}
       </Box>
       <Box>
         {products && (

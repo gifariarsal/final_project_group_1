@@ -120,6 +120,7 @@ const UserOrderOngoingCardDetailOrder = ({
   const handleConfirmPayment = () => {
     const [file] = document.getElementById("upload-payment").files;
     dispatch(uploadTransactionImage(id, file, toast));
+    dispatch(getTransaction({}));
     setDetail(false);
   };
 
