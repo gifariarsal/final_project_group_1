@@ -317,10 +317,10 @@ const productController = {
   },
   getItemDetail : async(req, res) => {
     try {
-      const {id} = req.params
-      const cekItem = await cartItem.findOne({where : {product_id : id}})
+      const {id, store_id} = req.params
+      const cekItem = await cartItem.findOne({where : {product_id : id, store_id}})
       console.log("adaa", cekItem)
-      const cekProduct = await ProductStore.findOne({where : {product_id : id}})
+      const cekProduct = await ProductStore.findOne({where : {product_id : id, store_id}})
       console.log("cek ", cekProduct)
       return res.status(200).json({message : "Successsss", Item : cekItem, ProductBranch : cekProduct})
     } catch (error) {

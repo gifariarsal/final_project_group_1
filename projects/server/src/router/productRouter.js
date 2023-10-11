@@ -15,6 +15,6 @@ router.patch("/picture/:id",multerUpload.single("product_img"), productControlle
 // router.patch("/:id", multerUpload.single("product_img"), productController.updateProduct)
 router.patch("/delete/:id", productController.deleteProduct)
 router.patch("/restore/:id", productController.activeProduct)
-router.get("/item/detail/:id", productController.getItemDetail)
+router.get("/item/detail/:id/:store_id", productController.getItemDetail)
 
 module.exports = router;
