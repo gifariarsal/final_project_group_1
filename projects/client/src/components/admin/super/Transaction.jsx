@@ -1,11 +1,11 @@
 import { Box, Text } from '@chakra-ui/react';
 import React from 'react'
+import UserOrderList from './UserOrderList';
 
 const Transaction = () => {
   return (
     <Box w={"full"} minH={"100vh"}>
       <Box
-        h={"62px"}
         display={"flex"}
         justifyContent={"space-between"}
         alignItems={"center"}
@@ -23,7 +23,7 @@ const Transaction = () => {
         </Box>
       </Box>
       <Box w={"full"}>
-        {/* <AdminList /> */}
+        <UserOrderList />
       </Box>
     </Box>
   );

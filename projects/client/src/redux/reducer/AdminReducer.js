@@ -62,14 +62,13 @@ export const loginAdmin = (values, setLoading, toast, navigate) => {
         password: values.password,
       });
       const token = respon.data.token;
-      const store_id = respon.data.BranchData.id;
       localStorage.setItem("token", token);
       dispatch(setBranchAdmin(respon.data.Account));
       dispatch(loginSuccess());
       if (respon.data.Account.role_id === 1) {
         navigate("/admin/super");
       } else if (respon.data.Account.role_id === 2) {
-        navigate(`/admin/branch/${store_id}`);
+        navigate(`/admin/branch`);
       }
       toast({
         title: "Login Success",
@@ -161,7 +160,6 @@ export const getBranchAdmin = () => {
     try {
       const { data } = await axios.get(`${URL_API}/admin/branch-admin`);
       const activeBranchAdmins = data.data.filter((item) => item.isactive === true);
-      console.log(activeBranchAdmins);
       dispatch(setAdmin(activeBranchAdmins));
     } catch (error) {
       console.log(error);
@@ -294,8 +292,34 @@ export const branchUserCancel = (item) => {
     } catch (error) {
       console.log(error);
     }
-  };
-};
+  }
+}
+export const branchUserConfirm = (item) => {
+  return async(dispatch) => {
+    console.log("user confirm reducer masuk ", item)
+    console.log("id dari branch", item.id)
+    const transaction_id = item.id
+    console.log("inimi", transaction_id)
+    try { 
+      const response = await axios.patch(`${URL_API}/admin/branch/confirm/${transaction_id}`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+export const branchSendOrder = (item) => {
+  return async(dispatch) => {
+    console.log("user send reducer masuk ", item)
+    console.log("id dari branch", item.id)
+    const transaction_id = item.id
+    console.log("inimi", transaction_id)
+    try { 
+      const response = await axios.patch(`${URL_API}/admin/branch/send/${transaction_id}`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
 
 export const { setBranchAdmin, setStore, setAdmin, loginSuccess, logoutSuccess, setRoleId, setPage, setProduct } =
   AdminReducer.actions;

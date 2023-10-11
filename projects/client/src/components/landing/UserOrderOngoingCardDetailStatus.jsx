@@ -21,8 +21,9 @@ import { useDispatch } from "react-redux";
 import { getTransaction, uploadTransactionImage } from "../../redux/reducer/TransactionReducer";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { userCancel } from "../../redux/reducer/AuthReducer";
+import { userCancel, userConfirm } from "../../redux/reducer/AuthReducer";
 import Swal from "sweetalert2";
+import { branchUserCancel } from "../../redux/reducer/AdminReducer";
 
 const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionProducts }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -61,6 +62,23 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
     setConfirmed(true);
     if (confirmed) console.log("masuk ke confirm order");
   };
+  const buttonConfirm = async (item) => {
+    console.log("confirm didepan", item);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Confirm your order ? ",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, confirm order!",
+    });
+    if (result.isConfirmed) {
+      dispatch(userConfirm(item));
+      // await dispatch(branchUserCancel(item));
+      Swal.fire("Confirm!", "The product has been arrived.", "success");
+    }
+  };
 
   const handleCancel = async (item) => {
     // setConfirmed(false);
@@ -77,6 +95,7 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
     });
     if (result.isConfirmed) {
       await dispatch(userCancel(item));
+      // await dispatch(branchUserCancel(item));
       Swal.fire("Cancel!", "The product has been canceled.", "success");
     }
   };
@@ -208,7 +227,7 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
             <Button colorScheme="red" mr={4} onClick={handleCancel}>
               No
             </Button>
-            <Button colorScheme="green" onClick={handleConfirm}>
+            <Button colorScheme="green" onClick={() => buttonConfirm(id)}>
               Yes
             </Button>
           </Flex>

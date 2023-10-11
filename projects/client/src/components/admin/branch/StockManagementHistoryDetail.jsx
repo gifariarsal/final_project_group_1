@@ -73,6 +73,7 @@ const StockManagementHistoryDetail = ({ history, setStartDate, setEndDate, start
       <Table variant="simple">
         <Thead>
           <Tr>
+            <Th>No</Th>
             <Th>Date</Th>
             <Th>Quantity</Th>
           </Tr>
@@ -80,6 +81,7 @@ const StockManagementHistoryDetail = ({ history, setStartDate, setEndDate, start
         <Tbody>
           {history.map((item, index) => (
             <Tr key={index}>
+              <Td>{index + 1}</Td>
               <Td>{changeDate(item.createdAt)}</Td>
               <Td>{item.quantity}</Td>
             </Tr>
