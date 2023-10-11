@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import getImage from "../../getImage/getImage";
+import getImage from "../../../utils/getImage";
 import { render } from "react-dom";
 import { AiOutlineInbox } from "react-icons/ai";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
