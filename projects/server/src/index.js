@@ -34,7 +34,7 @@ const {
   regionRouter,
   voucherRouter,
   reportRouter,
-  userOrderRouter
+  userOrderRouter,
 } = require("./router");
 // db.sequelize.sync({ alter: true });
 

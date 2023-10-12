@@ -10,9 +10,10 @@ const UserOrder = () => {
   const { page } = useSelector((state) => state.TransactionReducer);
   const [detail, setDetail] = useState(false);
   const [index, setIndex] = useState(1);
-  const handleSetDetail = () => {
-    setDetail(false);
+  const handleSetDetail = async () => {
+    await setDetail(false);
   };
+  
   return (
     <Box>
       <Navbar />

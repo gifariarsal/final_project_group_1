@@ -53,16 +53,12 @@ export default function Cart() {
     return `${PUBLIC_URL}/${image}`;
   };
   const getItemDetails = async (id) => {
-    console.log("id");
     try {
-      console.log("get di item detais", id);
-      const response = await axios.get(
-        `${URL_API}/product/item/detail/${id}/${store_id}`
-      );
-      console.log("data get item", response);
-      console.log("data get item productBranc", response.data.ProductBranch);
+      const response = await axios.get(`${URL_API}/product/item/detail/${id}/${store_id}`);
+      // console.log("data get item", response);
+      // console.log("data get item productBranc", response.data.ProductBranch);
       setBranchProduct(response.data.ProductBranch);
-      console.log("data get item", response.data.Item);
+      // console.log("data get item", response.data.Item);
       setSold(response.data.Item);
     } catch (error) {
       console.log(error);
@@ -72,9 +68,7 @@ export default function Cart() {
     console.log("masukk ", products);
     console.log("masukk ", products.product_id);
     try {
-      const response = await axios.get(
-        `${URL_API}/product/item/detail/${products.product_id}/${store_id}}`
-      );
+      const response = await axios.get(`${URL_API}/product/item/detail/${products.product_id}/${store_id}}`);
       console.log("apa respon ?", response);
       const itemQuantity = response.data.ProductBranch?.quantity;
       console.log("QUAN", itemQuantity);
@@ -123,11 +117,7 @@ export default function Cart() {
     if (result.isConfirmed) {
       await dispatch(deleteItemFromCart(products));
       await dispatch(deleteItemCart(products));
-      Swal.fire(
-        "Deleted!",
-        "The item has been removed from the cart.",
-        "success"
-      );
+      Swal.fire("Deleted!", "The item has been removed from the cart.", "success");
     }
     await dispatch(getItem(store_id));
     await dispatch(getCart());
@@ -136,7 +126,7 @@ export default function Cart() {
     if (item && item.length > 0) {
       await item.forEach((items) => {
         if (items.Product) {
-          console.log("haha", items.Product.id);
+          // console.log("haha", items.Product.id);
           getItemDetails(items.Product.id);
         }
       });
@@ -148,25 +138,19 @@ export default function Cart() {
     // dapat();
     dispatch(getCart());
   }, [store_id]);
-  console.log("Item in useEffect:", item);
+  // console.log("Item in useEffect:", item);
 
   useEffect(() => {
     dapat();
   }, [item]);
-  console.log("CARTS => ", item);
+  // console.log("CARTS => ", item);
   return (
     <>
       <Navbar />
       {login ? (
         <Box fontFamily={"montserrat"}>
           <Stack>
-            <Box
-              ml={"100px"}
-              mt={"48px"}
-              fontSize={"2xl"}
-              fontWeight={"bold"}
-              fontFamily={"montserrat"}
-            >
+            <Box ml={"100px"} mt={"48px"} fontSize={"2xl"} fontWeight={"bold"} fontFamily={"montserrat"}>
               <Text>Cart</Text>
             </Box>
             <Divider colorScheme="blackAlpha"></Divider>
@@ -183,16 +167,13 @@ export default function Cart() {
                       mt={"32px"}
                       variant={""}
                       borderRadius={"10px"}
-                      rightIcon={<FaShopify />}
-                    >
+                      rightIcon={<FaShopify />}>
                       See our products
                     </Button>
                   </Box>
                 ) : (
                   item.map((products) => {
-                    return (
-                      <OnGoingCart key={products.id} products={products} />
-                    );
+                    return <OnGoingCart key={products.id} products={products} />;
                   })
                 )}
               </Box>

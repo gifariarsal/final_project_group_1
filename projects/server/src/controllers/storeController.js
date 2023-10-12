@@ -63,6 +63,7 @@ const storeController = {
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
+        include: db.Admin,
       });
       return res.status(200).json({ message: "Success Store", data: data });
     } catch (error) {

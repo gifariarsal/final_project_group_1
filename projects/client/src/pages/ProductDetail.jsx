@@ -10,6 +10,7 @@ import Notfound from "./Notfound";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { addCart, addToCart, getItem, setChanges } from "../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
+import getImage from "../utils/getImage";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
@@ -36,9 +37,7 @@ const ProductDetail = () => {
   };
   const getItemDetails = async (id) => {
     try {
-      const response = await axios.get(
-        `${URL_API}/product/item/detail/${id}/${store_id}`
-      );
+      const response = await axios.get(`${URL_API}/product/item/detail/${id}/${store_id}`);
       setBranchProduct(response.data.ProductBranch);
       setSold(response.data.Item);
     } catch (error) {
@@ -86,8 +85,10 @@ const ProductDetail = () => {
       <Box>
         <Flex gap={{ base: 4, md: 8 }}>
           <Image
-            src="https://cdn10.bigcommerce.com/s-f70ch/products/106/images/307/18__31743.1449827934.1280.1280.jpg?c=2"
+            src={getImage(product.product_img) || null}
             w={"45%"}
+            fit={"cover"}
+            overflow={"hidden"}
             boxShadow={"2xl"}
           />
           <Box>
