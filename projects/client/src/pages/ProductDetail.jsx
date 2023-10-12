@@ -1,4 +1,13 @@
-import { Box, Button, Divider, Flex, Heading, Image, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Image,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -8,7 +17,12 @@ import ProductStock from "./ProductStock";
 import { store } from "../redux/store";
 import Notfound from "./Notfound";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { addCart, addToCart, getItem, setChanges } from "../redux/reducer/CartReducer";
+import {
+  addCart,
+  addToCart,
+  getItem,
+  setChanges,
+} from "../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
@@ -79,7 +93,9 @@ const ProductDetail = () => {
       <Box mb={4}>
         <Link to={"/"}>Home</Link>
         {" > "}
-        <Link to={`/category/${product?.Category?.id}`}>{product?.Category?.name}</Link>
+        <Link to={`/category/${product?.Category?.id}`}>
+          {product?.Category?.name}
+        </Link>
         {" > "}
         <Link>{product?.name}</Link>
       </Box>
@@ -98,7 +114,12 @@ const ProductDetail = () => {
             {isDiscount && (
               <>
                 <Flex gap={2}>
-                  <Text textAlign={"center"} fontWeight={"bold"} textDecoration={"line-through"} color={"#9b9b9b"}>
+                  <Text
+                    textAlign={"center"}
+                    fontWeight={"bold"}
+                    textDecoration={"line-through"}
+                    color={"#9b9b9b"}
+                  >
                     Rp.{product?.price},-
                   </Text>
                   <Text textAlign={"center"} fontWeight={"bold"}>
@@ -111,7 +132,9 @@ const ProductDetail = () => {
                 </Flex>
               </>
             )}
-            {!isDiscount && <Text fontWeight={"bold"}>Rp.{product?.price},-</Text>}{" "}
+            {!isDiscount && (
+              <Text fontWeight={"bold"}>Rp.{product?.price},-</Text>
+            )}{" "}
             <Box my={4} textAlign={"justify"} pr={4}>
               {product?.description}
             </Box>
@@ -125,32 +148,36 @@ const ProductDetail = () => {
                   <Tooltip
                     label={stock.quantity < 10 ? "Low stock" : "Add to cart!"}
                     bg={"brand.main"}
-                    aria-label="A tooltip">
+                    aria-label="A tooltip"
+                  >
                     <Button
                       variant={"outline"}
                       colorScheme="teal"
                       leftIcon={<HiOutlineShoppingCart />}
                       onClick={() => inCart(product, store_id)}
                       isDisabled={
-                        stock.quantity < 10 ||
                         login === false ||
                         (sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
-                      }>
-                      {stock.quantity < 10
-                        ? "Low stock"
-                        : (sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
+                      }
+                    >
+                      {(sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
                         ? "Out of Stock"
                         : "Add Cart"}
                     </Button>
                   </Tooltip>
                 ) : (
-                  <Tooltip label="Please login first!" bg={"brand.main"} aria-label="A tooltip">
+                  <Tooltip
+                    label="Please login first!"
+                    bg={"brand.main"}
+                    aria-label="A tooltip"
+                  >
                     <Button
                       variant={"outline"}
                       colorScheme="teal"
                       leftIcon={<HiOutlineShoppingCart />}
                       onClick={() => inCart(product, store_id)}
-                      isDisabled={login === false}>
+                      isDisabled={login === false}
+                    >
                       Add Cart
                     </Button>
                   </Tooltip>
@@ -160,7 +187,8 @@ const ProductDetail = () => {
             {!store_id && (
               <>
                 <Text textTransform={"uppercase"} fontWeight={"bold"} mb={4}>
-                  Kami Belum Menyediakan Layanan di Lokasimu, Sementara ini kami menyediakan produk di toko ini:
+                  Kami Belum Menyediakan Layanan di Lokasimu, Sementara ini kami
+                  menyediakan produk di toko ini:
                 </Text>
                 <Flex gap={4} justify={"center"}>
                   {stock.map((product) => (

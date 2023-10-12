@@ -4,6 +4,7 @@ import {
   Center,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -87,6 +88,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                   <FormControl
                     isInvalid={formik.touched.newName && formik.errors.newName}
                   >
+                    <FormLabel>Name</FormLabel>
                     <Input
                       placeholder="Name Product"
                       id="newName"
@@ -132,6 +134,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                   <FormControl
                     isInvalid={formik.touched.price && formik.errors.price}
                   >
+                    <FormLabel mt={5}>Price</FormLabel>
                     <Input
                       placeholder="Price"
                       id="price"
@@ -139,7 +142,6 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                       type="number"
                       value={formik.values.price}
                       onChange={formik.handleChange}
-                      mt={5}
                     ></Input>
                     <Center>
                       {formik.touched.price && formik.errors.price && (
@@ -155,6 +157,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                       formik.errors.admin_discount
                     }
                   >
+                    <FormLabel mt={5}>Admin Discount</FormLabel>
                     <Input
                       placeholder="Discount (optional)"
                       id="admin_discount"
@@ -162,7 +165,6 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                       type="number"
                       value={formik.values.admin_discount}
                       onChange={formik.handleChange}
-                      mt={5}
                     ></Input>
                     <Center>
                       {formik.touched.admin_discount &&
@@ -178,9 +180,9 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                       formik.touched.description && formik.errors.description
                     }
                   >
+                    <FormLabel mt={5}>Description</FormLabel>
                     <Input
                       type="textarea"
-                      mt={5}
                       placeholder="Description"
                       id="description"
                       name="description"
@@ -199,9 +201,9 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                   <FormControl
                     isInvalid={formik.touched.weight && formik.errors.weight}
                   >
+                    <FormLabel mt={5}>Weight</FormLabel>
                     <Input
                       type="textarea"
-                      mt={5}
                       placeholder="weight"
                       id="weight"
                       name="weight"

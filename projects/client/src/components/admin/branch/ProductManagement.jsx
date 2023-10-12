@@ -149,9 +149,8 @@ const ProductManagement = () => {
     await dispatch(deleteProduct(item, Swal));
     await fetchData();
   };
-  console.log("category masuk", category);
+
   const itemsToMap = product || barang || [];
-  console.log("barangss", barang);
 
   return (
     <Box>

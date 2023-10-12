@@ -291,7 +291,8 @@ const adminController = {
   // },
   branchStock : async(req, res) => {
     try {
-      const {productId, quantity, description} = req.body
+      const {productId, quantity} = req.body
+      let description = "Update Stock"
       const findStore = await Store.findOne({where : {admin_id : req.user.id}})
       console.log("dapat adminnya", findStore)
       console.log("dapat adminnya", findStore.id)
