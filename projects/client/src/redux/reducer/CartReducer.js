@@ -18,11 +18,11 @@ export const CartReducer = createSlice({
       state.item = [...action.payload];
     },
     setCarts: (state, action) => {
-      state.carts = action.payload
+      state.carts = action.payload;
     },
     addToCart: (state, action) => {
       const { id } = action.payload;
-      console.log("masuk", action.payload)
+      console.log("masuk", action.payload);
       const existCartItemIndex = state.cart.findIndex((item) => item.id === id);
 
       if (existCartItemIndex !== -1) {
@@ -92,10 +92,10 @@ export const getCart = () => {
   };
 };
 
-export const addCart = (products,store_id, Swal) => {
+export const addCart = (products, store_id, Swal) => {
   return async (dispatch) => {
     const dataProduct = products.Product || products;
-    const discount = products.price - products.admin_discount
+    const discount = products.price - products.admin_discount;
     const total_price = discount;
     const productId = dataProduct.product_id || dataProduct.id;
     const token = localStorage.getItem("token");
@@ -114,8 +114,8 @@ export const addCart = (products,store_id, Swal) => {
         icon: "success",
         title: "Product successfully added to cart",
         showConfirmButton: false,
-        timer: 1500
-      })
+        timer: 1500,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -123,9 +123,9 @@ export const addCart = (products,store_id, Swal) => {
 };
 export const addQuantity = (products, Swal) => {
   return async (dispatch) => {
-    const productId = products.product_id
-    const total_price = products.price
-    const store_id = products.store_id
+    const productId = products.product_id;
+    const total_price = products.price;
+    const store_id = products.store_id;
     const token = localStorage.getItem("token");
     try {
       const result = await axios.patch(
@@ -150,7 +150,7 @@ export const deleteItem = (products) => {
     try {
       const response = await axios.patch(
         `${URL_API}/cart/item`,
-        { productId: products.product_id, total_price },
+        { productId: products.product_id, total_price, store_id: products.store_id },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -165,18 +165,17 @@ export const deleteItem = (products) => {
 
 export const deleteItemFromCart = (products) => {
   return async (dispatch) => {
-    const dataProduct = products.Product || products
+    const dataProduct = products.Product || products;
     const item = products.product_id;
-    const total_price = dataProduct.price
-    const productId = dataProduct.product_id || item
-    const token = localStorage.getItem("token")
+    const total_price = dataProduct.price;
+    const productId = dataProduct.product_id || item;
+    const token = localStorage.getItem("token");
     try {
-      const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, 
-      {
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
-      })
+      const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
