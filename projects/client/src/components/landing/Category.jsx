@@ -27,12 +27,7 @@ const Category = () => {
         flexWrap={"wrap"}
         gap={{ base: 4, md: 8 }}
       >
-        <CategoryCard src={BuahSayur} name={"Buah dan Sayur"} />
-        <CategoryCard src={BahanPokok} name={"Bahan Pokok"} />
-        <CategoryCard src={DagingIkan} name={"Daging dan Ikan"} />
-        <CategoryCard src={BahanMasak} name={"Bahan Masakan"} />
-        <CategoryCard src={ProdukSusuTelur} name={"Produk Susu dan Telur"} />
-        <CategoryCard src={Minuman} name={"Minuman"} />
+        <CategoryCard />
       </Flex>
     </Box>
   );
