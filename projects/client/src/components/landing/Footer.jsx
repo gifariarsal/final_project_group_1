@@ -1,10 +1,20 @@
 import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import FooterLogo from "../../assets/logo_footer.png";
 
 const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   return (
     <Box
       py={{ base: "20px", lg: "32px" }}
@@ -26,9 +36,9 @@ const Footer = () => {
           <Text fontWeight={500} mb={4}>
             Guide and Help
           </Text>
-          <Link>
+          <Link to={"/store"} onClick={scrollToTop}>
             <Text mb={2} _hover={{ color: "#59981A" }}>
-              Store Location
+              Store
             </Text>
           </Link>
           <Link>
@@ -51,12 +61,12 @@ const Footer = () => {
           <Text fontWeight={500} mb={4}>
             GrocerEasy
           </Text>
-          <Link to={"/about"}>
+          <Link to={"/about"} onClick={scrollToTop}>
             <Text mb={2} _hover={{ color: "#59981A" }}>
               About
             </Text>
           </Link>
-          <Link to={"/contact"}>
+          <Link to={"/contact"} onClick={scrollToTop}>
             <Text mb={2} _hover={{ color: "#59981A" }}>
               Contact
             </Text>

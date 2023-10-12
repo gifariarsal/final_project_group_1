@@ -30,6 +30,7 @@ import Checkout from "./pages/user/Checkout";
 import UserOrder from "./components/landing/UserOrder";
 import UserOrderOngoingCardDetails from "./components/landing/UserOrderOngoingCardDetails";
 import ResetPassword from "./pages/user/ResetPassword";
+import Contact from "./pages/user/Contact";
 
 function App() {
   const role = useSelector((state) => state.AdminReducer.branchAdmin.role_id);
@@ -77,6 +78,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/*" element={<Product />} />
           <Route path="/category/*" element={<Category />} />
+          <Route path="/contact" element={<Contact />} />
         </>
       );
     }
