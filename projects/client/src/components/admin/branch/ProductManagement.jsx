@@ -58,17 +58,12 @@ const ProductManagement = () => {
   const [name, setName] = useState("");
   const [sortLabelText, setSortLabelText] = useState("Sort by price");
   const { category } = useSelector((state) => state.CategoryReducer);
-  const [barang, setBarang] = useState([]);
   const [dataLength, setDataLength] = useState(0);
   const [limits, setLimits] = useState(0);
   console.log("SELECT", categories);
 
-  const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const handleNext = () => {
     setPage(page + 1);
-  };
-  const handleOrder = () => {
-    setOrder(order === "ASC" ? "DESC" : "ASC");
   };
 
   const handlePrev = () => {
@@ -77,9 +72,7 @@ const ProductManagement = () => {
   };
   const generatePageNumbers = (totalPage) => {
     const pageNumbers = [];
-    const startPage = Math.max(1, page - 2);
-    const endPage = Math.min(startPage + 4, totalPage);
-    for (let i = startPage; i <= endPage; i++) {
+    for (let i = 1; i <= totalPage; i++) {
       pageNumbers.push(i);
     }
     return pageNumbers;
@@ -87,27 +80,13 @@ const ProductManagement = () => {
   const pageNumbers = generatePageNumbers(totalPage);
   console.log("total page", totalPage);
   const dispatch = useDispatch();
-  const orderByParam = orderByPrice ? "price" : orderBy; // Use 'price' if orderByPrice is true, otherwise use orderBy
+  const orderByParam = orderByPrice ? "price" : orderBy;
   const fetchData = async () => {
     const respon = await axios.get(
       `http://localhost:8000/api/admin/product?name=${name}&limit=10&page=${page}&order=${order}&orderBy=${orderByParam}&category=${categories}`
     );
     setProduct(respon.data.data);
-    console.log("apalah merespon lagi ", respon.data.data);
-    setDataLength(respon.data.data.length);
-    const totalProduct = respon.data.totalProduct;
-    const limit = respon.data.limit;
-    setLimits(respon.data.limit);
-    const totalP = Math.ceil(totalProduct / limit);
-    setTotalPage(totalP);
-  };
-  console.log("DATA LE", dataLength);
-  console.log("LIMITS", limits);
-
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-    const totalP = Math.ceil(dataLength / limits);
-    setTotalPage(totalP);
+    setTotalPage(respon.data.totalPage);
   };
   useEffect(() => {
     fetchData();
@@ -115,8 +94,6 @@ const ProductManagement = () => {
       fetchData();
       setModalClosedTrigger(false);
     }
-    dispatch(getProduct({ index, order, orderBy }));
-    // fetchData();
   }, [
     page,
     order,
@@ -130,11 +107,6 @@ const ProductManagement = () => {
   const handleSearch = () => {
     const name = document.getElementById("search").value;
     setName(name);
-  };
-  const handleOrderBy = () => {
-    setOrderBy("name");
-    setOrderByPrice(false);
-    fetchData();
   };
 
   const handleOrderByPrice = () => {
@@ -170,7 +142,7 @@ const ProductManagement = () => {
     await fetchData();
   };
 
-  const itemsToMap = product || barang || [];
+  const itemsToMap = product || [];
 
   return (
     <Box>
@@ -197,7 +169,7 @@ const ProductManagement = () => {
               ml={{ base: "12px", lg: "48px" }}
               placeholder="All Category"
               value={categories}
-              onChange={(e) => handleCategoryChange(e)}
+              onChange={(e) => setCategory(e.target.value)}
             >
               {category.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -320,7 +292,7 @@ const ProductManagement = () => {
                 onClick={() => setPage(pageNumber)}
                 isActive={page === pageNumber}
                 bgColor={page === pageNumber ? "red" : "brand.main"}
-                color={page === pageNumber ? "black" : "black"} // Set text color conditionally
+                color={page === pageNumber ? "black" : "black"}
               >
                 {pageNumber}
               </Button>

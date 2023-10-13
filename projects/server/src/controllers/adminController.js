@@ -197,42 +197,49 @@ const adminController = {
         limit = 10,
         order = "ASC",
         orderBy = "name",
-        category = "", // This should correspond to a valid category ID
+        category = "", 
         name = "",
       } = req.query;
-
+  
       const findName = { name: { [Op.like]: `%${name || ""}%` } };
       const pagination = { offset: (page - 1) * limit, limit: +limit };
-      const totalProduct = await Product.count();
-      const totalPage = Math.ceil(totalProduct / +limit);
+      let totalProductQuery = {};
+  
       const where = {};
-
+  
       if (category) {
         where.category_id = category;
+        totalProductQuery = { category_id: category };
       }
-
+  
       let orderByColumn;
       if (orderBy === "price") {
-        orderByColumn = Sequelize.literal("price"); // Sort by price
+        orderByColumn = Sequelize.literal("price"); 
       } else {
-        orderByColumn = Sequelize.col(orderBy); // Sort by other columns
+        orderByColumn = Sequelize.col(orderBy); 
       }
-
+  
+      const totalProduct = await Product.count({
+        where: totalProductQuery,
+      });
+      const totalPage = Math.ceil(totalProduct / +limit);
+  
       const products = await Product.findAll({
         attributes: {
           exclude: ["createdAt", "updatedAt", "category_id"],
         },
-        include: [{ model: Category, as: "Category" }], // Make sure this is set up correctly
+        include: [{ model: Category, as: "Category" }],
         ...pagination,
         where: { ...findName, ...where },
         order: [[orderByColumn, order]],
       });
-
+  
       res.status(200).json({ page, totalProduct, totalPage, limit, data: products });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
+  
   deleteProduct: async (req, res) => {
     try {
       const { productId } = req.params;
@@ -293,7 +300,6 @@ const adminController = {
       // let description = "Update Stock"
       const findStore = await Store.findOne({where : {admin_id : req.user.id}})
       console.log("dapat adminnya", findStore)
-      console.log("dapat adminnya", findStore.id)
       const existingProductStore = await productStore.findOne({
         where: { product_id: productId, store_id: findStore.id },
       });
@@ -345,7 +351,6 @@ const adminController = {
     try {
       const { id } = req.params;
       const findProduct = await productStore.findOne({ where: { id } });
-      console.log("deActive product branch", findProduct);
       await db.sequelize.transaction(async (t) => {
         await productStore.update(
           {
@@ -364,7 +369,6 @@ const adminController = {
     try {
       const { id } = req.params;
       const findProduct = await productStore.findOne({ where: { id } });
-      console.log("enable,", findProduct);
       await db.sequelize.transaction(async (t) => {
         await productStore.update(
           {
@@ -383,8 +387,6 @@ const adminController = {
       if (!store) {
         return res.status(404).json({ message: "Store not found for the user." });
       }
-      console.log("store get ", store);
-      console.log("admin store get", store.admin_id);
       const findBranch = await productStore.findAll({
         where: {
           store_id: store.id,
@@ -422,9 +424,6 @@ const adminController = {
     try {
       const { user_id } = req.params;
       const checkTrans = await trans.findOne({ where: { user_id: user_id, status: 0 } });
-      console.log("checkUser ", checkTrans);
-      // const transAll = await trans.findAll()
-      // console.log("all", transAll)
       return res.status(200).json({ message: "Success", data: checkTrans });
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -439,7 +438,6 @@ const adminController = {
           },
         ],
       })
-      // console.log("all", transAll)
       return res.status(200).json({message : "Succeswes", data : transAll})
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -449,9 +447,7 @@ const adminController = {
     try {
       const {transaction_id} = req.params
       const findTransaction = await trans.findOne({where : {id : transaction_id}})
-      // console.log("dapatt dong", findTransaction)
       const findTsItem = await Transactionitem.findAll({where : {transaction_id : findTransaction.id}})
-      // console.log("transaction item => ", findTsItem)
       let product_idSold;
       let quantitySold;
       let quantityFinal = 0;
