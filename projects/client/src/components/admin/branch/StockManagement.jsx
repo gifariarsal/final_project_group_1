@@ -157,8 +157,14 @@ export default function StockManagement() {
                               "out of stock"
                             )}
                           </Heading>
-                          <Text fontWeight={"bold"}>
-                            Quantity : {item.quantity}
+                          <Text
+                            fontWeight={"bold"}
+                            color={item.isactive ? "green" : "gray.400"}
+                            fontStyle={item.isactive ? "" : "italic"}
+                          >
+                            {item.isactive
+                              ? `Quantity : ${item.quantity}`
+                              : "Quantity : out of stock"}
                           </Text>
                           <Flex gap={2} fontSize={"16px"}>
                             <Text
