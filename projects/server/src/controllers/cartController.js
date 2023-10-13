@@ -60,7 +60,7 @@ const cartController = {
       const checkProduct = await product.findOne({ where: { id: productId } });
       const newPrice = checkProduct.price - checkProduct.admin_discount;
       const totalPrice = (checkCart.total_price -= newPrice);
-      const checkItem = await items.findOne({ where: { product_id: checkProduct.id } });
+      const checkItem = await items.findOne({ where: { product_id: checkProduct.id, store_id } });
       await db.sequelize.transaction(async (t) => {
         if (totalPrice !== 0) {
           const result = await cart.update({ total_price: totalPrice }, { where: { user_id: id } }, { transaction: t });

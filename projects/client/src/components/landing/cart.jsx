@@ -162,7 +162,7 @@ export default function Cart() {
         <Box fontFamily={"montserrat"}>
           <Stack>
             <Box
-              ml={"100px"}
+              ml={{ base: "30px", lg: "100px" }}
               mt={"48px"}
               fontSize={"2xl"}
               fontWeight={"bold"}

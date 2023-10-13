@@ -291,8 +291,8 @@ const adminController = {
   // },
   branchStock : async(req, res) => {
     try {
-      const {productId, quantity} = req.body
-      let description = "Update Stock"
+      const {productId, quantity, description} = req.body
+      // let description = "Update Stock"
       const findStore = await Store.findOne({where : {admin_id : req.user.id}})
       console.log("dapat adminnya", findStore)
       console.log("dapat adminnya", findStore.id)
@@ -303,18 +303,21 @@ const adminController = {
       const existingStoresHistory = await stockHistory.findOne({
         where: { product_id: productId, store_id: findStore.id },
       });
-      console.log("deskripsi ", description)
       console.log("update sampai sini", existingStoresHistory)
       if (existingProductStore) {
-        existingProductStore.quantity = quantity;
+        let quantityUpdate;
+        quantityUpdate = existingProductStore.quantity + quantity;
+        console.log("apa inii ??", quantity)
+        console.log("ini tambahan", quantityUpdate)
+        existingProductStore.quantity = quantityUpdate;
         await existingProductStore.save();
         await db.sequelize.transaction(async (t) => {
           await stockHistory.create({
             product_id : productId,
             store_id : findStore.id,
-            quantity : quantity,
+            quantity : quantityUpdate,
             isactive : true,
-            description : description
+            description : `Update Stock ${quantity} pcs`
           }, {transaction : t})
         })
         return res.status(200).json({ message: "Update Success" });
@@ -331,7 +334,7 @@ const adminController = {
             store_id : findStore.id,
             quantity : quantity,
             isactive : true,
-            description : description
+            description : `Update Stock ${quantity} pcs`
           }, {transaction : t})
         })
         return res.status(200).json({message : "Sucess"})

@@ -40,7 +40,6 @@ import { FaCheck, FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import { destroyProduct } from "../../../redux/reducer/AdminReducer";
 import { BiSearchAlt } from "react-icons/bi";
-import ChangeProductPicture from "../../components/ChangeProductPicture";
 import ButtonChangeProductPicture from "../../components/ButtonChangeProductPicture";
 import ButtonViewProductPicture from "../../components/ButtonViewProductPicture";
 import { Pagination } from "../../components/Pagination";
@@ -58,6 +57,7 @@ const ProductManagement = () => {
   const [sortLabelText, setSortLabelText] = useState("Sort by price");
   const { category } = useSelector((state) => state.CategoryReducer);
   const [barang, setBarang] = useState([]);
+  console.log("SELECT", categories);
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const handleNext = () => {
