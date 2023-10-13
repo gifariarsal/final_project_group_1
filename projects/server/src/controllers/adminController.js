@@ -383,10 +383,16 @@ const adminController = {
   },
   getStockBranch: async (req, res) => {
     try {
+      const { product_name = "", page = 1 } = req.query;
+      const findProduct = {
+        "$Product.name$": { [Op.like]: `%${product_name || ""}%` },
+      };
       const store = await Store.findOne({ where: { admin_id: req.user.id } });
+      console.log("adakajhh", store)
       if (!store) {
         return res.status(404).json({ message: "Store not found for the user." });
       }
+      const where = { store_id: store.id };
       const findBranch = await productStore.findAll({
         where: {
           store_id: store.id,
@@ -400,6 +406,7 @@ const adminController = {
             attributes: ["name", "product_img", "price", "admin_discount"],
           },
         ],
+        where : {...findProduct, ...where}
       })
       return res.status(200).json({message : "Success", datas : findBranch})
     } catch (error) {

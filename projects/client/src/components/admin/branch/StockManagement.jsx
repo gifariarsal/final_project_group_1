@@ -8,6 +8,10 @@ import {
   Heading,
   IconButton,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
   Stack,
   Tag,
   Text,
@@ -26,6 +30,7 @@ import {
   enableProduct,
 } from "../../../redux/reducer/AdminReducer";
 import StockManagementHistory from "./StockManagementHistory";
+import { BiSearchAlt } from "react-icons/bi";
 
 export default function StockManagement() {
   const [detail, setDetail] = useState(0);
@@ -34,6 +39,7 @@ export default function StockManagement() {
   const toast = useToast();
   const [stock, setStock] = useState([]);
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
+  const [name, setName] = useState("");
   const dispatch = useDispatch();
   const getImage = (image) => {
     return `${PUBLIC_URL}/${image}`;
@@ -41,7 +47,7 @@ export default function StockManagement() {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      `http://localhost:8000/api/admin/product/branch`,
+      `http://localhost:8000/api/admin/product/branch?product_name=${name}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,6 +56,10 @@ export default function StockManagement() {
     );
     console.log("niii", response);
     await setStock(response.data.datas);
+  };
+  const handleSearch = () => {
+    const name = document.getElementById("search").value;
+    setName(name);
   };
   const disable = async (item) => {
     console.log("disbale ", item);
@@ -71,7 +81,7 @@ export default function StockManagement() {
       fetchData();
       setModalClosedTrigger(false); // Reset the trigger
     }
-  }, [modalClosedTrigger]);
+  }, [modalClosedTrigger, name]);
 
   if (detail)
     return (
@@ -86,7 +96,20 @@ export default function StockManagement() {
           <Text mt={"24px"} fontSize={{ sm: "24px", md: "32px", lg: "48px" }}>
             Stock Management
           </Text>
-          <ButtonUpdateStock setModalClosedTrigger={setModalClosedTrigger} />
+          <Flex>
+            <ButtonUpdateStock setModalClosedTrigger={setModalClosedTrigger} />
+            <InputGroup ml={"12px"}>
+              <InputLeftElement>
+                <BiSearchAlt color="#37630A" />
+              </InputLeftElement>
+              <Input
+                id="search"
+                w={{ base: "200px", lg: "300px" }}
+                onChange={handleSearch}
+                placeholder={"Search Product"}
+              />
+            </InputGroup>
+          </Flex>
           <Divider mt={2} />
           {stock &&
             stock.map((item) => {
