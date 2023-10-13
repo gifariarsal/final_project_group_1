@@ -95,6 +95,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
               <Box>
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.name && formik.errors.name}
                   >
                     <FormLabel>Name</FormLabel>
@@ -114,6 +115,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={
                       formik.touched.category_id && formik.errors.category_id
                     }
@@ -141,6 +143,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Select>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={
                       formik.touched.product_img && formik.errors.product_img
                     }
@@ -170,6 +173,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.price && formik.errors.price}
                   >
                     <FormLabel mt={5}>Price</FormLabel>
@@ -215,6 +219,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={
                       formik.touched.description && formik.errors.description
                     }
@@ -238,6 +243,7 @@ export default function ModalAddProduct({ isOpen, onClose }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.weigth && formik.errors.weigth}
                   >
                     <FormLabel mt={5}>Weight</FormLabel>

@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Card,
   CardBody,
@@ -8,6 +9,7 @@ import {
   IconButton,
   Image,
   Stack,
+  Tag,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -112,15 +114,30 @@ export default function StockManagement() {
                         />
                         <Stack spacing="3">
                           <Heading
-                            color={item.isactive ? "green" : "red"}
-                            textDecoration={item.isactive ? "" : "line-through"}
+                            color={item.isactive ? "green" : "gray.400"}
+                            fontStyle={item.isactive ? "" : "italic"}
                           >
-                            <Text>{item.Product?.name}</Text>
+                            {item.isactive ? (
+                              <Flex>
+                                <Text>{item.Product?.name}</Text>
+                                {item.Product?.admin_discount > 0 ? (
+                                  <Image
+                                    src="https://cdn.icon-icons.com/icons2/1138/PNG/512/1486395314-13-discount_80575.png"
+                                    w={"8%"}
+                                    ml={5}
+                                  />
+                                ) : (
+                                  ""
+                                )}
+                              </Flex>
+                            ) : (
+                              <Text>out of stock</Text>
+                            )}
                           </Heading>
                           <Text fontWeight={"bold"}>
                             Quantity : {item.quantity}
                           </Text>
-                          <Flex gap={2} fontSize={"12px"}>
+                          <Flex gap={2} fontSize={"16px"}>
                             <Text
                               textDecoration={
                                 item.isactive ? "" : "line-through"
@@ -129,23 +146,26 @@ export default function StockManagement() {
                             >
                               Rp. {item.Product?.price}
                             </Text>
-                            <Text
-                              textAlign={"center"}
-                              fontWeight={"bold"}
-                              textDecoration={"line-through"}
-                              color={"#9b9b9b"}
-                            >
-                              {item.Product?.admin_discount > 0
-                                ? `Rp. ${item.Product?.admin_discount}`
-                                : ""}
-                            </Text>
+                            {item.Product?.admin_discount > 0 ? (
+                              <Badge colorScheme="green" rounded={"full"}>
+                                Rp. {item.Product?.admin_discount}
+                              </Badge>
+                            ) : (
+                              ""
+                            )}
                           </Flex>
 
                           <Text
-                            textDecoration={item.isactive ? "" : "line-through"}
                             fontSize="2xl"
+                            color={item.isactive ? "green" : "gray.500"}
+                            fontWeight={"bold"}
                           >
-                            Rp.{newPrice}
+                            {item.isactive ? (
+                              `Rp. ${newPrice}`
+                            ) : (
+                              <Text> - </Text>
+                            )}
+                            {/* Rp.{newPrice} */}
                           </Text>
                         </Stack>
                         <Box right={10} top={50} position={"absolute"}>
