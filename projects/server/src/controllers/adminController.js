@@ -194,13 +194,11 @@ const adminController = {
     try {
       const {
         page = 1,
-        limit = 5,
+        limit = 10,
         order = "ASC",
         orderBy = "name",
         category = "", // This should correspond to a valid category ID
         name = "",
-        minPrice = 0,
-        maxPrice = Infinity,
       } = req.query;
 
       const findName = { name: { [Op.like]: `%${name || ""}%` } };

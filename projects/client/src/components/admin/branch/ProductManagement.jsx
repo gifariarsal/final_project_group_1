@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addProduct,
   deleteProduct,
+  getProduct,
   restoreProduct,
   updateProduct,
 } from "../../../redux/reducer/ProductReducer";
@@ -48,6 +49,7 @@ const ProductManagement = () => {
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
   const [product, setProduct] = useState([]);
   const [page, setPage] = useState(1);
+  const [index, setIndex] = useState(1);
   const [order, setOrder] = useState("ASC");
   const [totalPage, setTotalPage] = useState("");
   const [orderByPrice, setOrderByPrice] = useState(false);
@@ -57,6 +59,8 @@ const ProductManagement = () => {
   const [sortLabelText, setSortLabelText] = useState("Sort by price");
   const { category } = useSelector((state) => state.CategoryReducer);
   const [barang, setBarang] = useState([]);
+  const [dataLength, setDataLength] = useState(0);
+  const [limits, setLimits] = useState(0);
   console.log("SELECT", categories);
 
   const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
@@ -73,29 +77,45 @@ const ProductManagement = () => {
   };
   const generatePageNumbers = (totalPage) => {
     const pageNumbers = [];
-    for (let i = 1; i <= totalPage; i++) {
+    const startPage = Math.max(1, page - 2);
+    const endPage = Math.min(startPage + 4, totalPage);
+    for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
     return pageNumbers;
   };
   const pageNumbers = generatePageNumbers(totalPage);
+  console.log("total page", totalPage);
   const dispatch = useDispatch();
   const orderByParam = orderByPrice ? "price" : orderBy; // Use 'price' if orderByPrice is true, otherwise use orderBy
   const fetchData = async () => {
     const respon = await axios.get(
-      `http://localhost:8000/api/admin/product?name=${name}&limit=3&page=${page}&order=${order}&orderBy=${orderByParam}&category=${categories}`
+      `http://localhost:8000/api/admin/product?name=${name}&limit=10&page=${page}&order=${order}&orderBy=${orderByParam}&category=${categories}`
     );
     setProduct(respon.data.data);
-    setTotalPage(respon.data.totalPage);
+    console.log("apalah merespon lagi ", respon.data.data);
+    setDataLength(respon.data.data.length);
+    const totalProduct = respon.data.totalProduct;
+    const limit = respon.data.limit;
+    setLimits(respon.data.limit);
+    const totalP = Math.ceil(totalProduct / limit);
+    setTotalPage(totalP);
   };
+  console.log("DATA LE", dataLength);
+  console.log("LIMITS", limits);
 
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+    const totalP = Math.ceil(dataLength / limits);
+    setTotalPage(totalP);
+  };
   useEffect(() => {
     fetchData();
-    // ambilData();
     if (modalClosedTrigger) {
       fetchData();
       setModalClosedTrigger(false);
     }
+    dispatch(getProduct({ index, order, orderBy }));
     // fetchData();
   }, [
     page,
@@ -177,7 +197,7 @@ const ProductManagement = () => {
               ml={{ base: "12px", lg: "48px" }}
               placeholder="All Category"
               value={categories}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => handleCategoryChange(e)}
             >
               {category.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -224,82 +244,60 @@ const ProductManagement = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {itemsToMap.map(
-                  (item) => (
-                    <Tr key={item.id}>
-                      <Td>{item.Category?.name}</Td>
-                      <Td>{item.name}</Td>
-                      <Td>{item.price}</Td>
-                      <Td>{item.admin_discount}</Td>
-                      <Td>{item.weight} Kg</Td>
-                      <Td>
-                        <Flex>
-                          <ButtonChangeProductPicture
-                            item={item}
-                            setModalClosedTrigger={setModalClosedTrigger}
-                          />
-                          <ButtonViewProductPicture item={item} />
-                        </Flex>
-                      </Td>
-                      <Td textColor={item.isactive ? "black" : "red"}>
-                        {item.isactive ? "Enable" : "Disable"}
-                      </Td>
-                      <Td>
-                        <Flex>
-                          <ButtonEditProduct
-                            setModalClosedTrigger={setModalClosedTrigger}
-                            id={item.id}
-                            item={item}
-                          />
-                          {item.isactive ? (
-                            <Button variant={""} onClick={() => deactive(item)}>
-                              Disable
-                            </Button>
-                          ) : (
-                            // <IconButton
-                            //   color={"red"}
-                            //   mt={"12px"}
-                            //   variant={""}
-                            //   icon={
-                            //     <RxCross1
-                            //       size={"sm"}
-                            //       onClick={() => deactive(item)}
-                            //     />
-                            //   }
-                            // />
-                            <Box>
-                              <Flex>
-                                <IconButton
-                                  color={"green"}
-                                  variant={""}
-                                  // mt={"10px"}
-                                  icon={
-                                    <FaCheck
-                                      // size={"sm"}
-                                      onClick={() => restore(item)}
-                                    />
-                                  }
-                                />
-                                <IconButton
-                                  // mt={"22px"}
-                                  color={"red"}
-                                  variant={""}
-                                  icon={
-                                    <FaTrashCan
-                                      onClick={() => handleDeleteProduct(item)}
-                                    />
-                                  }
-                                />
-                              </Flex>
-                            </Box>
-                          )}
-                        </Flex>
-                      </Td>
-                    </Tr>
-                  )
-                  // const active = item.isactive;
-                  // const newPrice = item.price - item.admin_discount;
-                )}
+                {itemsToMap.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>{item.Category?.name}</Td>
+                    <Td>{item.name}</Td>
+                    <Td>{item.price}</Td>
+                    <Td>{item.admin_discount}</Td>
+                    <Td>{item.weight} Kg</Td>
+                    <Td>
+                      <Flex>
+                        <ButtonChangeProductPicture
+                          item={item}
+                          setModalClosedTrigger={setModalClosedTrigger}
+                        />
+                        <ButtonViewProductPicture item={item} />
+                      </Flex>
+                    </Td>
+                    <Td textColor={item.isactive ? "black" : "red"}>
+                      {item.isactive ? "Enable" : "Disable"}
+                    </Td>
+                    <Td>
+                      <Flex>
+                        <ButtonEditProduct
+                          setModalClosedTrigger={setModalClosedTrigger}
+                          id={item.id}
+                          item={item}
+                        />
+                        {item.isactive ? (
+                          <Button variant={""} onClick={() => deactive(item)}>
+                            Disable
+                          </Button>
+                        ) : (
+                          <Box>
+                            <Flex>
+                              <IconButton
+                                color={"green"}
+                                variant={""}
+                                icon={<FaCheck onClick={() => restore(item)} />}
+                              />
+                              <IconButton
+                                color={"red"}
+                                variant={""}
+                                icon={
+                                  <FaTrashCan
+                                    onClick={() => handleDeleteProduct(item)}
+                                  />
+                                }
+                              />
+                            </Flex>
+                          </Box>
+                        )}
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
               </Tbody>
               <Tfoot></Tfoot>
             </Table>
@@ -337,6 +335,7 @@ const ProductManagement = () => {
               Next
             </Button>
           </Box>
+          <Box></Box>
         </Box>
       </Stack>
     </Box>
