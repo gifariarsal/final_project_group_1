@@ -17,21 +17,15 @@ const Footer = () => {
   }, []);
   return (
     <Box
-      py={{ base: "20px", lg: "32px" }}
-      px={{ base: "60px", lg: "100px" }}
+      py={{ base: "20px", md: "32px" }}
+      px={{ base: "28px", md: "56px", lg: "100px" }}
       w={"100%"}
       bg={"#fbfbfb"}
       borderTop={1}
       borderStyle={"solid"}
       borderColor={"#D7F0AA"}
     >
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        justifyContent={{ base: "center", md: "space-between" }}
-        alignItems={{ base: "center", md: "unset" }}
-        textAlign={{ base: "center", md: "unset" }}
-        wrap="wrap"
-      >
+      <Flex justifyContent={"space-between"} wrap="wrap" gap={4}>
         <Box mb={{ base: "20px", md: "0" }}>
           <Text fontWeight={500} mb={4}>
             Guide and Help
@@ -41,7 +35,7 @@ const Footer = () => {
               Store
             </Text>
           </Link>
-          <Link>
+          <Link to={"/frequently-asked-questions"} onClick={scrollToTop}>
             <Text mb={2} _hover={{ color: "#59981A" }}>
               FAQ
             </Text>

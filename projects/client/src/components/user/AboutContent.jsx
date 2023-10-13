@@ -12,7 +12,7 @@ const AboutContent = () => {
   return (
     <Box w={"full"} py={"16px"} px={{ base: "28px", md: "48px", lg: "100px" }}>
       <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight={"medium"}>
-        About
+        About Us
       </Text>
       <Box mt={4} mb={8}>
         <Center mb={4}>
@@ -78,7 +78,7 @@ const AboutContent = () => {
               ))}
           </Box>
         </Box>
-        <Box mt={8}>
+        <Box mt={12}>
           <Text
             fontSize={{ base: "xl", md: "2xl" }}
             fontWeight={"bold"}
@@ -122,7 +122,7 @@ const AboutContent = () => {
               ))}
           </Box>
         </Box>
-        <Box mt={8}>
+        <Box mt={12}>
           <Text
             fontSize={{ base: "xl", md: "2xl" }}
             fontWeight={"bold"}
