@@ -404,7 +404,7 @@ const adminController = {
           {
             model: Product,
             attributes: ["name", "product_img", "price", "admin_discount"],
-          },
+          }
         ],
         where : {...findProduct, ...where}
       })

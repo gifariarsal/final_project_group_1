@@ -20,7 +20,7 @@ import {
 import ButtonUpdateStock from "../../components/ButtonUpdateStock";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { FaCheck } from "react-icons/fa6";
 import { RiHistoryFill } from "react-icons/ri";
@@ -40,6 +40,8 @@ export default function StockManagement() {
   const [stock, setStock] = useState([]);
   const [modalClosedTrigger, setModalClosedTrigger] = useState(false);
   const [name, setName] = useState("");
+  const { branchAdmin } = useSelector((state) => state.AdminReducer);
+  console.log("INFO MASSE", branchAdmin);
   const dispatch = useDispatch();
   const getImage = (image) => {
     return `${PUBLIC_URL}/${image}`;
@@ -143,18 +145,16 @@ export default function StockManagement() {
                             {item.isactive ? (
                               <Flex>
                                 <Text>{item.Product?.name}</Text>
-                                {item.Product?.admin_discount > 0 ? (
+                                {item.Product?.admin_discount > 0 && (
                                   <Image
                                     src="https://cdn.icon-icons.com/icons2/1138/PNG/512/1486395314-13-discount_80575.png"
                                     w={"8%"}
                                     ml={5}
                                   />
-                                ) : (
-                                  ""
                                 )}
                               </Flex>
                             ) : (
-                              <Text>out of stock</Text>
+                              "out of stock"
                             )}
                           </Heading>
                           <Text fontWeight={"bold"}>
@@ -177,18 +177,12 @@ export default function StockManagement() {
                               ""
                             )}
                           </Flex>
-
                           <Text
                             fontSize="2xl"
                             color={item.isactive ? "green" : "gray.500"}
                             fontWeight={"bold"}
                           >
-                            {item.isactive ? (
-                              `Rp. ${newPrice}`
-                            ) : (
-                              <Text> - </Text>
-                            )}
-                            {/* Rp.{newPrice} */}
+                            {item.isactive ? `Rp. ${newPrice}` : "-"}
                           </Text>
                         </Stack>
                         <Box right={10} top={50} position={"absolute"}>
