@@ -46,16 +46,15 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts, s
               <StepIndicator>
                 <StepStatus complete={<StepIcon />} incomplete={<StepNumber />} active={<StepNumber />} />
               </StepIndicator>
-
-              <StepSeparator _horizontal={{ ml: "0" }} />
+              <StepSeparator _horizontal={{ base: { ml: "0" }, md: { ml: "5" } }} />
             </Step>
           ))}
         </Stepper>
-        <Flex justifyContent={"space-between"}>
+        <Flex justifyContent={"space-between"} flexDirection={{ base: "column", md: "row" }}>
           <Text>
             Step {activeStep + 1}: <b>{activeStepText}</b>
           </Text>
-          <Text>
+          <Text mt={{ base: "4", md: "0" }}>
             Next Step {activeStep + 2}: <b>{nextStep}</b>
           </Text>
         </Flex>
@@ -81,7 +80,6 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts, s
             <Box key={item.id}>
               <Flex justify={"space-between"}>
                 <Stack spacing="2">
-                  {console.log("inikah ?", item)}
                   <Text fontWeight={"bold"} fontSize={"20px"}>
                     {item.Product.name}
                   </Text>

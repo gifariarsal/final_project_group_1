@@ -83,19 +83,19 @@ const cartController = {
   removeFromCart: async (req, res) => {
     try {
       const { id } = req.user;
-      const { productId } = req.params;
+      const { productId, store_id } = req.params;
       console.log("id delete ", productId);
       const checkCart = await cart.findOne({ where: { user_id: id } });
       console.log("checkcart", checkCart);
       const checkProduct = await product.findOne({ where: { id: productId } });
       console.log("check product", checkProduct);
-      const checkItem = await items.findOne({ where: { product_id: checkProduct.id } });
+      const checkItem = await items.findOne({ where: { product_id: checkProduct.id, store_id } });
       console.log("check item", checkItem);
       const newPrice = checkItem.quantity * checkItem.price;
       const finalPrice = checkCart.total_price - newPrice;
       await db.sequelize.transaction(async (t) => {
         const result = await cart.update({ total_price: finalPrice }, { where: { user_id: id } });
-        const response = await items.destroy({ where: { product_id: productId } }, { transaction: t });
+        const response = await items.destroy({ where: { product_id: productId, store_id } }, { transaction: t });
       });
       return res.status(200).json({ message: "Success" });
     } catch (error) {

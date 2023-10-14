@@ -13,15 +13,20 @@ const UserOrder = () => {
   const handleSetDetail = async () => {
     await setDetail(false);
   };
-  
+
   return (
-    <Box>
+    <Box mb={{ base: "4", md: "8" }}>
       <Navbar />
-      <Text ml={"96px"} mt={"24px"} fontSize={"48px"} borderBottomColor={"red"} border={"10px"}>
+      <Text
+        ml={{ base: "24px", md: "96px" }}
+        mt={{ base: "12px", md: "24px" }}
+        fontSize={{ base: "24px", md: "48px" }}
+        borderBottomColor={"red"}
+        border={"10px"}>
         Order
       </Text>
-      <Stack align={"center"}>
-        <Tabs isFitted variant="enclosed" w={"50%"} isLazy>
+      <Stack align={"center"} mt={{ base: "4", md: "8" }}>
+        <Tabs isFitted variant="enclosed" w={{ base: "90%", md: "50%" }} isLazy>
           <TabList mb="1em">
             <Tab bg={"red"} color={"white"} onClick={handleSetDetail}>
               Ongoing Order
@@ -40,7 +45,7 @@ const UserOrder = () => {
           </TabPanels>
           {!detail && page > 1 && <Pagination page={page} index={index} setIndex={setIndex} />}
         </Tabs>
-      </Stack>{" "}
+      </Stack>
     </Box>
   );
 };

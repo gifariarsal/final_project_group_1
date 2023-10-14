@@ -115,9 +115,9 @@ function Address() {
           </Stack>
         </Box>
       </Box>
-      <AddAddressModal isOpen={isOpen} onClose={onClose} />
-      <DeleteAddressModal isOpen={isOpenDelete} onClose={onCloseDelete} address_id={addressToDeleteId} />
-      <EditAddressModal isOpen={isOpenEdit} onClose={onCloseEdit} address_id={addressToDeleteId} />
+      <AddAddressModal isOpen={isOpen} onClose={onClose} id={id} />
+      <DeleteAddressModal isOpen={isOpenDelete} onClose={onCloseDelete} address_id={addressToDeleteId} id={id} />
+      <EditAddressModal isOpen={isOpenEdit} onClose={onCloseEdit} address_id={addressToDeleteId} id={id} />
     </Box>
   );
 }

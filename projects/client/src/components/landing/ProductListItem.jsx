@@ -17,14 +17,15 @@ const ProductListItem = ({ product }) => {
   if (product.Product?.name) {
     return (
       <Box
-        align={"center"}
-        bg={"white"}
-        rounded={"3xl"}
-        w={"250px"}
-        h={"310px"}
-        boxShadow={"lg"}
+        align="center"
+        bg="white"
+        rounded="3xl"
+        w={{ base: "100%", md: "250px" }}
+        h="310"
+        p={2}
+        boxShadow={{ base: "lg", md: "xl" }}
         _hover={{
-          boxShadow: "2xl",
+          boxShadow: { base: "lg", md: "2xl" },
           cursor: "pointer",
         }}
         onClick={() => {
@@ -32,11 +33,11 @@ const ProductListItem = ({ product }) => {
         }}>
         <Image
           src={getImage(product.Product.product_img) || null}
-          w={"90%"}
-          h={"60%"}
-          alignContent={"center"}
-          fit={"cover"}
-          overflow={"hidden"}
+          w="100%"
+          h={{ base: "auto", sm: "50%" }}
+          alignContent="center"
+          fit="cover"
+          overflow="hidden"
           fallback={
             <Center>
               <Spinner />
@@ -44,7 +45,7 @@ const ProductListItem = ({ product }) => {
           }
           loading="lazy"
         />
-        <Box mt={8} textAlign={"left"} pl={4}>
+        <Box mt={{ base: 4, md: 8 }} textAlign="left" pl={{ base: 2, md: 4 }}>
           <Flex alignItems="center">
             <Badge borderRadius="full" px="2" colorScheme="green">
               {product.Product.Category.name}
@@ -57,7 +58,7 @@ const ProductListItem = ({ product }) => {
               />
             )}
           </Flex>
-          <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={1}>
+          <Box mt={1} fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={2}>
             {product.Product.name}
           </Box>
           {isDiscount && (
@@ -81,14 +82,15 @@ const ProductListItem = ({ product }) => {
 
   return (
     <Box
-      align={"center"}
-      bg={"white"}
-      rounded={"3xl"}
-      w={"250px"}
-      h={"310px"}
-      boxShadow={"lg"}
+      align="center"
+      bg="white"
+      rounded="3xl"
+      w={{ base: "100%", md: "250px" }}
+      h="310"
+      p={2}
+      boxShadow={{ base: "lg", md: "xl" }}
       _hover={{
-        boxShadow: "2xl",
+        boxShadow: { base: "lg", md: "2xl" },
         cursor: "pointer",
       }}
       onClick={() => {
@@ -96,11 +98,11 @@ const ProductListItem = ({ product }) => {
       }}>
       <Image
         src={getImage(product.product_img) || null}
-        w={"90%"}
-        h={"60%"}
-        alignContent={"center"}
-        fit={"cover"}
-        overflow={"hidden"}
+        w="100%"
+        h={{ base: "auto", sm: "50%" }}
+        alignContent="center"
+        fit="cover"
+        overflow="hidden"
         fallback={
           <Center>
             <Spinner />
@@ -108,7 +110,7 @@ const ProductListItem = ({ product }) => {
         }
         loading="lazy"
       />
-      <Box mt={8} textAlign={"left"} pl={4}>
+      <Box mt={{ base: 4, md: 8 }} textAlign="left" pl={{ base: 2, md: 4 }}>
         <Flex alignItems="center">
           <Badge borderRadius="full" px="2" colorScheme="green">
             {product.Category.name}
@@ -121,7 +123,7 @@ const ProductListItem = ({ product }) => {
             />
           )}
         </Flex>
-        <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={1}>
+        <Box mt={1} fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={2}>
           {product.name}
         </Box>
         {isDiscount && (

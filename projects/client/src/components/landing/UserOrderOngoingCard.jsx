@@ -66,8 +66,6 @@ const UserOrderOngoingCard = ({ item, setDetail, setTransactionDetail, setTransa
     getProduct();
   }, []);
 
-  console.log(products);
-
   return (
     <Flex
       w={"100%"}
@@ -97,7 +95,7 @@ const UserOrderOngoingCard = ({ item, setDetail, setTransactionDetail, setTransa
         {item.message && <Text>Message: {item.message}</Text>}
       </Box>
       <Box>
-        <Box >Total Price Detail</Box>
+        <Box>Total Price Detail</Box>
         {/* {products && (
           <Image
             src={products[0]?.Product.product_img}

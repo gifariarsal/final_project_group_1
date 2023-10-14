@@ -62,6 +62,7 @@ export const CartReducer = createSlice({
 });
 export const getItem = (store_id) => {
   return async (dispatch) => {
+    if (!store_id) return;
     const token = localStorage.getItem("token");
     try {
       const fetchData = await axios.get(`${URL_API}/cart/item/${store_id}`, {
@@ -171,7 +172,7 @@ export const deleteItemFromCart = (products) => {
     const productId = dataProduct.product_id || item;
     const token = localStorage.getItem("token");
     try {
-      const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}`, {
+      const result = await axios.delete(`${URL_API}/cart/item/delete/${productId}/${products.store_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

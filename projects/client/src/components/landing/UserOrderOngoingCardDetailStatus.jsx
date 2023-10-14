@@ -110,8 +110,8 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
 
   const handleConfirmPayment = async () => {
     const [file] = document.getElementById("upload-payment").files;
-    dispatch(uploadTransactionImage(id, file, toast));
-    dispatch(getTransaction({}));
+    await dispatch(uploadTransactionImage(id, file, toast));
+    await dispatch(getTransaction({}));
     await setDetail(false);
   };
 

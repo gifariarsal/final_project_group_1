@@ -38,6 +38,7 @@ import { FaShopify } from "react-icons/fa";
 import ProductReducer from "../../redux/reducer/ProductReducer";
 import axios from "axios";
 import OnGoingCart from "./OnGoingCart";
+import CartLogin from "./CartLogin";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 export default function Cart() {
@@ -134,16 +135,18 @@ export default function Cart() {
   };
 
   useEffect(() => {
-    dispatch(getItem(store_id));
-    // dapat();
-    dispatch(getCart());
+    if (login) {
+      dispatch(getItem(store_id));
+      dispatch(getCart());
+    }
   }, [store_id]);
-  // console.log("Item in useEffect:", item);
 
   useEffect(() => {
-    dapat();
+    if (login) {
+      dapat();
+    }
   }, [item]);
-  // console.log("CARTS => ", item);
+
   return (
     <>
       <Navbar />
@@ -162,7 +165,7 @@ export default function Cart() {
                     <Button
                       _hover={{ bg: "brand.hover", color: "white" }}
                       color={"black"}
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate("/shop")}
                       width={"800px"}
                       mt={"32px"}
                       variant={""}
@@ -184,9 +187,7 @@ export default function Cart() {
           </Stack>
         </Box>
       ) : (
-        <Box>
-          <Text>Please Login Fist</Text>
-        </Box>
+        <CartLogin />
       )}
     </>
   );
