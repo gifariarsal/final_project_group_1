@@ -1,9 +1,11 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Divider,
   Flex,
   Heading,
+  IconButton,
   Image,
   Text,
   Tooltip,
@@ -24,6 +26,8 @@ import {
   setChanges,
 } from "../redux/reducer/CartReducer";
 import Swal from "sweetalert2";
+import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import getImage from "../utils/getImage";
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 
@@ -33,12 +37,14 @@ const ProductDetail = () => {
   const [product, setProduct] = useState([]);
   const [stock, setStock] = useState([]);
   const [sold, setSold] = useState([]);
+  const [jumlah, setJumlah] = useState(1);
   const [branchProduct, setBranchProduct] = useState([]);
   const [isDiscount, setIsDiscount] = useState(false);
   const pathname = window.location.pathname.split("/");
   const id = pathname[pathname.length - 1];
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log("kjumlah", jumlah);
 
   const getProductStock = async (id) => {
     try {
@@ -53,7 +59,9 @@ const ProductDetail = () => {
       const response = await axios.get(
         `${URL_API}/product/item/detail/${id}/${store_id}`
       );
+      console.log("HAHA", response);
       setBranchProduct(response.data.ProductBranch);
+      console.log("APAKAH INI ? ", response.data.Item);
       setSold(response.data.Item);
     } catch (error) {
       console.log(error);
@@ -75,9 +83,11 @@ const ProductDetail = () => {
       console.log(error);
     }
   };
+
+  console.log("ADA STORe", store_id);
   const inCart = async (products, store_id) => {
-    await dispatch(addToCart(products));
-    await dispatch(addCart(products, store_id, Swal));
+    await dispatch(addToCart(products, jumlah));
+    await dispatch(addCart(products, store_id, jumlah, Swal));
     await dispatch(getItem(store_id));
     await getItemDetails(product.id);
   };
@@ -86,6 +96,15 @@ const ProductDetail = () => {
     getProductDetail();
   }, [store_id, id]);
 
+  const incrementQuantity = () => {
+    setJumlah(jumlah + 1);
+  };
+
+  const decrementQuantity = () => {
+    if (jumlah > 1) {
+      setJumlah(jumlah - 1);
+    }
+  };
   if (!product) return <Notfound />;
 
   return (
@@ -102,7 +121,7 @@ const ProductDetail = () => {
       <Box>
         <Flex gap={{ base: 4, md: 8 }}>
           <Image
-            src="https://cdn10.bigcommerce.com/s-f70ch/products/106/images/307/18__31743.1449827934.1280.1280.jpg?c=2"
+            src={getImage(product.product_img)}
             w={"45%"}
             boxShadow={"2xl"}
           />
@@ -150,7 +169,67 @@ const ProductDetail = () => {
                     bg={"brand.main"}
                     aria-label="A tooltip"
                   >
-                    <Button
+                    <Box>
+                      <Flex
+                        mt={3}
+                        border={"1px"}
+                        w={"110px"}
+                        borderRadius={"30px"}
+                        borderColor={"gainsboro"}
+                      >
+                        <ButtonGroup>
+                          <IconButton
+                            variant={"ghost"}
+                            _hover={{
+                              bgColor: "red",
+                              color: "white",
+                            }}
+                            rounded={"full"}
+                            disabled={jumlah <= 1}
+                            icon={<AiOutlineMinus />}
+                            onClick={decrementQuantity}
+                          ></IconButton>
+                          <Text fontWeight={"bold"} fontSize={"24px"}>
+                            {jumlah}
+                          </Text>
+                          <IconButton
+                            icon={<AiOutlinePlus />}
+                            rounded={"full"}
+                            variant={"ghost"}
+                            _hover={{
+                              bgColor: "brand.hover",
+                              color: "white",
+                            }}
+                            isDisabled={
+                              jumlah === branchProduct?.quantity ||
+                              jumlah ===
+                                branchProduct?.quantity - sold?.quantity ||
+                              (sold?.quantity ?? 0) === branchProduct?.quantity
+                            }
+                            // isDisabled={quantity >= 20}
+                            onClick={incrementQuantity}
+                          ></IconButton>
+                        </ButtonGroup>
+                      </Flex>
+                      <Button
+                        mt={5}
+                        variant={"outline"}
+                        colorScheme="teal"
+                        leftIcon={<HiOutlineShoppingCart />}
+                        onClick={() => inCart(product, store_id, jumlah)}
+                        isDisabled={
+                          login === false ||
+                          (sold?.quantity ?? 0) ===
+                            (branchProduct?.quantity ?? 0)
+                        }
+                      >
+                        {(sold?.quantity ?? 0) ===
+                        (branchProduct?.quantity ?? 0)
+                          ? "Out of Stock"
+                          : `Add ${jumlah} to Cart`}
+                      </Button>
+                    </Box>
+                    {/* <Button
                       variant={"outline"}
                       colorScheme="teal"
                       leftIcon={<HiOutlineShoppingCart />}
@@ -163,7 +242,7 @@ const ProductDetail = () => {
                       {(sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
                         ? "Out of Stock"
                         : "Add Cart"}
-                    </Button>
+                    </Button> */}
                   </Tooltip>
                 ) : (
                   <Tooltip
