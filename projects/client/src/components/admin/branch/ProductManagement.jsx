@@ -171,11 +171,12 @@ const ProductManagement = () => {
               value={categories}
               onChange={(e) => setCategory(e.target.value)}
             >
-              {category.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+              {category &&
+                category.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
             </Select>
             <InputGroup ml={{ base: "12px", lg: "48px" }}>
               <InputLeftElement>
@@ -222,7 +223,7 @@ const ProductManagement = () => {
                     <Td>{item.name}</Td>
                     <Td>{item.price}</Td>
                     <Td>{item.admin_discount}</Td>
-                    <Td>{item.weight} Kg</Td>
+                    <Td>{item.weight} g</Td>
                     <Td>
                       <Flex>
                         <ButtonChangeProductPicture

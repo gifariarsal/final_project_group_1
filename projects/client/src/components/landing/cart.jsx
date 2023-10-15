@@ -146,7 +146,6 @@ export default function Cart() {
 
   useEffect(() => {
     dispatch(getItem(store_id));
-    // dapat();
     dispatch(getCart());
   }, [store_id]);
   console.log("Item in useEffect:", item);

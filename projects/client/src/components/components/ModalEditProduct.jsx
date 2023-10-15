@@ -86,6 +86,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
               <Box>
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.newName && formik.errors.newName}
                   >
                     <FormLabel>Name</FormLabel>
@@ -106,6 +107,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={
                       formik.touched.categoryId && formik.errors.categoryId
                     }
@@ -117,13 +119,14 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                       id="categoryId"
                       name="categoryId"
                     >
-                      {category.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
+                      {category &&
+                        category.map((item) => {
+                          return (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
                     </Select>
                     {formik.touched.categoryId && formik.errors.categoryId && (
                       <FormErrorMessage>
@@ -132,6 +135,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                     )}
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.price && formik.errors.price}
                   >
                     <FormLabel mt={5}>Price</FormLabel>
@@ -176,6 +180,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={
                       formik.touched.description && formik.errors.description
                     }
@@ -199,6 +204,7 @@ export default function ModalEditProduct({ isOpen, onClose, id, item }) {
                     </Center>
                   </FormControl>
                   <FormControl
+                    isRequired
                     isInvalid={formik.touched.weight && formik.errors.weight}
                   >
                     <FormLabel mt={5}>Weight</FormLabel>
