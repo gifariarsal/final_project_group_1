@@ -49,11 +49,7 @@ const BranchUserOrderList = () => {
   const dispatch = useDispatch();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenReject,
-    onOpen: onOpenReject,
-    onClose: onCloseReject,
-  } = useDisclosure();
+  const { isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject } = useDisclosure();
   const { page } = useSelector((state) => state.UserOrderReducer);
   const { branchUserOrder } = useSelector((state) => state.UserOrderReducer);
   const [orderId, setOrderId] = useState(null);
@@ -413,16 +409,7 @@ const BranchUserOrderList = () => {
           <OrderPagination page={page} index={index} setIndex={setIndex} />
         )}
         <UserOrderDetail isOpen={isOpen} onClose={onClose} orderId={orderId} />
-        <RejectPaymentMessage
-          isOpen={isOpenReject}
-          onClose={onCloseReject}
-          id={orderId}
-          index={index}
-          startDate={startDate}
-          endDate={endDate}
-          orderBy={orderBy}
-          order={order}
-        />
+        <RejectPaymentMessage isOpen={isOpenReject} onClose={onCloseReject} id={orderId} index={index} startDate={startDate} endDate={endDate} orderBy={orderBy} order={order} />
       </Box>
     </>
   );
