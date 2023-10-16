@@ -48,7 +48,7 @@ const ProductList = () => {
       <Box w="100%" py="40px" px={{ base: "20px", md: "60px", lg: "100px" }}>
         <Stack spacing={4}>
           <Heading as="h2" mx={"auto"} textAlign={"center"}>
-            {store ? store : "Produk Terbaru Kami"}
+            {store ? store : "Our Most Recent Product"}
           </Heading>
           <Flex gap={2} justify="space-between">
             <SearchProducts />
@@ -81,7 +81,7 @@ const ProductList = () => {
     <Box w="100%" py="40px" px={{ base: "20px", md: "60px", lg: "100px" }}>
       <Stack spacing={6} mb={10}>
         <Heading as="h2" textAlign="center">
-          {store ? store : "Produk Terbaru Kami"}
+          {store ? store : "Our Recent Product"}
         </Heading>
         {store && (
           <Flex direction={{ base: "column", md: "row" }} gap={2} justify="space-between" mx="auto" w="100%">

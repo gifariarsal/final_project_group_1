@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
+import Logo from "../../assets/logo_main.png";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import Transactions from "./Transactions";
@@ -33,7 +34,7 @@ import {
   getCart,
   getItem,
 } from "../../redux/reducer/CartReducer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaShopify } from "react-icons/fa";
 import ProductReducer from "../../redux/reducer/ProductReducer";
 import axios from "axios";
@@ -153,7 +154,13 @@ export default function Cart() {
       {login ? (
         <Box fontFamily={"montserrat"}>
           <Stack>
-            <Box ml={"100px"} mt={"48px"} fontSize={"2xl"} fontWeight={"bold"} fontFamily={"montserrat"}>
+            <Box
+              ml={{ base: "30px", lg: "100px" }}
+              mt={"48px"}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+              fontFamily={"montserrat"}
+            >
               <Text>Cart</Text>
             </Box>
             <Divider colorScheme="blackAlpha"></Divider>

@@ -7,6 +7,7 @@ const URL_API = process.env.REACT_APP_API_BASE_URL;
 const initialState = {
   address: [],
   userAddress: [],
+  initialAddress: null,
   defaultAddress: null,
 };
 
@@ -19,6 +20,9 @@ export const AddressReducer = createSlice({
     },
     setUserAddress: (state, action) => {
       state.userAddress = [...action.payload];
+    },
+    setInitialAddress: (state, action) => {
+      state.initialAddress = action.payload;
     },
     setDefaultAddress: (state, action) => {
       state.defaultAddress = action.payload;
@@ -69,6 +73,17 @@ export const getAddress = (id) => {
   };
 };
 
+export const getAddressById = (id) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_API}/address/initial/${id}`);
+      await dispatch(setInitialAddress(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const deleteAddress = (address_id, toast) => {
   return async () => {
     try {
@@ -92,7 +107,7 @@ export const deleteAddress = (address_id, toast) => {
   };
 };
 
-export const editAddress = (address_id, id, fullAddress, latitude, longitude, toast, onClose) => {
+export const editAddress = (address_id, id, fullAddress, latitude, longitude, toast, onClose, resetFormValues) => {
   return async () => {
     try {
       await axios.patch(`${URL_API}/address/${address_id}`, {
@@ -109,6 +124,7 @@ export const editAddress = (address_id, id, fullAddress, latitude, longitude, to
         isClosable: true,
       });
       onClose();
+      resetFormValues();
     } catch (error) {
       toast({
         title: "Failed",
@@ -180,6 +196,6 @@ export const getDefaultAddress = () => {
   };
 };
 
-export const { setAddress, setUserAddress, setDefaultAddress } = AddressReducer.actions;
+export const { setAddress, setInitialAddress, setUserAddress, setDefaultAddress } = AddressReducer.actions;
 
 export default AddressReducer.reducer;

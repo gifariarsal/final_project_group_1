@@ -32,6 +32,7 @@ import { logoutAuth } from "../../redux/reducer/AuthReducer";
 import getImage from "../../utils/getImage";
 import NavMenu from "./NavMenu";
 import { HiMenu } from "react-icons/hi";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { item, cart } = useSelector((state) => state.CartReducer);
@@ -47,9 +48,21 @@ const Navbar = () => {
   const [isMobile] = useMediaQuery("(max-width: 768px)");
 
   const { user } = useSelector((state) => state.AuthReducer);
-  function onKlik() {
-    dispatch(logoutAuth(toast));
-  }
+  const onKlik = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Thanks for shopping with us!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!",
+    });
+    if (result.isConfirmed) {
+      dispatch(logoutAuth(toast));
+      Swal.fire("See you!", "We will miss you.", "success");
+    }
+  };
 
   useEffect(() => {
     if (login) dispatch(getItem(store_id));
@@ -59,7 +72,7 @@ const Navbar = () => {
     <header>
       <Box
         py={"16px"}
-        px={{ base: "28px", md: "56px", lg: "100px" }}
+        px={{ base: "28px", md: "48px", lg: "100px" }}
         display={"flex"}
         justifyContent={"space-between"}
         alignItems={"center"}
@@ -79,7 +92,12 @@ const Navbar = () => {
             {isMobile ? (
               <Popover>
                 <PopoverTrigger>
-                  <IconButton color={"brand.main"} bg={"white"} rounded={"full"} icon={<HiMenu size={24} />} />
+                  <IconButton
+                    color={"brand.main"}
+                    bg={"white"}
+                    rounded={"full"}
+                    icon={<HiMenu size={24} />}
+                  />
                 </PopoverTrigger>
                 <PopoverContent>
                   <PopoverBody>
@@ -117,7 +135,7 @@ const Navbar = () => {
                 </Box>
               </Flex>
             </Link>
-            <Flex alignItems={"center"} ml={4}>
+            <Flex alignItems={"center"} ml={{ base: 2, md: 4}}>
               {login ? (
                 <Menu>
                   <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
