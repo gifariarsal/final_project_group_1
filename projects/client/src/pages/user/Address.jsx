@@ -6,9 +6,7 @@ import {
   useDisclosure,
   Stack,
   IconButton,
-  Flex,
   useToast,
-  Divider,
 } from "@chakra-ui/react";
 import Navbar from "../../components/landing/Navbar";
 import AddAddressModal from "../../components/user/AddAddressModal";
@@ -45,9 +43,9 @@ function Address() {
   const toast = useToast();
 
   const { user } = useSelector((state) => state.AuthReducer);
+  const { initialAddress } = useSelector((state) => state.AddressReducer);
 
   const id = user.id;
-  const { initialAddress } = useSelector((state) => state.AddressReducer)
 
   useEffect(() => {
     if (addressToDeleteId) {
