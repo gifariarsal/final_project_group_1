@@ -94,6 +94,10 @@ const UserOrderFinishedCardDetails = ({ transactionDetail, transactionProducts }
             </Box>
           ))}
         <Box width={"100%"}>
+          <Text>
+            Send to: "<b>{transactionDetail.address}</b>"
+          </Text>
+
           <Box py="40px">{RenderStatus()}</Box>
         </Box>
       </CardBody>

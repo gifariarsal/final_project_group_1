@@ -68,6 +68,8 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts, s
     );
   };
 
+  console.log(transactionDetail);
+
   return (
     <Card>
       <CardHeader fontSize={"25px"} borderBottomColor={"red"}>
@@ -101,7 +103,9 @@ const UserOrderOngoingCardDetails = ({ transactionDetail, transactionProducts, s
           ))}
         <Box width={"100%"}>
           <Text fontSize={"25px"}>Track Order</Text>
-
+          <Text>
+            Send to: "<b>{transactionDetail.address}</b>"
+          </Text>
           <Box py="40px">{RenderStatus()}</Box>
         </Box>
       </CardBody>

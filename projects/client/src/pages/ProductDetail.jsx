@@ -79,7 +79,6 @@ const ProductDetail = () => {
 
   return (
     <Box width={{ base: "90%", md: "50%" }} mx="auto" mt={4} p={4}>
-      <UserLocation />
       <Box mb={4}>
         <Link to={"/"}>Home</Link>
         {" > "}
