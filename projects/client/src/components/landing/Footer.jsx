@@ -18,7 +18,7 @@ const Footer = () => {
   return (
     <Box
       py={{ base: "20px", md: "32px" }}
-      px={{ base: "28px", md: "56px", lg: "100px" }}
+      px={{ base: "28px", md: "48px", lg: "100px" }}
       w={"100%"}
       bg={"#fbfbfb"}
       borderTop={1}

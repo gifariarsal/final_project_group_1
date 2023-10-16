@@ -62,6 +62,7 @@ const AboutContent = () => {
                   rounded={"xl"}
                   flexWrap={"wrap"}
                   w={{ base: "100%", md: "300px" }}
+                  borderWidth={"1px"}
                   gap={2}
                   px={4}
                   py={8}
@@ -106,6 +107,7 @@ const AboutContent = () => {
                   rounded={"xl"}
                   flexWrap={"wrap"}
                   w={{ base: "100%", md: "300px" }}
+                  borderWidth={"1px"}
                   gap={2}
                   px={4}
                   py={8}

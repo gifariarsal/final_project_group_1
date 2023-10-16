@@ -24,6 +24,7 @@ const StoreLocation = () => {
                 display={"flex"}
                 alignItems={"center"}
                 rounded={"xl"}
+                borderWidth={"1px"}
                 gap={8}
                 px={4}
                 py={8}
