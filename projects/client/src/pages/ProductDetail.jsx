@@ -237,8 +237,7 @@ const ProductDetail = () => {
                       isDisabled={
                         login === false ||
                         (sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
-                      }
-                    >
+                      }>
                       {(sold?.quantity ?? 0) === (branchProduct?.quantity ?? 0)
                         ? "Out of Stock"
                         : "Add Cart"}

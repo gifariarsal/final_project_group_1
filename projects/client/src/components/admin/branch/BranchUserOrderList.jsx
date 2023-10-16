@@ -397,20 +397,6 @@ const BranchUserOrderList = () => {
                             </Box>
                           </MenuList>
                         </Menu>
-                        {/* <Button
-                          variant={""}
-                          _hover={{ bg: "red", color: "white" }}
-                          onClick={() => handleCancel(order)}
-                        >
-                          Cancel
-                        </Button>
-                        <IconButton
-                          onClick={() => buttonSend(order)}
-                          variant={""}
-                          borderRadius={"30px"}
-                          _hover={{ bg: "brand.hover", color: "white" }}
-                          icon={<BsFillSendCheckFill />}
-                        /> */}
                       </Box>
                     )}
                     {order.status >= 3 && (
