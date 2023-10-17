@@ -67,8 +67,11 @@ const AddVoucher = ({ isOpen, onClose }) => {
       "Either Nominal or percent is required",
       function (value) {
         const { percent } = this.parent;
-        if (!value && !percent) {
-          return false;
+        if ((!value && !percent) || (value <= 0 && percent <= 0)) {
+          return this.createError({
+            message: "Either nominal or percent must have a value",
+            path: "nominal",
+          });
         }
         return true;
       }
@@ -78,8 +81,11 @@ const AddVoucher = ({ isOpen, onClose }) => {
       "Either Nominal or percent is required",
       function (value) {
         const { nominal } = this.parent;
-        if (!value && !nominal) {
-          return false;
+        if ((!value && !nominal) || (value <= 0 && nominal <= 0)) {
+          return this.createError({
+            message: "Either nominal or percent must have a value",
+            path: "percent",
+          });
         }
         return true;
       }
