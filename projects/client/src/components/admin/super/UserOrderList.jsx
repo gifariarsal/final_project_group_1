@@ -248,16 +248,8 @@ const UserOrderList = () => {
                   {isLargerThan768 && <Td>{order.name}</Td>}
                   <Td>{dateFormatter(order.createdAt)}</Td>
                   {isLargerThan768 && (
-                    <Td>
-                      <Badge
-                        bg={orderStatus[order.status].color}
-                        color={"white"}
-                        rounded={"full"}
-                        px={2}
-                        py={1}
-                      >
-                        {orderStatus[order?.status]?.status}
-                      </Badge>
+                    <Td color={orderStatus[order.status].color}>
+                      {orderStatus[order?.status]?.status}
                     </Td>
                   )}
                   <Td>
