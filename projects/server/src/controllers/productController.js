@@ -2,12 +2,20 @@ const { Sequelize } = require("sequelize");
 const db = require("../../models");
 const { check } = require("express-validator");
 const { Product, Category, Store, ProductStore } = db;
-const cartItem = db.Cartitem
+const cartItem = db.Cartitem;
 const fs = require("fs").promises;
 const path = require("path");
 
-let includeStore = [{ model: Store, attributes: { exclude: ["createdAt", "updatedAt"] }, where: { isactive: true } }];
-const includeCategory = [{ model: Category, attributes: { exclude: ["createdAt", "updatedAt"] } }];
+let includeStore = [
+  {
+    model: Store,
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { isactive: true },
+  },
+];
+const includeCategory = [
+  { model: Category, attributes: { exclude: ["createdAt", "updatedAt"] } },
+];
 const includeProduct = [
   {
     model: Product,
@@ -25,7 +33,13 @@ const setPagination = (limit, page) => {
 const productController = {
   getProduct: async (req, res) => {
     try {
-      const { page = 1, limit = 8, order = "ASC", orderBy = "name", category = "" } = req.query;
+      const {
+        page = 1,
+        limit = 8,
+        order = "ASC",
+        orderBy = "name",
+        category = "",
+      } = req.query;
 
       const where = { isactive: true };
       if (category) where.category_id = category;
@@ -48,11 +62,14 @@ const productController = {
   },
   getProductStore: async (req, res) => {
     try {
-      const { store_id, page = 1, limit = 8, order = "ASC", orderBy = "name", category = "" } = req.query;
-
-      const pagination = setPagination(limit, page);
-      const totalProduct = await ProductStore.count({ where: { store_id } });
-      const totalPage = Math.ceil(totalProduct / +limit);
+      const {
+        store_id,
+        page = 1,
+        limit = 9,
+        order = "ASC",
+        orderBy = "name",
+        category = "",
+      } = req.query;
 
       const includeProduct = [
         {
@@ -62,6 +79,12 @@ const productController = {
           include: includeCategory,
         },
       ];
+      const pagination = setPagination(limit, page);
+      const totalProduct = await ProductStore.count({
+        where: { store_id, isactive: true },
+        include: includeProduct,
+      });
+      const totalPage = Math.ceil(totalProduct / +limit);
 
       if (category) includeProduct[0].where.category_id = category;
 
@@ -195,11 +218,14 @@ const productController = {
   },
   createProduct: async (req, res) => {
     try {
-      const { name, category_id, price, admin_discount, description,weight } = req.body;
+      const { name, category_id, price, admin_discount, description, weight } =
+        req.body;
       if (!req.file) {
         return res.status(400).json({ message: "Product image is required" });
       }
-      const productExist = await Product.findOne({ where: { name, isactive: true } });
+      const productExist = await Product.findOne({
+        where: { name, isactive: true },
+      });
 
       if (productExist) {
         return res.status(400).json({ message: "Product already exists" });
@@ -214,7 +240,7 @@ const productController = {
             product_img: req.file.path,
             isactive: true,
             description,
-            weight
+            weight,
           },
           { transaction: t }
         );
@@ -223,20 +249,23 @@ const productController = {
       return res.status(200).json({ message: "Product added" });
     } catch (error) {
       console.error("Error creating product:", error);
-      return res.status(500).json({ message: "Failed to create product", error: error.message });
+      return res
+        .status(500)
+        .json({ message: "Failed to create product", error: error.message });
     }
   },
   updateProduct: async (req, res) => {
     try {
       const { id } = req.params;
-      let { newName, category_id, price, admin_discount, description, weight } = req.body;
+      let { newName, category_id, price, admin_discount, description, weight } =
+        req.body;
       const findProduct = await Product.findOne({ where: { id } });
       console.log("update", findProduct);
-      console.log("nama baru", newName)
+      console.log("nama baru", newName);
       if (newName === findProduct.name) {
         return res.status(500).json({ message: "Product name already exist" });
       }
-      console.log("id", id)
+      console.log("id", id);
       await db.sequelize.transaction(async (t) => {
         await Product.update(
           {
@@ -256,25 +285,32 @@ const productController = {
       return res.status(500).json({ message: "Failed", error: error.message });
     }
   },
-  changeProductPicture : async(req, res) => {
+  changeProductPicture: async (req, res) => {
     try {
-      const {id} = req.params
-      const oldPicture = await Product.findOne({where : {id}})
-      console.log("dapat ", oldPicture)
-      if(oldPicture.product_img){
-        console.log("ada")
-        fs.unlink(path.resolve(__dirname, `../../${oldPicture.product_img}`), (err) => {
-                return res.status(500).json({ message: err.message });
-        });
+      const { id } = req.params;
+      const oldPicture = await Product.findOne({ where: { id } });
+      console.log("dapat ", oldPicture);
+      if (oldPicture.product_img) {
+        console.log("ada");
+        fs.unlink(
+          path.resolve(__dirname, `../../${oldPicture.product_img}`),
+          (err) => {
+            return res.status(500).json({ message: err.message });
+          }
+        );
       }
       await db.sequelize.transaction(async (t) => {
-        await Product.update({
-          product_img : req.file.path
-        }, {where : {id}}, {transaction : t})
-      })
-      return res.status(200).json({message : "Product's Picture Change"})
+        await Product.update(
+          {
+            product_img: req.file.path,
+          },
+          { where: { id } },
+          { transaction: t }
+        );
+      });
+      return res.status(200).json({ message: "Product's Picture Change" });
     } catch (error) {
-      return res.status(500).json({message : error.message})
+      return res.status(500).json({ message: error.message });
     }
   },
   deleteProduct: async (req, res) => {
@@ -315,21 +351,28 @@ const productController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  getItemDetail : async(req, res) => {
+  getItemDetail: async (req, res) => {
     try {
-      const {id, store_id} = req.params
-      const cekItem = await cartItem.findOne({where : {product_id : id, store_id}})
-      console.log("adaa", cekItem)
-      const cekProduct = await ProductStore.findOne({where : {product_id : id, store_id}})
-      console.log("cek ", cekProduct)
-      return res.status(200).json({message : "Successsss", Item : cekItem, ProductBranch : cekProduct})
+      const { id, store_id } = req.params;
+      const cekItem = await cartItem.findOne({
+        where: { product_id: id, store_id },
+      });
+      console.log("adaa", cekItem);
+      const cekProduct = await ProductStore.findOne({
+        where: { product_id: id, store_id },
+      });
+      console.log("cek ", cekProduct);
+      return res
+        .status(200)
+        .json({
+          message: "Successsss",
+          Item: cekItem,
+          ProductBranch: cekProduct,
+        });
     } catch (error) {
-      return res.status(500).json({message : error.message})
+      return res.status(500).json({ message: error.message });
     }
   },
-
-
-
 };
 
 module.exports = productController;

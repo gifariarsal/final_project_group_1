@@ -95,8 +95,8 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
     });
     if (result.isConfirmed) {
       await dispatch(userCancel(item));
-      // await dispatch(branchUserCancel(item));
       Swal.fire("Cancel!", "The product has been canceled.", "success");
+      setDetail(false);
     }
   };
 
@@ -117,20 +117,31 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
 
   if (status === 0) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" mt={10} gap={3}>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        mt={10}
+        gap={3}
+      >
         <Icon as={AiOutlineClockCircle} boxSize={12} color="gray.500" />
         <Text fontSize="xl" fontWeight="bold" mt={4}>
           Waiting for Payment
         </Text>
         <Text color="gray.600" mt={2}>
-          Please complete your payment to continue, and upload the Payment information
+          Please complete your payment to continue, and upload the Payment
+          information
+        </Text>
+        <Text color="gray.600" mt={2}>
+          Send the payment to Rek: *-* / BCA CC: Grocer_Easy Team
         </Text>
         <Button
           variant="outline"
           colorScheme="teal"
           mt={4}
           leftIcon={<Icon as={AiOutlineCloudUpload} />}
-          onClick={() => fileInputRef.current.click()}>
+          onClick={() => fileInputRef.current.click()}
+        >
           Upload
         </Button>
         {imgURL && (
@@ -140,7 +151,8 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
               src={imgURL}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              p={2}>
+              p={2}
+            >
               {isHovered && (
                 <AvatarBadge
                   onClick={handleDeleteUpload}
@@ -157,11 +169,21 @@ const UserOrderOngoingCardDetailOrder = ({ status, id, setDetail, transactionPro
         )}
         <Flex mt={4} gap={2}>
           {imgURL && (
-            <Button variant="solid" colorScheme="teal" onClick={handleConfirmPayment}>
+            <Button
+              variant="solid"
+              colorScheme="teal"
+              onClick={handleConfirmPayment}
+            >
               Confirm Payment
             </Button>
           )}
-          <Input type="file" display="none" ref={fileInputRef} id="upload-payment" onChange={handleUpload} />
+          <Input
+            type="file"
+            display="none"
+            ref={fileInputRef}
+            id="upload-payment"
+            onChange={handleUpload}
+          />
           <Button colorScheme="red" onClick={() => handleCancel(id)}>
             Cancel
           </Button>
