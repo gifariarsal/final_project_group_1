@@ -160,14 +160,13 @@ export default function Cart() {
     <>
       <Navbar />
       {login ? (
-        <Box fontFamily={"montserrat"}>
+        <Box>
           <Stack>
             <Box
               ml={{ base: "50px", lg: "100px" }}
               mt={"48px"}
               fontSize={"2xl"}
               fontWeight={"bold"}
-              fontFamily={"montserrat"}
             >
               <Text>Cart</Text>
             </Box>
