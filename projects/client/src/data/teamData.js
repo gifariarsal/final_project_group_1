@@ -1,4 +1,5 @@
 import Afdal from "../assets/dev/dev_afdal.png";
+import Jason from "../assets/dev/dev_jason.png";
 import Gifari from "../assets/dev/dev_gifari.png";
 
 const TeamData = [
@@ -10,7 +11,7 @@ const TeamData = [
     {
         name: 'Jason',
         role: 'Full Stack Developer',
-        image: 'https://via.placeholder.com/150',
+        image: Jason,
     },
     {
         name: 'Muhammad Gifari Arsal',

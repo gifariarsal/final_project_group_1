@@ -245,7 +245,7 @@ const transactionController = {
         const newVoucher = await Voucherdetail.create({
           name: "Shop More, Save More",
           description: "Special discount after spending more than Rp.100.000",
-          nominal: 5000,
+          nominal: 20000,
           percent: null,
           type: "discount",
           expired: sevenDaysFromNow,
