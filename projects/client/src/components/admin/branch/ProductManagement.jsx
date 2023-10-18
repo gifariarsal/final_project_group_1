@@ -94,7 +94,15 @@ const ProductManagement = () => {
       fetchData();
       setModalClosedTrigger(false);
     }
-  }, [page, order, orderBy, orderByPrice, categories, modalClosedTrigger, name]);
+  }, [
+    page,
+    order,
+    orderBy,
+    orderByPrice,
+    categories,
+    modalClosedTrigger,
+    name,
+  ]);
 
   const handleSearch = () => {
     const name = document.getElementById("search").value;
@@ -143,12 +151,17 @@ const ProductManagement = () => {
           <Text
             ml={{ base: "24px", lg: "48px" }}
             mt={{ base: "8px", lg: "24px" }}
-            fontSize={{ sm: "24px", md: "32px", lg: "48px" }}>
+            fontSize={{ sm: "24px", md: "32px", lg: "48px" }}
+          >
             Product Management
           </Text>
           <ButtonAddProduct setModalClosedTrigger={setModalClosedTrigger} />
           <Flex justify={"space-around"} ml={{ base: "12px", lg: "48px" }}>
-            <Select placeholder="Sort By" value={order} onChange={(e) => setOrder(e.target.value)}>
+            <Select
+              placeholder="Sort By"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+            >
               <option value={"ASC"}>A-Z / (Low Price) - (High Price)</option>
               <option value={"DESC"}>Z-A / (High Price) - (Low Price)</option>
             </Select>
@@ -156,7 +169,8 @@ const ProductManagement = () => {
               ml={{ base: "12px", lg: "48px" }}
               placeholder="All Category"
               value={categories}
-              onChange={(e) => setCategory(e.target.value)}>
+              onChange={(e) => setCategory(e.target.value)}
+            >
               {category &&
                 category.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -181,7 +195,8 @@ const ProductManagement = () => {
             ml={{ base: "12px", lg: "48px" }}
             variant={"ghost"}
             _hover={{ bg: "brand.hover", color: "white" }}
-            onClick={() => handleOrderByPrice()}>
+            onClick={() => handleOrderByPrice()}
+          >
             {sortLabelText}
           </Button>
 
@@ -211,14 +226,23 @@ const ProductManagement = () => {
                     <Td>{item.weight} g</Td>
                     <Td>
                       <Flex>
-                        <ButtonChangeProductPicture item={item} setModalClosedTrigger={setModalClosedTrigger} />
+                        <ButtonChangeProductPicture
+                          item={item}
+                          setModalClosedTrigger={setModalClosedTrigger}
+                        />
                         <ButtonViewProductPicture item={item} />
                       </Flex>
                     </Td>
-                    <Td textColor={item.isactive ? "black" : "red"}>{item.isactive ? "Enable" : "Disable"}</Td>
+                    <Td textColor={item.isactive ? "black" : "red"}>
+                      {item.isactive ? "Enable" : "Disable"}
+                    </Td>
                     <Td>
                       <Flex>
-                        <ButtonEditProduct setModalClosedTrigger={setModalClosedTrigger} id={item.id} item={item} />
+                        <ButtonEditProduct
+                          setModalClosedTrigger={setModalClosedTrigger}
+                          id={item.id}
+                          item={item}
+                        />
                         {item.isactive ? (
                           <Button variant={""} onClick={() => deactive(item)}>
                             Disable
@@ -234,7 +258,11 @@ const ProductManagement = () => {
                               <IconButton
                                 color={"red"}
                                 variant={""}
-                                icon={<FaTrashCan onClick={() => handleDeleteProduct(item)} />}
+                                icon={
+                                  <FaTrashCan
+                                    onClick={() => handleDeleteProduct(item)}
+                                  />
+                                }
                               />
                             </Flex>
                           </Box>
@@ -252,7 +280,8 @@ const ProductManagement = () => {
               variant={"ghost"}
               _hover={{ bg: "brand.hover", color: "white" }}
               onClick={() => handlePrev()}
-              isDisabled={page === 1}>
+              isDisabled={page === 1}
+            >
               Previous
             </Button>
             {pageNumbers.map((pageNumber) => (
@@ -264,7 +293,8 @@ const ProductManagement = () => {
                 onClick={() => setPage(pageNumber)}
                 isActive={page === pageNumber}
                 bgColor={page === pageNumber ? "red" : "brand.main"}
-                color={page === pageNumber ? "black" : "black"}>
+                color={page === pageNumber ? "black" : "black"}
+              >
                 {pageNumber}
               </Button>
             ))}
@@ -273,7 +303,8 @@ const ProductManagement = () => {
               _hover={{ bg: "brand.hover", color: "white" }}
               // ml={"20em"}
               onClick={() => handleNext()}
-              isDisabled={page === totalPage}>
+              isDisabled={page === totalPage}
+            >
               Next
             </Button>
           </Box>
