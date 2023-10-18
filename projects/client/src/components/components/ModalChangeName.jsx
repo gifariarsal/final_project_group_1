@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/reducer/AuthReducer";
 import Swal from "sweetalert2";
+import ChangeButton from "./ChangeButton";
+import CloseButton from "./CloseButton";
 
 const ChangeUsernameSchema = Yup.object().shape({
   currentName: Yup.string().required("Name is required"),
@@ -34,7 +36,7 @@ const ChangeUsernameSchema = Yup.object().shape({
 });
 
 const URL_API = process.env.REACT_APP_API_BASE_URL;
-export default function ModalChangeName({ isOpen, onClose }) {
+export default function ModalChangeName({ isOpen, onClose, user }) {
   const navigate = useNavigate();
   function toHome() {
     navigate("/");
@@ -83,7 +85,7 @@ export default function ModalChangeName({ isOpen, onClose }) {
   };
   const formik = useFormik({
     initialValues: {
-      currentName: "",
+      currentName: "" || user.username,
       newName: "",
     },
     validationSchema: ChangeUsernameSchema,
@@ -155,25 +157,8 @@ export default function ModalChangeName({ isOpen, onClose }) {
                   </Center>
                 </FormControl>
                 <ModalFooter>
-                  <Button
-                    mt={"20px"}
-                    w={"150px"}
-                    borderRadius={"50px"}
-                    onClick={onClose}
-                    colorScheme="red"
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    ml={"20px"}
-                    mt={"20px"}
-                    w={"150px"}
-                    borderRadius={"50px"}
-                    type="submit"
-                    colorScheme="yellow"
-                  >
-                    Change
-                  </Button>
+                  <CloseButton onClose={onClose} />
+                  <ChangeButton />
                 </ModalFooter>
               </form>
             </Stack>

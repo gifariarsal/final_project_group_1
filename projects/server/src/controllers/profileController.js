@@ -31,7 +31,8 @@ const profileController = {
             const {currentGender, chooseGender} = req.body
             await db.sequelize.transaction (async (t) => {
                 const result = await user.update({gender : chooseGender}, {where : {id}}, {transaction : t})
-                return res.status(200).json({message : "Success"})
+                const findUser = await user.findOne({where : {id}})
+                return res.status(200).json({message : "Success", data: findUser})
             })
         } catch (error) {
             return res.status(500).json({message : "Failed, Butuh Oplas", error : error.message})
@@ -44,7 +45,8 @@ const profileController = {
             await db.sequelize.transaction (async (t) => {
                 const result = await user.update({birthdate : newBirthdate}, 
                     {where : {id}}, {transaction : t})
-                    return res.status(200).json({message : "Success", data : result})
+                    const findUser = await user.findOne({where : {id}})
+                    return res.status(200).json({message : "Success", data : result, find : findUser})
             })
         } catch (error) {
             return res.status(500).json({message : "Failed", error : error.message})
