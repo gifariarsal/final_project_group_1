@@ -93,23 +93,24 @@ export default function StockManagement() {
   console.log("stocks", stock);
   return (
     <Box w={"full"}>
-      <Box px={8}>
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          bg={"white"}
-          borderBottom={1}
-          borderStyle={"solid"}
-          borderColor={"#D7F0AA"}
-          py={4}
-        >
-          <Box>
-            <Text fontSize={{ base: "xl", lg: "2xl" }} fontWeight={"medium"}>
-              Stock Management
-            </Text>
-          </Box>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        bg={"white"}
+        borderBottom={1}
+        borderStyle={"solid"}
+        borderColor={"#D7F0AA"}
+        py={4}
+        px={8}
+      >
+        <Box>
+          <Text fontSize={{ base: "xl", lg: "2xl" }} fontWeight={"medium"}>
+            Stock Management
+          </Text>
         </Box>
+      </Box>
+      <Box px={8}>
         <Flex mt={4}>
           <ButtonUpdateStock setModalClosedTrigger={setModalClosedTrigger} />
           <InputGroup ml={"12px"}>
@@ -124,7 +125,7 @@ export default function StockManagement() {
             />
           </InputGroup>
         </Flex>
-        <Divider mt={2} />
+        <Divider mt={4} />
         {stock &&
           stock.map((item) => {
             const active = item.isactive;

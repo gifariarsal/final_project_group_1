@@ -41,6 +41,7 @@ const VoucherList = () => {
             rounded={"lg"}
             p={4}
             boxShadow={"lg"}
+            borderWidth={"1px"}
             w={{ base: "100%", lg: "350px" }}
           >
             <Text mb={4} fontSize={"lg"} fontWeight={"bold"}>

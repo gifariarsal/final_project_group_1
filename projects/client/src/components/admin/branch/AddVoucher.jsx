@@ -126,7 +126,7 @@ const AddVoucher = ({ isOpen, onClose }) => {
     !formik.isValid || formik.isSubmitting || !formik.dirty;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: "md", md: "xl" }}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
