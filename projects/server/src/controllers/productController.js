@@ -33,13 +33,7 @@ const setPagination = (limit, page) => {
 const productController = {
   getProduct: async (req, res) => {
     try {
-      const {
-        page = 1,
-        limit = 8,
-        order = "ASC",
-        orderBy = "name",
-        category = "",
-      } = req.query;
+      const { page = 1, limit = 4, order = "ASC", orderBy = "name", category = "" } = req.query;
 
       const where = { isactive: true };
       if (category) where.category_id = category;
@@ -218,8 +212,7 @@ const productController = {
   },
   createProduct: async (req, res) => {
     try {
-      const { name, category_id, price, admin_discount, description, weight } =
-        req.body;
+      const { name, category_id, price, admin_discount, description, weight } = req.body;
       if (!req.file) {
         return res.status(400).json({ message: "Product image is required" });
       }
@@ -292,12 +285,9 @@ const productController = {
       console.log("dapat ", oldPicture);
       if (oldPicture.product_img) {
         console.log("ada");
-        fs.unlink(
-          path.resolve(__dirname, `../../${oldPicture.product_img}`),
-          (err) => {
-            return res.status(500).json({ message: err.message });
-          }
-        );
+        fs.unlink(path.resolve(__dirname, `../../${oldPicture.product_img}`), (err) => {
+          return res.status(500).json({ message: err.message });
+        });
       }
       await db.sequelize.transaction(async (t) => {
         await Product.update(
