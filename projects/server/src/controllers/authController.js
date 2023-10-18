@@ -15,7 +15,7 @@ const path = require("path");
 require("dotenv").config({
   path: path.resolve("../.env"),
 });
-
+const URL = process.env.WHITELISTED_DOMAIN;
 const transporter = require("../helpers/transporter");
 
 const createRefCode = (length = 8) => {
@@ -93,7 +93,7 @@ const authController = {
         const token = jwt.sign({ id: newUser.id, username: username, email: email }, process.env.JWT_KEY, {
           expiresIn: "1h",
         });
-        const redirect = `http://localhost:3000/verification/${token}`;
+        const redirect = `${URL}/verification/${token}`;
         const data = await fs.readFile(path.resolve(__dirname, "../emails/registerEmail.html"), "utf-8");
         const tempCompile = await handlebars.compile(data);
         const tempResult = tempCompile({ username, email, redirect });
