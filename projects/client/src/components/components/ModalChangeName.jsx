@@ -48,7 +48,7 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
     const { currentName, newName } = values;
     try {
       const respon = await axios.patch(
-        `${URL_API}/auth/name`,
+        `${URL_API}/profile/name`,
         {
           currentName: currentName,
           newName: newName,
@@ -61,11 +61,7 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
       );
       dispatch(setUser(respon.data?.data));
       onClose();
-      await Swal.fire(
-        "Success!",
-        "Please logout first if you wanna change again",
-        "success"
-      );
+      await Swal.fire("Success!", "Username successfully change", "success");
     } catch (error) {
       console.log(error);
       toast({

@@ -74,7 +74,7 @@ const profileController = {
                     username : username,
                     email : newEmail,
                 }
-                const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : "10h"})
+                const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : "22h"})
                 const redirect = `${URL}/verification/${token}`
                 const data = await fs.readFile(path.resolve(__dirname, "../emails/changeEmail.html"), "utf-8")
                 const tempCompile = await handlebars.compile(data);
@@ -184,6 +184,34 @@ const profileController = {
             });
         } catch (error) {
             res.status(500).json({ message: "Failed to change avatar", error: error.message });
+        }
+    },
+    resendVerification : async(req, res) => {
+        try {
+            const {id,username} = req.user
+            const {newEmail} = req.body
+            console.log("NEW", newEmail)
+            await db.sequelize.transaction (async (t) => {
+                let payload = {
+                    id : id,
+                    username : username,
+                    email : newEmail,
+                }
+                const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : "22h"})
+                const redirect = `${URL}/verification/${token}`
+                const data = await fs.readFile(path.resolve(__dirname, "../emails/changeEmail.html"), "utf-8")
+                const tempCompile = await handlebars.compile(data);
+                const tempResult = tempCompile({username, newEmail, redirect})
+                await transporter.sendMail({
+                    to : newEmail,
+                    subject : "Resend Verification Change Email",
+                    html : tempResult
+                })
+                const findUser = await user.findOne({where : {id}})
+                return res.status(200).json({message : "Email successfully change", data : findUser, token:token})
+            })
+        } catch (error) {
+            return res.status(500).json({message : "Failed", error : error.message})
         }
     }
 }
