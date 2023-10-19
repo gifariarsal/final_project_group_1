@@ -26,7 +26,6 @@ import ChangeButton from "./ChangeButton";
 import CloseButton from "./CloseButton";
 
 const ChangeUsernameSchema = Yup.object().shape({
-  currentName: Yup.string().required("Name is required"),
   newName: Yup.string()
     .matches(
       /^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$/,
@@ -46,7 +45,6 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
 
   const change = async (values, newValues) => {
     const token = localStorage.getItem("token");
-    console.log(token);
     const { currentName, newName } = values;
     try {
       const respon = await axios.patch(
@@ -69,14 +67,11 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
         "Please logout first if you wanna change again",
         "success"
       );
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
     } catch (error) {
       console.log(error);
       toast({
         title: "Error",
-        description: error?.response?.data?.message,
+        description: error.response?.data.message,
         status: "error",
         duration: 1000,
         isClosable: true,
@@ -85,11 +80,11 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
   };
   const formik = useFormik({
     initialValues: {
-      currentName: "" || user.username,
-      newName: "",
+      newName: user.username || "",
     },
     validationSchema: ChangeUsernameSchema,
     onSubmit: (values) => {
+      console.log("ini masuk");
       change(values);
       onClose();
     },
@@ -104,33 +99,6 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
           <ModalBody>
             <Stack>
               <form onSubmit={formik.handleSubmit}>
-                <FormControl
-                  isInvalid={
-                    formik.touched.currentName && formik.errors.currentName
-                  }
-                >
-                  <Input
-                    required
-                    placeholder="Current Username"
-                    variant={"flushed"}
-                    borderColor={"black"}
-                    w={"350px"}
-                    ml={"25px"}
-                    id="currentName"
-                    name="currentName"
-                    type="currentName"
-                    value={formik.values.currentName}
-                    onChange={formik.handleChange}
-                  ></Input>
-                  <Center>
-                    {formik.touched.currentName &&
-                      formik.errors.currentName && (
-                        <FormErrorMessage>
-                          {formik.errors.currentName}
-                        </FormErrorMessage>
-                      )}
-                  </Center>
-                </FormControl>
                 <FormControl
                   isInvalid={formik.touched.newName && formik.errors.newName}
                 >

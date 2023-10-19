@@ -102,7 +102,7 @@ export default function UserProfile() {
             <Box mt={"30px"}>
               <Flex justifyContent={"space-between"}>
                 <Text>Change Email</Text>
-                <ButtonChangeEmail />
+                <ButtonChangeEmail user={user} />
               </Flex>
             </Box>
             <Box mt={"30px"}>
