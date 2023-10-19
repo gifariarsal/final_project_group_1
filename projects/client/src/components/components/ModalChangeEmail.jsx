@@ -124,19 +124,7 @@ export default function ModalChangeEmail({ isOpen, onClose, user }) {
                 </FormControl>
                 <ModalFooter>
                   <CloseButton onClose={onClose} />
-                  <Button
-                    ml={"20px"}
-                    mt={"20px"}
-                    w={"150px"}
-                    borderRadius={"50px"}
-                    type="submit"
-                    color={"white"}
-                    bg={"brand.main"}
-                    _hover={{ bg: "brand.hover" }}
-                    _active={{ bg: "brand.active" }}
-                  >
-                    Change
-                  </Button>
+                  <ChangeButton />
                 </ModalFooter>
               </form>
             </Stack>
