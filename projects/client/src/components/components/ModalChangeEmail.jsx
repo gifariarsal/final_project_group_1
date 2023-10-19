@@ -23,6 +23,8 @@ import * as Yup from "yup";
 import Swal from "sweetalert2";
 import CloseButton from "./CloseButton";
 import ChangeButton from "./ChangeButton";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/reducer/AuthReducer";
 
 const ChangeEmailSchema = Yup.object().shape({
   newEmail: Yup.string()
@@ -33,6 +35,7 @@ const ChangeEmailSchema = Yup.object().shape({
 const URL_API = process.env.REACT_APP_API_BASE_URL;
 export default function ModalChangeEmail({ isOpen, onClose, user }) {
   const toast = useToast();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   function toHome() {
     navigate("/");
@@ -53,16 +56,13 @@ export default function ModalChangeEmail({ isOpen, onClose, user }) {
           },
         }
       );
-      console.log(respon);
+      dispatch(setUser(respon.data?.data));
       onClose();
       await Swal.fire(
         "Success!",
         "Please to verify your new email on inbox/spam and login again",
         "success"
       );
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 2000);
     } catch (error) {
       console.log(error);
       toast({
@@ -81,8 +81,6 @@ export default function ModalChangeEmail({ isOpen, onClose, user }) {
     },
     validationSchema: ChangeEmailSchema,
     onSubmit: (values) => {
-      // console.log("ini masuk");
-      console.log("masuk", values);
       emailChange(values);
     },
   });

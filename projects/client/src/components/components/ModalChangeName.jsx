@@ -59,7 +59,6 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
           },
         }
       );
-      console.log("ini respon changeusername", respon.data?.data);
       dispatch(setUser(respon.data?.data));
       onClose();
       await Swal.fire(
@@ -84,7 +83,6 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
     },
     validationSchema: ChangeUsernameSchema,
     onSubmit: (values) => {
-      console.log("ini masuk");
       change(values);
       onClose();
     },

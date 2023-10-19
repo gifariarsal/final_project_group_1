@@ -18,7 +18,6 @@ const profileController = {
             const {id} = req.user
             const {newName} = req.body
             const findUser = await user.findOne({where : {id}})
-            console.log("ini nama", findUser)
             if(newName === findUser.username){
                 return res.status(500).json({message : "Please select other username"})
             }
@@ -63,7 +62,6 @@ const profileController = {
             const {id,username} = req.user
             const {newEmail} = req.body
             const findUser = await user.findOne({where : {id}})
-            console.log("ini email", findUser)
             if(newEmail === findUser.email){
                 return res.status(500).json({
                     message : "Please select other email"
