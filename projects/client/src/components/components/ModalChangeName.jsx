@@ -79,6 +79,7 @@ export default function ModalChangeName({ isOpen, onClose, user }) {
     },
     validationSchema: ChangeUsernameSchema,
     onSubmit: (values) => {
+      console.log("ini masuk");
       change(values);
       onClose();
     },
