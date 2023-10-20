@@ -58,7 +58,6 @@ const ProductManagement = () => {
   const { category } = useSelector((state) => state.CategoryReducer);
   const [dataLength, setDataLength] = useState(0);
   const [limits, setLimits] = useState(0);
-  console.log("SELECT", categories);
 
   const handleNext = () => {
     setPage(page + 1);
@@ -76,7 +75,6 @@ const ProductManagement = () => {
     return pageNumbers;
   };
   const pageNumbers = generatePageNumbers(totalPage);
-  console.log("total page", totalPage);
   const dispatch = useDispatch();
   const orderByParam = orderByPrice ? "price" : orderBy;
   const fetchData = async () => {
@@ -286,38 +284,40 @@ const ProductManagement = () => {
           <Tfoot></Tfoot>
         </Table>
       </TableContainer>
-      <Box ml={{ base: "8em", lg: "380px" }} mt={"20px"}>
-        <Button
-          variant={"ghost"}
-          _hover={{ bg: "brand.hover", color: "white" }}
-          onClick={() => handlePrev()}
-          isDisabled={page === 1}
-        >
-          Previous
-        </Button>
-        {pageNumbers.map((pageNumber) => (
+      {totalPage > 1 && (
+        <Box ml={{ base: "8em", lg: "380px" }} mt={"20px"}>
           <Button
-            key={pageNumber}
+            variant={"ghost"}
             _hover={{ bg: "brand.hover", color: "white" }}
-            ml={"0.5em"}
-            mr={"0.5em"}
-            onClick={() => setPage(pageNumber)}
-            isActive={page === pageNumber}
-            bgColor={page === pageNumber ? "red" : "brand.main"}
-            color={page === pageNumber ? "black" : "black"}
+            onClick={() => handlePrev()}
+            isDisabled={page === 1}
           >
-            {pageNumber}
+            Previous
           </Button>
-        ))}
-        <Button
-          variant={"ghost"}
-          _hover={{ bg: "brand.hover", color: "white" }}
-          onClick={() => handleNext()}
-          isDisabled={page === totalPage}
-        >
-          Next
-        </Button>
-      </Box>
+          {pageNumbers.map((pageNumber) => (
+            <Button
+              key={pageNumber}
+              _hover={{ bg: "brand.hover", color: "white" }}
+              ml={"0.5em"}
+              mr={"0.5em"}
+              onClick={() => setPage(pageNumber)}
+              isActive={page === pageNumber}
+              bgColor={page === pageNumber ? "red" : "brand.main"}
+              color={page === pageNumber ? "black" : "black"}
+            >
+              {pageNumber}
+            </Button>
+          ))}
+          <Button
+            variant={"ghost"}
+            _hover={{ bg: "brand.hover", color: "white" }}
+            onClick={() => handleNext()}
+            isDisabled={page === totalPage}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
