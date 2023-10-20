@@ -154,6 +154,12 @@ export default function UserProfile() {
                   : ""}
               </Flex>
             </Box>
+            <Box mt={"30px"}>
+              <Flex justifyContent={"space-between"}>
+                <Text>Referal Code</Text>
+                <Text>{user.refcode}</Text>
+              </Flex>
+            </Box>
             <Box bgColor={"blackAlpha.800"}>
               <Divider mt={"20px"} />
             </Box>
