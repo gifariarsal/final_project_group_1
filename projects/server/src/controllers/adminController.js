@@ -65,6 +65,13 @@ const adminController = {
       }
 
       if (checkLogin.role_id === 1) {
+        const passwordValid = await bcrypt.compare(
+          password,
+          checkLogin.password
+        );
+        if (!passwordValid)
+          return res.status(404).json({ message: "Incorrect password" });
+
         let payload = {
           id: checkLogin.id,
           name: checkLogin.name,
@@ -106,18 +113,14 @@ const adminController = {
         expiresIn: "24h",
       });
 
-      return res
-        .status(200)
-        .json({
-          message: "Login success",
-          Account: checkLogin,
-          BranchData: checkBranch,
-          token: token,
-        });
+      return res.status(200).json({
+        message: "Login success",
+        Account: checkLogin,
+        BranchData: checkBranch,
+        token: token,
+      });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Login failed", error: error.message });
+      return res.status(500).json({ message: "Login failed", error: error.message });
     }
   },
 
@@ -129,18 +132,14 @@ const adminController = {
         where: { [Sequelize.Op.or]: [{ name }, { email }, {}] },
       });
       if (findAdmin)
-        return res
-          .status(400)
-          .json({ message: "Name or Email already exists" });
+        return res.status(400).json({ message: "Name or Email already exists" });
 
       const branchAdminExist = await Store.findOne({
         where: { location: branch, isactive: true },
       });
 
       if (branchAdminExist?.admin_id > 1) {
-        return res
-          .status(400)
-          .json({ message: "Admin in this branch already exists" });
+        return res.status(400).json({ message: "Admin in this branch already exists" });
       }
       if (branchAdminExist) {
         try {
@@ -242,9 +241,7 @@ const adminController = {
         return res.status(200).json({ message: "Admin is deleted" });
       });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Failed to delete admin", error: error.message });
+      return res.status(500).json({ message: "Failed to delete admin", error: error.message });
     }
   },
 
@@ -417,9 +414,7 @@ const adminController = {
       };
       const store = await Store.findOne({ where: { admin_id: req.user.id } });
       if (!store) {
-        return res
-          .status(404)
-          .json({ message: "Store not found for the user." });
+        return res.status(404).json({ message: "Store not found for the user." });
       }
       const where = { store_id: store.id };
       const findBranch = await productStore.findAll({
