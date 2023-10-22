@@ -105,7 +105,7 @@ export default function UserProfile() {
             <Box mt={"30px"}>
               <Flex justifyContent={"space-between"}>
                 <Text>Email address</Text>
-                <Text>{user.email}</Text>
+                <Text fontSize={"15px"}>{user.email}</Text>
               </Flex>
             </Box>
             <Box mt={"30px"}>
