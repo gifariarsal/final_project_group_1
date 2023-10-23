@@ -65,6 +65,13 @@ const adminController = {
       }
 
       if (checkLogin.role_id === 1) {
+        const passwordValid = await bcrypt.compare(
+          password,
+          checkLogin.password
+        );
+        if (!passwordValid)
+          return res.status(404).json({ message: "Incorrect password" });
+
         let payload = {
           id: checkLogin.id,
           name: checkLogin.name,
@@ -106,14 +113,12 @@ const adminController = {
         expiresIn: "24h",
       });
 
-      return res
-        .status(200)
-        .json({
-          message: "Login success",
-          Account: checkLogin,
-          BranchData: checkBranch,
-          token: token,
-        });
+      return res.status(200).json({
+        message: "Login success",
+        Account: checkLogin,
+        BranchData: checkBranch,
+        token: token,
+      });
     } catch (error) {
       return res
         .status(500)
@@ -129,9 +134,7 @@ const adminController = {
         where: { [Sequelize.Op.or]: [{ name }, { email }, {}] },
       });
       if (findAdmin)
-        return res
-          .status(400)
-          .json({ message: "Name or Email already exists" });
+        return res.status(400).json({ message: "Name or Email already exists" });
 
       const branchAdminExist = await Store.findOne({
         where: { location: branch, isactive: true },
