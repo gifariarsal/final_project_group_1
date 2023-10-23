@@ -24,7 +24,6 @@ import {
 } from "../../redux/reducer/CartReducer";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import axios from "axios";
-import { IoTrashOutline } from "react-icons/io5";
 import { BsFillTrashFill } from "react-icons/bs";
 import { useEffect, useState } from "react";
 const URL_API = process.env.REACT_APP_API_BASE_URL;
