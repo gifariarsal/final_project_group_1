@@ -78,7 +78,7 @@ const ProductList = () => {
         </Heading>
 
         <Box>
-          <Flex direction="row" flexWrap="wrap" w="100%" gap={4} justifyContent={location ? "space-evenly" : "center"}>
+          <Flex direction="row" flexWrap="wrap" w="100%" gap={4} justifyContent={"flex-start"}>
             {products.map((product, index) => (
               <ProductListItem product={product} key={index} />
             ))}
