@@ -79,14 +79,25 @@ const ProductList = () => {
                 ))}
               </Select>
             )}
-            <Box>
-              <Button onClick={handleOrderBy} mr={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+            <Box w={{ base: "100%" }}>
+              <Button
+                w={{ base: "48%" }}
+                onClick={handleOrderBy}
+                mr={2}
+                bgColor="#5a9819"
+                color={"white"}
+                _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
               </Button>
-              <Button onClick={handleOrder} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+              <Button
+                w={{ base: "48%" }}
+                onClick={handleOrder}
+                bgColor="#5a9819"
+                color={"white"}
+                _hover={{ bgColor: "#3d550f" }}>
                 {order === "ASC" ? "ASC" : "DESC"}
               </Button>
-            </Box>
+            </Box>{" "}
           </Flex>
         </Stack>
         <Box mt={10} textAlign="center" border={"1px dashed gray"} p={4}>
