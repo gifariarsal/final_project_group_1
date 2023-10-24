@@ -40,10 +40,10 @@ const Category = () => {
           <Stack spacing={4} align="center">
             <Heading as="h2">Category</Heading>
             <Flex gap={2}>
-              <Button onClick={handleOrderBy} gap={2}>
+              <Button onClick={handleOrderBy} gap={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
               </Button>
-              <Button onClick={handleOrder} gap={2}>
+              <Button onClick={handleOrder} gap={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
                 {order === "ASC" ? "ASC" : "DESC"}
               </Button>
             </Flex>
@@ -66,10 +66,10 @@ const Category = () => {
       </Center>
       <Center>
         <Flex gap={2} mb={4}>
-          <Button onClick={handleOrderBy} gap={2}>
+          <Button onClick={handleOrderBy} gap={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
             {orderBy === "name" ? "NAME" : "PRICE"}
           </Button>
-          <Button onClick={handleOrder} gap={2}>
+          <Button onClick={handleOrder} gap={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
             {order === "ASC" ? "ASC" : "DESC"}
           </Button>
         </Flex>

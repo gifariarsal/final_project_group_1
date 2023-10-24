@@ -29,6 +29,11 @@ const ProductList = () => {
     md: "80%",
     lg: "60%",
   });
+  const maxBoxStore = useBreakpointValue({
+    base: "100%",
+    md: "80%",
+    lg: "50%",
+  });
   const products = useSelector((state) => state.ProductReducer.product);
   const { store, store_id } = useSelector((state) => state.ProductReducer);
   const [orderBy, setOrderBy] = useState("name");
@@ -60,10 +65,12 @@ const ProductList = () => {
           <Flex gap={2} justify="space-between">
             <SearchProducts />
             <Box>
-              <Button onClick={handleOrderBy} mr={2}>
+              <Button onClick={handleOrderBy} mr={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
               </Button>
-              <Button onClick={handleOrder}>{order === "ASC" ? "ASC" : "DESC"}</Button>
+              <Button onClick={handleOrder} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+                {order === "ASC" ? "ASC" : "DESC"}
+              </Button>
             </Box>
           </Flex>
         </Stack>
@@ -73,7 +80,7 @@ const ProductList = () => {
             No products found.
           </Text>
           <Text fontSize="md" color="gray.600">
-            We are going to add more product here.
+            There are no product here, we are going to add more soon.
           </Text>
         </Box>{" "}
       </Box>
@@ -81,7 +88,7 @@ const ProductList = () => {
   }
 
   return (
-    <Box maxW={maxBoxWidth} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
+    <Box maxW={location ? maxBoxStore : maxBoxWidth} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
       <Stack spacing={6} mb={10}>
         <Heading as="h2" textAlign="center">
           {store ? store : "Our Recent Product"}
@@ -90,26 +97,30 @@ const ProductList = () => {
           <Flex gap={2} justify="space-between">
             <SearchProducts />
             <Box>
-              <Button onClick={handleOrderBy} mr={2}>
+              <Button onClick={handleOrderBy} mr={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
               </Button>
-              <Button onClick={handleOrder}>{order === "ASC" ? "ASC" : "DESC"}</Button>
+              <Button onClick={handleOrder} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+                {order === "ASC" ? "ASC" : "DESC"}
+              </Button>
             </Box>
           </Flex>
         )}
       </Stack>
-      <Flex
-        direction="row"
-        ml={{ base: "12px", md: "16px" }}
-        flexWrap="wrap"
-        w="100%"
-        gap={4}
-        justifyContent={{ base: "flex-start", xl: "center", md: "center" }}>
-        {products.map((product, index) => (
-          <ProductListItem product={product} key={index} />
-        ))}
-      </Flex>
-      {store && <Pagination page={page} index={index} setIndex={setIndex} />}
+      <Box mx={{ sm: "50px", md: "0px" }}>
+        <Flex
+          direction="row"
+          ml={location ? { base: "12px", md: "16px" } : "0px"}
+          flexWrap="wrap"
+          w="100%"
+          gap={4}
+          justifyContent={location ? { base: "flex-start", xl: "flex-start" } : "center"}>
+          {products.map((product, index) => (
+            <ProductListItem product={product} key={index} />
+          ))}
+        </Flex>
+        {store && <Pagination page={page} index={index} setIndex={setIndex} />}
+      </Box>
     </Box>
   );
 };
