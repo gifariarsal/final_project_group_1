@@ -224,7 +224,7 @@ const ProductDetail = () => {
                           login === false ||
                           (sold?.quantity ?? 0) ===
                             (branchProduct?.quantity ?? 0) ||
-                          jumlah + (sold?.quantity ?? 0) >= stock.quantity
+                          jumlah + (sold?.quantity ?? 0) > stock.quantity
                         }
                       >
                         {(sold?.quantity ?? 0) ===
