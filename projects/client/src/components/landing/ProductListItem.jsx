@@ -20,7 +20,7 @@ const ProductListItem = ({ product }) => {
         align="center"
         bg="white"
         rounded="3xl"
-        w={{ base: "150px", md: "180px", lg: "200px" }}
+        w={{ base: "150px", md: "200px" }}
         p={2}
         pb={6}
         boxShadow={{ base: "lg", md: "xl" }}

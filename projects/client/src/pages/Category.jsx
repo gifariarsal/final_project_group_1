@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Heading, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Heading, Icon, Spinner, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/landing/Navbar";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,11 @@ const Category = () => {
   const [index, setIndex] = useState(1);
   const pathname = window.location.pathname.split("/");
   const id = pathname[pathname.length - 1];
+  const maxBoxWidth = useBreakpointValue({
+    base: "100%",
+    md: "50%",
+    lg: "48%",
+  });
 
   const handleOrderBy = () => {
     setOrderBy(orderBy === "name" ? "price" : "name");
@@ -34,7 +39,7 @@ const Category = () => {
 
   if (products.length < 1) {
     return (
-      <Box>
+      <Box maxW={maxBoxWidth} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
         <Navbar />
         <Center mt={4}>
           <Stack spacing={4} align="center">
@@ -74,7 +79,15 @@ const Category = () => {
           </Button>
         </Flex>
       </Center>
-      <Flex gap={{ base: 4, md: 8 }} w="100%" justifyContent="center" flexWrap="wrap">
+      <Flex
+        gap={{ base: 4, md: 8 }}
+        justifyContent="center"
+        flexWrap="wrap"
+        maxW={maxBoxWidth}
+        w="100%"
+        py="40px"
+        px={{ base: "20px" }}
+        mx={"auto"}>
         {products.map((product) => (
           <ProductListItem product={product} key={product.id} />
         ))}

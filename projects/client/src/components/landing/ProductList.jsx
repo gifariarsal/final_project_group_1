@@ -12,6 +12,7 @@ import {
   Stack,
   Icon,
   useBreakpointValue,
+  Select,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +22,7 @@ import { getProduct, getStoreProduct } from "../../redux/reducer/ProductReducer"
 import SearchProducts from "../components/SearchProducts";
 import { addCart, addToCart } from "../../redux/reducer/CartReducer";
 import { AiOutlineInbox } from "react-icons/ai";
+import { getCategory } from "../../redux/reducer/CategoryReducer";
 
 const ProductList = () => {
   const displayDirection = useBreakpointValue({ base: "column", md: "row" });
@@ -32,8 +34,11 @@ const ProductList = () => {
   const maxBoxStore = useBreakpointValue({
     base: "100%",
     md: "80%",
-    lg: "50%",
+    lg: "40%",
   });
+  const [isShop, setIsShop] = useState(false);
+  const { category } = useSelector((state) => state.CategoryReducer);
+  const [cat, setCat] = useState(0);
   const products = useSelector((state) => state.ProductReducer.product);
   const { store, store_id } = useSelector((state) => state.ProductReducer);
   const [orderBy, setOrderBy] = useState("name");
@@ -44,9 +49,12 @@ const ProductList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!location) dispatch(getProduct({ index, orderBy, order }));
-    if (location) dispatch(getStoreProduct({ location, lon, lat, index, orderBy, order }));
-  }, [index, lon, lat, store, store_id, location, orderBy, order]);
+    const pathname = window.location.pathname.split("/");
+    if (pathname[pathname.length - 1] === "shop") setIsShop(true);
+    dispatch(getCategory());
+    if (!location) dispatch(getProduct({ index, orderBy, order, category: cat }));
+    if (location) dispatch(getStoreProduct({ location, lon, lat, index, orderBy, order, category: cat }));
+  }, [index, lon, lat, store, store_id, location, orderBy, order, cat]);
 
   const handleOrderBy = () => {
     setOrderBy(orderBy === "name" ? "price" : "name");
@@ -57,13 +65,20 @@ const ProductList = () => {
 
   if (products.length < 1) {
     return (
-      <Box w="100%" py="40px" px={{ base: "20px", md: "60px", lg: "100px" }}>
+      <Box maxW={maxBoxStore} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
         <Stack spacing={4}>
           <Heading as="h2" mx={"auto"} textAlign={"center"}>
             {store ? store : "Our Most Recent Product"}
           </Heading>
-          <Flex gap={2} justify="space-between">
+          <Flex gap={2} justify={{ base: "", md: "space-between" }} flexWrap={"wrap"}>
             <SearchProducts />
+            {isShop && (
+              <Select w={{ base: "50%", md: "35%" }} placeholder="Category" onChange={(e) => setCat(e.target.value)}>
+                {category.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            )}
             <Box>
               <Button onClick={handleOrderBy} mr={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
@@ -88,19 +103,37 @@ const ProductList = () => {
   }
 
   return (
-    <Box maxW={location ? maxBoxStore : maxBoxWidth} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
+    <Box maxW={maxBoxStore} w="100%" py="40px" px={{ base: "20px" }} mx={"auto"}>
       <Stack spacing={6} mb={10}>
         <Heading as="h2" textAlign="center">
           {store ? store : "Our Recent Product"}
         </Heading>
         {store && (
-          <Flex gap={2} justify="space-between">
+          <Flex gap={2} flexWrap={"wrap"}>
             <SearchProducts />
-            <Box>
-              <Button onClick={handleOrderBy} mr={2} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+            {isShop && (
+              <Select w={{ base: "48%" }} placeholder="Category" onChange={(e) => setCat(e.target.value)}>
+                {category.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            )}
+            <Box w={{ base: "100%" }}>
+              <Button
+                w={{ base: "48%" }}
+                onClick={handleOrderBy}
+                mr={2}
+                bgColor="#5a9819"
+                color={"white"}
+                _hover={{ bgColor: "#3d550f" }}>
                 {orderBy === "name" ? "NAME" : "PRICE"}
               </Button>
-              <Button onClick={handleOrder} bgColor="#5a9819" color={"white"} _hover={{ bgColor: "#3d550f" }}>
+              <Button
+                w={{ base: "48%" }}
+                onClick={handleOrder}
+                bgColor="#5a9819"
+                color={"white"}
+                _hover={{ bgColor: "#3d550f" }}>
                 {order === "ASC" ? "ASC" : "DESC"}
               </Button>
             </Box>
