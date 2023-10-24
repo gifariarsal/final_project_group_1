@@ -30,9 +30,7 @@ const Category = () => {
   useEffect(() => {
     if (!location) dispatch(getProduct({ category: id, orderBy, order, index }));
     if (location) dispatch(getStoreProduct({ location, lon, lat, orderBy, order, category: id, index }));
-  }, [index, orderBy, order, location]);
-
-  console.log(products);
+  }, [index, orderBy, order, location, store]);
 
   if (products.length < 1) {
     return (

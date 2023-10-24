@@ -78,7 +78,6 @@ const ProductDetail = () => {
       await getItemDetails(id);
       const { data } = await axios.get(apiUrl);
       const productData = data.data?.Product || data.data;
-      console.log(data.data);
       await setProduct(productData);
       if (productData.admin_discount > 0) await setIsDiscount(true);
       if (data.data.quantity) await setStock(data.data);
