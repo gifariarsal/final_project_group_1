@@ -20,9 +20,8 @@ const Category = () => {
   const pathname = window.location.pathname.split("/");
   const id = pathname[pathname.length - 1];
   const maxBoxWidth = useBreakpointValue({
-    base: "100%",
-    md: "50%",
-    lg: "48%",
+    base: "370px",
+    md: "680px",
   });
 
   const handleOrderBy = () => {
@@ -79,19 +78,13 @@ const Category = () => {
           </Button>
         </Flex>
       </Center>
-      <Flex
-        gap={{ base: 4, md: 8 }}
-        justifyContent="center"
-        flexWrap="wrap"
-        maxW={maxBoxWidth}
-        w="100%"
-        py="40px"
-        px={{ base: "20px" }}
-        mx={"auto"}>
-        {products.map((product) => (
-          <ProductListItem product={product} key={product.id} />
-        ))}
-      </Flex>
+      <Center justifyContent={"center"} w={maxBoxWidth} mx={"auto"} p={{ base: "40px 20px", md: "" }}>
+        <Flex direction="row" flexWrap="wrap" w="100%" gap={4}>
+          {products.map((product, index) => (
+            <ProductListItem product={product} key={index} />
+          ))}
+        </Flex>
+      </Center>
       <Center mt={6}>
         <Pagination page={page} index={index} setIndex={setIndex} />
       </Center>
