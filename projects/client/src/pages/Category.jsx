@@ -49,10 +49,10 @@ const Category = () => {
             </Flex>
           </Stack>
         </Center>
-        <Center h="30vh" flexDirection="column">
+        <Center h="30vh" flexDirection="column" border={"1px dashed gray"} m={"10"}>
           <Icon as={AiOutlineInbox} boxSize={12} color="gray.500" mb={4} />
           <Text fontSize="2xl" fontWeight="bold">
-            No products found.
+            We Are Going To Add More Product in This Category.
           </Text>
         </Center>
       </Box>
