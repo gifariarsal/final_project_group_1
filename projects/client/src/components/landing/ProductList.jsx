@@ -46,7 +46,7 @@ const ProductList = () => {
     const pathname = window.location.pathname.split("/");
     if (pathname[pathname.length - 1] === "shop") setIsShop(true);
     dispatch(getCategory());
-    if (!location) dispatch(getProduct({ index, orderBy, order, category: cat, limit: 9 }));
+    if (!location) dispatch(getProduct({ index, orderBy, order, category: cat }));
     if (location)
       dispatch(
         getStoreProduct({
